@@ -1,4 +1,6 @@
-require_relative 'graphql_attributes'
+# frozen_string_literal: true
+
+require_relative 'model_configuration'
 
 module Graphiti
   module Model
@@ -7,17 +9,15 @@ module Graphiti
     end
 
     module ClassMethods
-      def attribute(attribute_name, type = nil)
-        graphql_attributes.add(attribute_name, type)
-      end
-
-      def graphql_attributes
-        @graphql_attributes ||= GraphqlAttributes.new
+      def graphiti
+        @graphiti ||= ModelConfiguration.new
+        yield(@graphiti) if block_given?
+        @graphiti
       end
 
       def graphql_type
         model_name = name.split('::').last
-        attributes = graphql_attributes.attributes
+        attributes = graphiti.attributes
 
         GraphQL::ObjectType.define do
           name(model_name)

@@ -1,0 +1,25 @@
+require: rubocop-rspec
+
+RSpec/NestedGroups:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: true
+  Max: 120
+  Exclude:
+    - db/migrate/*
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*.rb
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*.rb
+
+AllCops:
+  TargetRubyVersion: 2.5
+  Exclude:
+    - bin/*
+    - graphiti.gemspec
+    - Rakefile

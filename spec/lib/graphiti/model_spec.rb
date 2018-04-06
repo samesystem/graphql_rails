@@ -5,15 +5,18 @@ module Graphiti
     class DummyModel
       include Graphiti::Model
 
-      attribute :name
-      attribute :level, :int
+      graphiti do |c|
+        c.attribute :id
+        c.attribute :name
+        c.attribute :level, :int
+      end
     end
 
     subject(:model) { DummyModel }
 
     describe '.graphql_type' do
       it 'returns type with correct fields' do
-        expect(model.graphql_type.fields.keys).to match_array(%w[name level])
+        expect(model.graphql_type.fields.keys).to match_array(%w[id name level])
       end
 
       it 'returns instance of graphql  type' do

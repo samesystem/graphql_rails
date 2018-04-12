@@ -16,11 +16,11 @@ module Graphiti
 
     describe '.graphql_type' do
       it 'returns type with correct fields' do
-        expect(model.graphql_type.fields.keys).to match_array(%w[id name level])
+        expect(model.graphiti.graphql_type.fields.keys).to match_array(%w[id name level])
       end
 
       it 'returns instance of graphql  type' do
-        expect(model.graphql_type).to be_a(GraphQL::ObjectType)
+        expect(model.graphiti.graphql_type).to be_a(GraphQL::ObjectType)
       end
     end
   end

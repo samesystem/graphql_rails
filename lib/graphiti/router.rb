@@ -1,30 +1,48 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/string/inflections'
+
+require_relative 'router/schema_builder'
+require_relative 'router/controller_function'
+
 module Graphiti
   class Router
+    def self.draw
+      router = new
+      yield(router)
+      router.graphql_schema
+    end
+
     def initialize
-      yield(self) if block_given?
+      @queries = {}
+      @mutations = {}
     end
 
-    def resources(resources_name)
-      name = resources_name.to_s
+    def resources(name)
+      name = name.to_s
 
-      resource(name.singulerize)
+      query name.singularize, to: "#{name}#show"
+      query name, to: "#{name}#index"
 
-      query
+      mutation "create_#{name}", to: "#{name}#create"
+      mutation "update)#{name}", to: "#{name}#update"
+      mutation "delete_#{name}", to: "#{name}#destroy"
     end
 
-    def resource(resource_name)
-      name = resource_name.to_s
-
-      query(:find, on: :member, accepts: :id, resolver: FindByIdResolver.new(name))
-      mutation(:create, sufix: name, on: :member, accepts: :all, resolver: CreateModelMigration.new(name))
-      mutation(:update, sufix: name, on: :member, accepts: { all_except: [:id] }, resolver: CreateModelMigration.new(name))
-      mutation(:destroy, sufix: name, on: :member, accepts: { all_except: [:id] }, resolver: CreateModelMigration.new(name))
+    def query(name, to:)
+      queries[name.to_s.camelize(:lower)] = { function: ControllerFunction.new(to)  }
     end
 
-    def query(query_name, as: nil, suffix: nil, prefix: nil, on:, accepts:, resolver: nil)
-      schema
+    def mutation(name, to:)
+      queries[name.to_s.camelize(:lower)] = { function: ControllerFunction.new(to)  }
     end
+
+    def graphql_schema
+      SchemaBuilder.new(queries: queries, mutations: mutations).call
+    end
+
+    private
+
+    attr_reader :mutations, :queries
   end
 end

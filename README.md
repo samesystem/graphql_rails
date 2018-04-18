@@ -1,5 +1,7 @@
 # Graphiti
 
+[![Build Status](https://travis-ci.org/povilasjurcys/graphiti.svg?branch=master)](https://travis-ci.org/povilasjurcys/graphiti)
+
 Rails style structure for GrapQL API.
 
 ## Installation

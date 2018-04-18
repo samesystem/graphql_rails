@@ -23,8 +23,8 @@ module Graphiti
     let(:controller) { DummyController }
 
     describe '#arguments_for' do
-      it 'returns hash with graphql arguments as values' do
-        expect(configuration.arguments_for(:some_method)).to eq('id' => kind_of(GraphQL::Argument))
+      it 'returns hash with specified acceptable arguments' do
+        expect(configuration.arguments_for(:some_method).keys).to match_array(%i[id])
       end
     end
   end

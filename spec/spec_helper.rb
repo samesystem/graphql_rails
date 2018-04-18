@@ -1,6 +1,14 @@
 require "bundler/setup"
 require "graphiti"
 
+require 'simplecov'
+SimpleCov.start
+
+if ENV['CODECOV_TOKEN']
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
+
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"

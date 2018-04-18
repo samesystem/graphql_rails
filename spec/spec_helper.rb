@@ -1,8 +1,10 @@
 require "bundler/setup"
-require "graphiti"
-
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter(/_spec.rb\Z/)
+end
+
+require 'graphiti'
 
 if ENV['CODECOV_TOKEN']
   require 'codecov'

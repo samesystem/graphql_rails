@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Graphiti
   class Router
+    # graphql resolver which redirects actions to appropriate controller and controller action
     class ControllerFunction < GraphQL::Function
       attr_reader :type
 

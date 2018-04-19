@@ -4,6 +4,7 @@ require 'graphiti/attribute'
 
 module Graphiti
   module Model
+    # stores information about model specific config, like attributes and types
     class Configuration
       attr_reader :attributes
 

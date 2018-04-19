@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require_relative 'controller/configuration'
 require_relative 'controller/graphql_request'
 
 module Graphiti
+  # base class for all graphiti controllers
   class Controller
     class << self
       def before_action(action_name)

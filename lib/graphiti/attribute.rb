@@ -21,16 +21,12 @@ module Graphiti
       @type = type || type_by_attribute_name
     end
 
-    def graphql_input_type
-
-    end
-
     def graphql_field_type
       GRAPHQL_FIELD_TYPE_MAPPING[type.to_sym]
     end
 
     def <=>(other)
-      if other.is_a?(self.class)
+      if other.is_a?(Attribute)
         name <=> other.name
       else
         super
@@ -38,8 +34,6 @@ module Graphiti
     end
 
     private
-
-    attr_reader :type
 
     def type_by_attribute_name
       case name

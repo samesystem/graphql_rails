@@ -17,28 +17,50 @@ module Graphiti
       router.graphql_schema
     end
 
-    attr_reader :actions
+    attr_reader :actions, :namespace_name
 
-    def initialize
+    def initialize(module_name: '')
+      @module_name = module_name
       @actions ||= Set.new
     end
 
+    def scope(**options, &block)
+      full_module_name = [module_name, options[:module]].reject(&:empty?).join('/')
+      scoped_router = self.class.new(module_name: full_module_name)
+      scoped_router.instance_eval(&block)
+      actions.merge(scoped_router.actions)
+    end
+
     def resources(name, **options, &block)
-      actions_builder = ResourceActionsBuilder.new(name, **options)
+      builder_options = default_action_options.merge(options)
+      actions_builder = ResourceActionsBuilder.new(name, **builder_options)
       actions_builder.instance_eval(&block) if block
       actions.merge(actions_builder.actions)
     end
 
-    def query(name, to:)
-      actions << QueryAction.new(name, to: to)
+    def query(name, **options)
+      actions << build_action(QueryAction, name, **options)
     end
 
-    def mutation(name, to:)
-      actions << MutationAction.new(name, to: to)
+    def mutation(name, **options)
+      actions << build_action(MutationAction, name, **options)
     end
 
     def graphql_schema
       SchemaBuilder.new(queries: actions.select(&:query?), mutations: actions.select(&:mutation?)).call
+    end
+
+    private
+
+    attr_reader :module_name
+
+    def build_action(action_builder, name, **options)
+      action_options = default_action_options.merge(options)
+      action_builder.new(name, action_options)
+    end
+
+    def default_action_options
+      { module: module_name }
     end
   end
 end

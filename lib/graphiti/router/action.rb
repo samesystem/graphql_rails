@@ -6,15 +6,17 @@ module Graphiti
     class Action
       include Comparable
 
-      attr_reader :name
+      attr_reader :name, :controller_action_path
 
-      def initialize(name, to:)
+      def initialize(name, to:, **options)
         @name = name.to_s.camelize(:lower)
-        @to = to
+        @controller_action_path = [options[:module].to_s, to].reject(&:empty?).join('/')
       end
 
       def options
-        { function: ControllerFunction.new(to) }
+        {
+          function: ControllerFunction.new(controller_action_path)
+        }
       end
 
       def <=>(other)

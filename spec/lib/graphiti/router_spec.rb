@@ -18,6 +18,41 @@ RSpec.describe Graphiti::Router do
     end
   end
 
+  describe '#scope' do
+    context 'with nested scopes' do
+      before do
+        router.scope module: 'foo' do
+          query :find_foo_user, to: 'users#find'
+
+          scope module: 'bar' do
+            query :find_bar_user, to: 'users#find'
+          end
+        end
+      end
+
+      it 'generates correct controller action paths' do
+        action_paths = router.actions.map(&:controller_action_path)
+        expect(action_paths).to match_array(%w[foo/bar/users#find foo/users#find])
+      end
+    end
+
+    context 'with resoures in scope' do
+      before do
+        router.scope module: 'foo' do
+          resources :users, only: :index do
+            query :find
+          end
+        end
+      end
+
+      it 'generates correct controller action paths' do
+        action_paths = router.actions.map(&:controller_action_path)
+
+        expect(action_paths).to match_array(%w[foo/users#index foo/users#find])
+      end
+    end
+  end
+
   describe '#query' do
     it 'adds new query to the list' do
       expect { router.query('findUser', to: 'users#find') }

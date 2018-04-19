@@ -23,12 +23,12 @@ module Graphiti
 
       private
 
-      def build_type(type_name, fields)
+      def build_type(type_name, actions)
         GraphQL::ObjectType.define do
           name type_name
 
-          fields.each do |field_name, field_options|
-            field field_name, field_options
+          actions.each do |action|
+            field action.name, action.options
           end
         end
       end

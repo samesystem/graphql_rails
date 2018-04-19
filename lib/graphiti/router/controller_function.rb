@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/string/inflections'
+
 module Graphiti
   class Router
     # graphql resolver which redirects actions to appropriate controller and controller action
@@ -7,9 +9,10 @@ module Graphiti
       attr_reader :type
 
       # accepts path of given format "controller_name#action"
-      def initialize(action_path, type: nil)
+      def initialize(action_path, type: nil, **options)
         @action_path = action_path
         @type = type || default_type
+        @module_name = options[:module] || ''
       end
 
       def call(object, inputs, ctx)
@@ -22,10 +25,14 @@ module Graphiti
 
       private
 
-      attr_reader :action_path
+      attr_reader :action_path, :module_name
 
       def controller_class
-        @controller_class ||= "#{controller_name.singularize.classify}Controller".constantize
+        @controller_class ||= "#{namespaced_controller_name}_controller".classify.constantize
+      end
+
+      def namespaced_controller_name
+        [module_name, controller_name].reject(&:empty?).join('/')
       end
 
       def controller_name
@@ -37,7 +44,7 @@ module Graphiti
       end
 
       def default_type
-        "#{controller_name.singularize.classify}Type".constantize
+        "#{controller_name.singularize.classify}Type"
       end
     end
   end

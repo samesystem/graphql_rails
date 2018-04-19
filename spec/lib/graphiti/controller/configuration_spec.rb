@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module Graphiti
@@ -14,7 +16,7 @@ module Graphiti
       specify :some_method, accepts: :id, returns: DummyModel
       def some_method; end
 
-      specify :some_other_method, accepts: [:id, :name], returns: DummyModel
+      specify :some_other_method, accepts: %i[id name], returns: DummyModel
       def some_other_method; end
     end
 

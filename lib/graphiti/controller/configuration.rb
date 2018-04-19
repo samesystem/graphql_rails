@@ -5,6 +5,7 @@ require 'graphiti/attribute'
 
 module Graphiti
   class Controller
+    # stores all graphiti contoller specific config
     class Configuration
       attr_reader :before_actions, :method_specifications
 

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Graphiti
+  # in times when you feel lazy - adds all CRUD actions to controller
   module CRUD
     def included(klass)
       klass.specify(:create, accepts: klass.controller_configuration.default_input_type)

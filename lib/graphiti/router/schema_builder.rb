@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Graphiti
   class Router
+    # builds GraphQL::Schema based on previously defined grahiti data
     class SchemaBuilder
       attr_reader :queries, :mutations
 

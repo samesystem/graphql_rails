@@ -17,6 +17,15 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - spec/**/*.rb
 
+Naming/UncommunicativeMethodParamName:
+  AllowedNames:
+    - 'to'
+    - 'at'
+    - 'on'
+    - 'id'
+    - 'in'
+    - 'as'
+
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:

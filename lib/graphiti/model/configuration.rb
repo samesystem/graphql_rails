@@ -21,6 +21,20 @@ module Graphiti
         @graphql_type ||= generate_graphql_type(graphql_type_name, attributes)
       end
 
+      def graphql_input(as: "#{graphql_type_name}Input", only: nil, except: [], include: [])
+        only ||= attributes.map(&:name)
+        attributes_to_include = Array(only).map(&:to_s) - Array(except).map(&:to_s) + Array(include).map(&:to_s)
+
+        GraphQL::InputObjectType.define do
+          name(as)
+
+          attributes.slice(*attributes_to_include).each do
+          end
+          argument :name, !types.String
+          argument :number, !types.Int
+        end
+      end
+
       private
 
       attr_reader :model_class

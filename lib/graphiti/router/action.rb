@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../controller/controller_function'
+
 module Graphiti
   class Router
     # Generic class for any type graphql action. Should not be used directly
@@ -15,7 +17,7 @@ module Graphiti
 
       def options
         {
-          function: ControllerFunction.new(controller_action_path)
+          function: Controller::ControllerFunction.new(controller_action_path)
         }
       end
 

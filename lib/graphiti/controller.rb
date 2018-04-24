@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'controller/configuration'
-require_relative 'controller/graphql_request'
+require_relative 'controller/request'
 
 module Graphiti
   # base class for all graphiti controllers
@@ -25,8 +25,21 @@ module Graphiti
     end
 
     def call(method_name)
-      self.class.before_actions.each { |action_name| send(action_name) }
-      public_send(method_name)
+      self.class.controller_configuration.before_actions.each { |action_name| send(action_name) }
+
+      begin
+        response = public_send(method_name)
+        render response if graphql_request.no_object_to_return?
+      rescue StandardError => error
+        render error: error
+      end
+
+      graphql_request.object_to_return
+    end
+
+    def render(object = nil, error: nil, errors: Array(error))
+      graphql_request.errors = errors
+      graphql_request.object_to_return = object
     end
 
     protected

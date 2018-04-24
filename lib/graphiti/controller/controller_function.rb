@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/string/inflections'
+require_relative 'request'
 
 module Graphiti
-  class Router
+  class Controller
     # graphql resolver which redirects actions to appropriate controller and controller action
     class ControllerFunction < GraphQL::Function
       attr_reader :type
@@ -16,7 +17,8 @@ module Graphiti
       end
 
       def call(object, inputs, ctx)
-        controller_class.new(object, inputs, ctx).call(action_name)
+        request = Request.new(object, inputs, ctx)
+        controller_class.new(request).call(action_name)
       end
 
       def arguments

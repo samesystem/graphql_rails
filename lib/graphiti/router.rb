@@ -3,7 +3,6 @@
 require 'active_support/core_ext/string/inflections'
 
 require_relative 'router/schema_builder'
-require_relative 'router/controller_function'
 require_relative 'router/mutation_action'
 require_relative 'router/query_action'
 require_relative 'router/resource_actions_builder'

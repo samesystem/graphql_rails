@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_support/hash_with_indifferent_access'
 require_relative 'controller/configuration'
 require_relative 'controller/request'
 
@@ -11,8 +12,8 @@ module Graphiti
         controller_configuration.add_before_action(action_name)
       end
 
-      def specify(method_name, accepts: [], returns: nil)
-        controller_configuration.add_method_specification(method_name, accepts: accepts, returns: returns)
+      def action(method_name)
+        controller_configuration.action(method_name)
       end
 
       def controller_configuration
@@ -37,17 +38,17 @@ module Graphiti
       graphql_request.object_to_return
     end
 
+    protected
+
+    attr_reader :graphql_request
+
     def render(object = nil, error: nil, errors: Array(error))
       graphql_request.errors = errors
       graphql_request.object_to_return = object
     end
 
-    protected
-
-    attr_reader :graphql_request
-
     def params
-      graphql_request.params
+      @params = HashWithIndifferentAccess.new(graphql_request.params)
     end
   end
 end

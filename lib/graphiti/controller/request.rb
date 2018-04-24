@@ -7,6 +7,7 @@ module Graphiti
     # Contains all info related with single request to controller
     class Request
       attr_accessor :object_to_return
+      attr_reader :errors
 
       def initialize(graphql_object, inputs, context)
         @graphql_object = graphql_object
@@ -25,6 +26,10 @@ module Graphiti
 
       def no_object_to_return?
         !defined?(@object_to_return)
+      end
+
+      def params
+        inputs.to_h
       end
 
       private

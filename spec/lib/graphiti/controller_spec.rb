@@ -4,7 +4,13 @@ require 'spec_helper'
 
 module Graphiti
   RSpec.describe Controller do
-    class DummyController < Graphiti::Controller
+    DummyUserInput = GraphQL::InputObjectType.define {}
+
+    class DummyInputsController < Graphiti::Controller
+      action(:create).permit(:id, user!: DummyUserInput)
+    end
+
+    class DummyCallController < Graphiti::Controller
       def respond_with_render
         render 'Hello from render'
         'This should not be returned'
@@ -24,14 +30,22 @@ module Graphiti
       end
     end
 
-    subject(:controller) { DummyController.new(request) }
+    subject(:controller) { DummyCallController.new(request) }
 
-    let(:request) { Graphiti::Controller::Request.new(graphql_object, inputs, context) }
+    let(:request) { Controller::Request.new(graphql_object, inputs, context) }
     let(:graphql_object) { nil }
     let(:inputs) { {} }
     let(:context) { instance_double(GraphQL::Query::Context::FieldResolutionContext) }
 
-    describe '.call' do
+    describe '.action' do
+      subject(:action) { DummyInputsController.controller_configuration.action(:create) }
+
+      it 'saves all input fields' do
+        expect(action.attributes.keys).to match_array %w[id user]
+      end
+    end
+
+    describe '#call' do
       subject(:call) { controller.call(controller_action) }
 
       let(:controller_action) { :respond_with_render }
@@ -84,6 +98,12 @@ module Graphiti
             expect(call).to eq 'Hello without render!'
           end
         end
+      end
+    end
+
+    describe '#params' do
+      it 'retuns hash with indifferent access' do
+        expect(controller.send(:params)).to be_a(HashWithIndifferentAccess)
       end
     end
   end

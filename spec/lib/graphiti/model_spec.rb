@@ -1,28 +1,20 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'mongoid'
+require 'active_record'
 
 module Graphiti
   RSpec.describe Model do
     class DummyModel
       include Graphiti::Model
-
-      graphiti do |c|
-        c.attribute :id
-        c.attribute :name
-        c.attribute :level, :int
-      end
     end
 
     subject(:model) { DummyModel }
 
-    describe '.graphql_type' do
-      it 'returns type with correct fields' do
-        expect(model.graphiti.graphql_type.fields.keys).to match_array(%w[id name level])
-      end
-
-      it 'returns instance of graphql  type' do
-        expect(model.graphiti.graphql_type).to be_a(GraphQL::ObjectType)
+    describe '.graphiti' do
+      it 'returns model configuration' do
+        expect(model.graphiti).to be_a(Model::Configuration)
       end
     end
   end

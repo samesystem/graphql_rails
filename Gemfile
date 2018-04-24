@@ -10,7 +10,9 @@ group :development do
 end
 
 group :test do
+  gem 'activerecord'
   gem 'codecov', require: false
+  gem 'mongoid'
   gem 'simplecov', require: false
 end
 

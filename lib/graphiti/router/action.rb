@@ -6,8 +6,6 @@ module Graphiti
   class Router
     # Generic class for any type graphql action. Should not be used directly
     class Action
-      include Comparable
-
       attr_reader :name, :controller_action_path
 
       def initialize(name, to:, **options)
@@ -16,17 +14,7 @@ module Graphiti
       end
 
       def options
-        {
-          function: Controller::ControllerFunction.new(controller_action_path)
-        }
-      end
-
-      def <=>(other)
-        if other.is_a?(Action)
-          name <=> other.name
-        else
-          super
-        end
+        { function: Controller::ControllerFunction.build(controller_action_path) }
       end
     end
   end

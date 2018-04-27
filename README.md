@@ -1,6 +1,7 @@
 # Graphiti
 
 [![Build Status](https://travis-ci.org/povilasjurcys/graphiti.svg?branch=master)](https://travis-ci.org/povilasjurcys/graphiti)
+[![codecov](https://codecov.io/gh/povilasjurcys/graphiti/branch/master/graph/badge.svg)](https://codecov.io/gh/povilasjurcys/graphiti)
 
 Rails style structure for GrapQL API.
 

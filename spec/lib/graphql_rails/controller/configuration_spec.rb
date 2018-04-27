@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-module Graphiti
+module GraphqlRails
   RSpec.describe Controller::Configuration do
     class DummyController < Controller
       action(:some_method).permit(:id)

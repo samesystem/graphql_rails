@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    graphiti (0.1.0)
-      activesupport
-      graphql
+    graphql_rails (0.1.0)
+      activesupport (~> 5)
+      graphql (~> 1)
 
 GEM
   remote: https://rubygems.org/
@@ -86,7 +86,7 @@ DEPENDENCIES
   activerecord
   bundler (~> 1.16)
   codecov
-  graphiti!
+  graphql_rails!
   mongoid
   rake (~> 10.0)
   rspec (~> 3.0)

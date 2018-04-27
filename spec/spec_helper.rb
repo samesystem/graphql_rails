@@ -7,7 +7,7 @@ SimpleCov.start do
   add_filter(/_spec.rb\Z/)
 end
 
-require 'graphiti'
+require 'graphql_rails'
 
 if ENV['CODECOV_TOKEN']
   require 'codecov'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Graphiti::Router do
+RSpec.describe GraphqlRails::Router do
   subject(:router) { described_class.new }
 
   describe '.draw' do

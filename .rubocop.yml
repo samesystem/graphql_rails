@@ -30,5 +30,5 @@ AllCops:
   TargetRubyVersion: 2.5
   Exclude:
     - bin/*
-    - graphiti.gemspec
+    - graphql_rails.gemspec
     - Rakefile

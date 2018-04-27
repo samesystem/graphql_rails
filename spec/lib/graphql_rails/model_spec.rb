@@ -4,17 +4,17 @@ require 'spec_helper'
 require 'mongoid'
 require 'active_record'
 
-module Graphiti
+module GraphqlRails
   RSpec.describe Model do
     class DummyModel
-      include Graphiti::Model
+      include GraphqlRails::Model
     end
 
     subject(:model) { DummyModel }
 
-    describe '.graphiti' do
+    describe '.graphql' do
       it 'returns model configuration' do
-        expect(model.graphiti).to be_a(Model::Configuration)
+        expect(model.graphql).to be_a(Model::Configuration)
       end
     end
   end

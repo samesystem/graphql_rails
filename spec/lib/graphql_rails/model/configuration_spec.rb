@@ -4,12 +4,12 @@ require 'spec_helper'
 require 'mongoid'
 require 'active_record'
 
-module Graphiti
+module GraphqlRails
   RSpec.describe Model::Configuration do
     class DummyModel
-      include Graphiti::Model
+      include GraphqlRails::Model
 
-      graphiti do |c|
+      graphql do |c|
         c.attribute :id
         c.attribute :valid?
         c.attribute :level, type: :int
@@ -18,42 +18,42 @@ module Graphiti
 
     class DummyMongoidModel
       include Mongoid::Document
-      include Graphiti::Model
+      include GraphqlRails::Model
 
       field :name, type: String
       field :valid_at, type: Time
       field :test, type: Boolean
 
-      graphiti(&:include_model_attributes)
+      graphql(&:include_model_attributes)
     end
 
     class DummyMongoidModelWithCustomFields
       include Mongoid::Document
-      include Graphiti::Model
+      include GraphqlRails::Model
 
       field :name, type: String
       field :valid_at, type: Time
       field :test, type: Boolean
       field :secret, type: Boolean
 
-      graphiti do |c|
+      graphql do |c|
         c.include_model_attributes(except: :secret)
         c.attribute :surname
       end
     end
 
     class DummyActiveRecordModel < ActiveRecord::Base
-      include Graphiti::Model
+      include GraphqlRails::Model
     end
 
-    subject(:config) { model.graphiti }
+    subject(:config) { model.graphql }
 
     let(:model) { DummyModel }
 
     describe '.graphql_type' do
       context 'when model is simple ruby class' do
         it 'returns type with correct fields' do
-          expect(model.graphiti.graphql_type.fields.keys).to match_array(%w[id isValid level])
+          expect(model.graphql.graphql_type.fields.keys).to match_array(%w[id isValid level])
         end
       end
 
@@ -76,7 +76,7 @@ module Graphiti
         before do
           allow(model).to receive(:columns).and_return(model_columns)
 
-          model.graphiti(&:include_model_attributes)
+          model.graphql(&:include_model_attributes)
         end
 
         it 'includes all active record fields' do
@@ -88,10 +88,10 @@ module Graphiti
         let(:model) { DummyMongoidModel }
 
         it 'includes all mongoid fields' do
-          expect(model.graphiti.graphql_type.fields.keys).to match_array(%w[id name validAt test])
+          expect(model.graphql.graphql_type.fields.keys).to match_array(%w[id name validAt test])
         end
 
-        context 'when model has custom graphiti attributes' do
+        context 'when model has custom graphql_rails attributes' do
           let(:model) { DummyMongoidModelWithCustomFields }
 
           it 'includes all mongoid and custom fields' do

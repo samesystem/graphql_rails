@@ -4,19 +4,11 @@ require 'spec_helper'
 
 module Graphiti
   RSpec.describe Controller::Configuration do
-    class DummyModel
-      include Model
-
-      graphiti do |c|
-        c.attribute :id
-      end
-    end
-
     class DummyController < Controller
-      specify :some_method, accepts: :id, returns: DummyModel
+      action(:some_method).permit(:id)
       def some_method; end
 
-      specify :some_other_method, accepts: %i[id name], returns: DummyModel
+      action(:some_other_method).permit(:id, :name)
       def some_other_method; end
     end
 
@@ -24,9 +16,9 @@ module Graphiti
 
     let(:controller) { DummyController }
 
-    describe '#arguments_for' do
+    describe '#action' do
       it 'returns hash with specified acceptable arguments' do
-        expect(configuration.arguments_for(:some_method).keys).to match_array(%i[id])
+        expect(configuration.action(:some_method).attributes.keys).to match_array(%w[id])
       end
     end
   end

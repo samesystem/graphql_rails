@@ -80,6 +80,8 @@ end
 MyGraphqlSchema = Graphiti::Router.draw do
   # generates `friend`, `createFriend`, `updateFriend`, `destroyFriend`, `friends` routes
   resources :friends 
+  resources :shops, only: [:show, :index] # generates `shop` and `shops` routes only
+  resources :orders, except: :update # generates all routes except `updateOrder`
   
   resources :users do
     # generates `findUser` query
@@ -92,7 +94,7 @@ MyGraphqlSchema = Graphiti::Router.draw do
   # you can use namespaced controllers too:
   scope module: 'admin' do
     # `updateTranslations` route will be handeled by `Admin::TranslationsController`
-    mutation :updateTranslations, to: 'translations#update`
+    mutation :updateTranslations, to: 'translations#update'
     
     # all :groups routes will be handeled by `Admin::GroupsController`
     resources :groups

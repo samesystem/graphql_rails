@@ -1,4 +1,4 @@
-# Graphiti
+# GraphqlRails
 
 [![Build Status](https://travis-ci.org/povilasjurcys/graphiti.svg?branch=master)](https://travis-ci.org/povilasjurcys/graphiti)
 [![codecov](https://codecov.io/gh/povilasjurcys/graphiti/branch/master/graph/badge.svg)](https://codecov.io/gh/povilasjurcys/graphiti)
@@ -26,7 +26,7 @@ Or install it yourself as:
 ### Define GraphQL schema as RoR routes
 
 ```ruby
-MyGraphqlSchema = Graphiti::Router.draw do
+MyGraphqlSchema = GraphqlRails::Router.draw do
   # will create createUser, updateUser, deleteUser mutations and user, users queries.
   # expects that UsersController class exist
   resources :users
@@ -41,7 +41,7 @@ end
 
 ```ruby
 class User # works with any class including ActiveRecord
-  include Graphiti::Model
+  include GraphqlRails::Model
 
   graphiti do |c|
     # most common attributes, like :id, :name, :title has default type, so you don't have to specify it (but you can!)
@@ -56,7 +56,7 @@ end
 ### Define controller
 
 ```ruby
-class UsersController < Graphiti::Controller
+class UsersController < GraphqlRails::Controller
   # graphql requires to describe which attributes controller action accepts and which returns
   action(:change_user_password)
     .permit(:password!, :id!) # Bang (!) indicates that attribute is required
@@ -78,25 +78,25 @@ end
 ## Routes
 
 ```ruby
-MyGraphqlSchema = Graphiti::Router.draw do
+MyGraphqlSchema = GraphqlRails::Router.draw do
   # generates `friend`, `createFriend`, `updateFriend`, `destroyFriend`, `friends` routes
-  resources :friends 
+  resources :friends
   resources :shops, only: [:show, :index] # generates `shop` and `shops` routes only
   resources :orders, except: :update # generates all routes except `updateOrder`
-  
+
   resources :users do
     # generates `findUser` query
-    query :find, on: :member 
-    
+    query :find, on: :member
+
     # generates `searchUsers` query
-    query :search, on: :collection 
+    query :search, on: :collection
   end
-  
+
   # you can use namespaced controllers too:
   scope module: 'admin' do
     # `updateTranslations` route will be handeled by `Admin::TranslationsController`
     mutation :updateTranslations, to: 'translations#update'
-    
+
     # all :groups routes will be handeled by `Admin::GroupsController`
     resources :groups
   end
@@ -119,4 +119,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Graphiti project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/graphiti/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the GraphqlRails project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/graphiti/blob/master/CODE_OF_CONDUCT.md).

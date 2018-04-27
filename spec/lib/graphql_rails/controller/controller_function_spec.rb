@@ -2,23 +2,23 @@
 
 require 'spec_helper'
 
-module Graphiti
+module GraphqlRails
   class Controller
-    RSpec.describe Graphiti::Controller::ControllerFunction do
+    RSpec.describe GraphqlRails::Controller::ControllerFunction do
       subject(:function) do
-        described_class.build(action_path, module: 'graphiti/controller/dummy/foo')
+        described_class.build(action_path, module: 'graphql_rails/controller/dummy/foo')
       end
 
       module Dummy
         module Foo
           class User
             include Model
-            graphiti do |c|
+            graphql do |c|
               c.attribute :name
             end
           end
 
-          class UsersController < Graphiti::Controller
+          class UsersController < GraphqlRails::Controller
             action(:show).permit(:name!)
             def show
               render 'show:OK'
@@ -66,7 +66,7 @@ module Graphiti
         let(:can_return_nil) { false }
 
         before do
-          action_parser = ActionPathParser.new(action_path, module: 'graphiti/controller/dummy/foo')
+          action_parser = ActionPathParser.new(action_path, module: 'graphql_rails/controller/dummy/foo')
           allow(ActionPathParser).to receive(:new).and_return(action_parser)
           allow(action_parser).to receive(:action).and_return(action)
           allow(action_parser).to receive(:arguments).and_return([])
@@ -93,7 +93,7 @@ module Graphiti
         context 'when action did not specify any return type' do
           context 'when not allowed to return nil' do
             it 'returns type from controller related mode with non null requirement' do
-              expect(type).to eq Dummy::Foo::User.graphiti.graphql_type.to_non_null_type
+              expect(type).to eq Dummy::Foo::User.graphql.graphql_type.to_non_null_type
             end
           end
 
@@ -101,7 +101,7 @@ module Graphiti
             let(:can_return_nil) { true }
 
             it 'returns type from controller related model' do
-              expect(type).to eq Dummy::Foo::User.graphiti.graphql_type
+              expect(type).to eq Dummy::Foo::User.graphql.graphql_type
             end
           end
         end

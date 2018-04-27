@@ -16,5 +16,5 @@ group :test do
   gem 'simplecov', require: false
 end
 
-# Specify your gem's dependencies in graphiti.gemspec
+# Specify your gem's dependencies in graphql_rails.gemspec
 gemspec

@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-module Graphiti
+module GraphqlRails
   RSpec.describe Controller do
     DummyUserInput = GraphQL::InputObjectType.define {}
 
-    class DummyInputsController < Graphiti::Controller
+    class DummyInputsController < GraphqlRails::Controller
       action(:create).permit(:id, user!: DummyUserInput)
     end
 
-    class DummyCallController < Graphiti::Controller
+    class DummyCallController < GraphqlRails::Controller
       def respond_with_render
         render 'Hello from render'
         'This should not be returned'

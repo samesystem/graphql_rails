@@ -1,16 +1,16 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "graphiti/version"
+require "graphql_rails/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = 'graphiti'
-  spec.version       = Graphiti::VERSION
+  spec.name          = 'graphql_rails'
+  spec.version       = GraphqlRails::VERSION
   spec.authors       = ['Povilas Jurčys']
   spec.email         = ['bloomrain@gmail.com']
 
   spec.summary       = %q{GrapQL server and client for rails}
-  spec.homepage      = 'https://github.com/povilasjurcys/graphiti'
+  spec.homepage      = 'https://github.com/povilasjurcys/graphql_rails'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|

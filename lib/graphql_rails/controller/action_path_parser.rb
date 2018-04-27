@@ -3,7 +3,7 @@
 require 'active_support/core_ext/string/inflections'
 require_relative 'request'
 
-module Graphiti
+module GraphqlRails
   class Controller
     # graphql resolver which redirects actions to appropriate controller and controller action
     class ActionPathParser
@@ -68,7 +68,7 @@ module Graphiti
       end
 
       def default_type
-        action_model.graphiti.graphql_type
+        action_model.graphql.graphql_type
       end
     end
   end

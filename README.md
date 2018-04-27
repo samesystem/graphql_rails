@@ -25,14 +25,14 @@ Or install it yourself as:
 ### Define GraphQL schema as RoR routes
 
 ```ruby
-MyGraphqlSchema = Graphiti::Router.draw do |r|
+MyGraphqlSchema = Graphiti::Router.draw do
   # will create createUser, updateUser, deleteUser mutations and user, users queries.
   # expects that UsersController class exist
-  r.resources :users
+  resources :users
 
   # if you want custom queries or mutation
-  r.query 'searchLogs', to: 'logs#search' # redirects request to LogsController
-  r.mutation 'changeUserPassword', to: 'users#change_password'
+  query 'searchLogs', to: 'logs#search' # redirects request to LogsController
+  mutation 'changeUserPassword', to: 'users#change_password'
 end
 ```
 
@@ -56,14 +56,9 @@ end
 
 ```ruby
 class UsersController < Graphiti::Controller
-  include Graphiti::Controller::CRUD # optional. Adds index/show/create/update/destroy methods
-
   # graphql requires to describe which attributes controller action accepts and which returns
-  specify :change_user_password,
-    # optional, no attributes by default ([]). Bang (!) indicates that attribute is required
-    accepts: [:password!, :id!],
-    # optional. By default it will return model with same name as controller
-    returns: User
+  action(:change_user_password)
+    .permit(:password!, :id!) # Bang (!) indicates that attribute is required
 
   def change_user_password
     user = User.find(params[:id])
@@ -73,11 +68,34 @@ class UsersController < Graphiti::Controller
     user # or SomeDecorator.new(user)
   end
 
-  specify :search,
-    accepts: ['customField:string!'],
-    returns: [User] # return value is *array* of users
-
+  action(:search).permit(search_fields!: SearchFieldsInput) # you can specify your own input fields
   def search
+  end
+end
+```
+
+## Routes
+
+```ruby
+MyGraphqlSchema = Graphiti::Router.draw do
+  # generates `friend`, `createFriend`, `updateFriend`, `destroyFriend`, `friends` routes
+  resources :friends 
+  
+  resources :users do
+    # generates `findUser` query
+    query :find, on: :member 
+    
+    # generates `searchUsers` query
+    query :search, on: :collection 
+  end
+  
+  # you can use namespaced controllers too:
+  scope module: 'admin' do
+    # `updateTranslations` route will be handeled by `Admin::TranslationsController`
+    mutation :updateTranslations, to: 'translations#update`
+    
+    # all :groups routes will be handeled by `Admin::GroupsController`
+    resources :groups
   end
 end
 ```

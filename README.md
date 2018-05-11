@@ -1,7 +1,7 @@
 # GraphqlRails
 
 [![Build Status](https://travis-ci.org/povilasjurcys/graphql_rails.svg?branch=master)](https://travis-ci.org/povilasjurcys/graphiti)
-[![codecov](https://codecov.io/gh/povilasjurcys/graphql_rails/branch/master/graph/badge.svg)](https://codecov.io/gh/povilasjurcys/graphiti)
+[![codecov](https://codecov.io/gh/povilasjurcys/graphql_rails/branch/master/graph/badge.svg)](https://codecov.io/gh/povilasjurcys/graphql_rails)
 
 Rails style structure for GrapQL API.
 

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'graphql_rails'
+
 module GraphqlRails
   # provides all helpers neccesary for testing graphql controllers. It is similar to rspec controller specs
   #
@@ -28,7 +30,9 @@ module GraphqlRails
         request.object_to_return
       end
 
-      delegate :errors, to: :request
+      def errors
+        request.errors
+      end
 
       def success?
         request.errors.empty?

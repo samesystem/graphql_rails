@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'active_support/hash_with_indifferent_access'
-require_relative 'controller/configuration'
-require_relative 'controller/request'
+require 'graphql_rails/controller/configuration'
+require 'graphql_rails/controller/request'
 
 module GraphqlRails
   # base class for all graphql_rails controllers

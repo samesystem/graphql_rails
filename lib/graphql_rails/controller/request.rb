@@ -7,7 +7,7 @@ module GraphqlRails
     # Contains all info related with single request to controller
     class Request
       attr_accessor :object_to_return
-      attr_reader :errors
+      attr_reader :errors, :context
 
       def initialize(graphql_object, inputs, context)
         @graphql_object = graphql_object
@@ -34,7 +34,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :graphql_object, :inputs, :context
+      attr_reader :graphql_object, :inputs
     end
   end
 end

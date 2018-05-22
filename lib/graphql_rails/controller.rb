@@ -42,13 +42,26 @@ module GraphqlRails
 
     attr_reader :graphql_request
 
-    def render(object = nil, error: nil, errors: Array(error))
+    def render(object_or_errors)
+      errors = grapqhl_errors_from_render_params(object_or_errors)
+      object = errors.empty? ? object_or_errors : nil
+
       graphql_request.errors = errors
       graphql_request.object_to_return = object
     end
 
     def params
       @params = HashWithIndifferentAccess.new(graphql_request.params)
+    end
+
+    private
+
+    def grapqhl_errors_from_render_params(rendering_params)
+      return [] unless rendering_params.is_a?(Hash)
+      return [] if rendering_params.keys.count != 1
+
+      errors = rendering_params[:error] || rendering_params[:errors]
+      Array(errors)
     end
   end
 end

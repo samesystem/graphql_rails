@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative 'action'
+require_relative 'route'
 
 module GraphqlRails
   class Router
     # stores mutation type graphql action info
-    class MutationAction < Action
+    class MutationRoute < Route
       def query?
         false
       end

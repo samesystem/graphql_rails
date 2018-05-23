@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require_relative 'action'
+require_relative 'route'
 
 module GraphqlRails
   class Router
     # stores query type graphql action info
-    class QueryAction < Action
+    class QueryRoute < Route
       def query?
         true
       end

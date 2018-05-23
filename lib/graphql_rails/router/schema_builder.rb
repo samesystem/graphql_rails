@@ -23,12 +23,12 @@ module GraphqlRails
 
       private
 
-      def build_type(type_name, actions)
+      def build_type(type_name, routes)
         GraphQL::ObjectType.define do
           name type_name
 
-          actions.each do |action|
-            field action.name, action.options
+          routes.each do |route|
+            field route.name, Controller::ControllerFunction.from_route(route)
           end
         end
       end

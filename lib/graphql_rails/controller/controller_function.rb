@@ -11,10 +11,10 @@ module GraphqlRails
       # accepts path of given format "controller_name#action"
       attr_reader :type
 
-      def initialize(controller, action_name, return_type)
+      def initialize(controller:, action_name:, type:)
         @controller = controller
         @action_name = action_name
-        @type = return_type
+        @type = type
       end
 
       def self.from_route(route)
@@ -26,7 +26,11 @@ module GraphqlRails
           end
         end
 
-        action_function.new(action.controller, action.name, action.return_type)
+        action_function.new(
+          controller: action.controller,
+          action_name: action.name,
+          type: action.return_type
+        )
       end
 
       def call(object, inputs, ctx)

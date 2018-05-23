@@ -2,10 +2,10 @@
 
 require 'active_support/core_ext/string/inflections'
 
-require_relative 'router/schema_builder'
-require_relative 'router/mutation_action'
-require_relative 'router/query_action'
-require_relative 'router/resource_actions_builder'
+require 'graphql_rails/router/schema_builder'
+require 'graphql_rails/router/mutation_route'
+require 'graphql_rails/router/query_route'
+require 'graphql_rails/router/resource_routes_builder'
 
 module GraphqlRails
   # graphql router that mimics Rails.application.routes
@@ -16,50 +16,53 @@ module GraphqlRails
       router.graphql_schema
     end
 
-    attr_reader :actions, :namespace_name
+    attr_reader :routes, :namespace_name, :raw_graphql_actions
 
     def initialize(module_name: '')
       @module_name = module_name
-      @actions ||= Set.new
+      @routes ||= Set.new
     end
 
     def scope(**options, &block)
       full_module_name = [module_name, options[:module]].reject(&:empty?).join('/')
       scoped_router = self.class.new(module_name: full_module_name)
       scoped_router.instance_eval(&block)
-      actions.merge(scoped_router.actions)
+      routes.merge(scoped_router.routes)
     end
 
     def resources(name, **options, &block)
-      builder_options = default_action_options.merge(options)
-      actions_builder = ResourceActionsBuilder.new(name, **builder_options)
-      actions_builder.instance_eval(&block) if block
-      actions.merge(actions_builder.actions)
+      builder_options = default_route_options.merge(options)
+      routes_builder = ResourceRoutesBuilder.new(name, **builder_options)
+      routes_builder.instance_eval(&block) if block
+      routes.merge(routes_builder.routes)
     end
 
     def query(name, **options)
-      actions << build_action(QueryAction, name, **options)
+      routes << build_route(QueryRoute, name, **options)
     end
 
     def mutation(name, **options)
-      actions << build_action(MutationAction, name, **options)
+      routes << build_route(MutationRoute, name, **options)
     end
 
     def graphql_schema
-      SchemaBuilder.new(queries: actions.select(&:query?), mutations: actions.select(&:mutation?)).call
+      SchemaBuilder.new(
+        queries: routes.select(&:query?),
+        mutations: routes.select(&:mutation?)
+      ).call
     end
 
     private
 
     attr_reader :module_name
 
-    def build_action(action_builder, name, **options)
-      action_options = default_action_options.merge(options)
-      action_builder.new(name, action_options)
+    def build_route(route_builder, name, **options)
+      route_options = default_route_options.merge(options)
+      route_builder.new(name, route_options)
     end
 
-    def default_action_options
-      { module: module_name }
+    def default_route_options
+      { module: module_name, on: :member }
     end
   end
 end

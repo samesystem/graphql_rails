@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'graphql_rails/controller/action_path_parser'
+require 'graphql_rails/controller/action'
 require_relative 'request'
+require_relative 'action'
 
 module GraphqlRails
   class Controller
@@ -16,16 +17,16 @@ module GraphqlRails
         @type = return_type
       end
 
-      def self.build(action_path, **options)
-        action_parser = ActionPathParser.new(action_path, **options)
+      def self.from_route(route)
+        action = Action.new(route)
 
         action_function = Class.new(self) do
-          action_parser.arguments.each do |action_attribute|
-            argument(action_attribute.field_name, action_attribute.graphql_field_type)
+          action.arguments.each do |attribute|
+            argument(attribute.field_name, attribute.graphql_field_type)
           end
         end
 
-        action_function.new(action_parser.controller, action_parser.action_name, action_parser.return_type)
+        action_function.new(action.controller, action.name, action.return_type)
       end
 
       def call(object, inputs, ctx)

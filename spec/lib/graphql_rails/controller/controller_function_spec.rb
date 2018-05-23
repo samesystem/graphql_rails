@@ -6,7 +6,7 @@ module GraphqlRails
   class Controller
     RSpec.describe GraphqlRails::Controller::ControllerFunction do
       subject(:function) do
-        described_class.build(action_path, module: 'graphql_rails/controller/dummy/foo')
+        described_class.from_route(route)
       end
 
       module Dummy
@@ -27,7 +27,16 @@ module GraphqlRails
         end
       end
 
-      let(:action_path) { 'users#show' }
+      let(:route) do
+        instance_double(
+          Router::Route,
+          path: route_path,
+          module_name: 'graphql_rails/controller/dummy/foo',
+          collection?: false
+        )
+      end
+
+      let(:route_path) { 'users#show' }
 
       describe '.build' do
         it 'returns instance of ControllerFunction' do
@@ -54,38 +63,38 @@ module GraphqlRails
       describe '#type' do
         subject(:type) { function.type }
 
-        let(:action) do
+        let(:action_config) do
           instance_double(
             ActionConfiguration,
-            return_type: action_return_type,
+            return_type: action_config_return_type,
             can_return_nil?: can_return_nil
           )
         end
 
-        let(:action_return_type) { nil }
+        let(:action_config_return_type) { nil }
         let(:can_return_nil) { false }
 
         before do
-          action_parser = ActionPathParser.new(action_path, module: 'graphql_rails/controller/dummy/foo')
-          allow(ActionPathParser).to receive(:new).and_return(action_parser)
-          allow(action_parser).to receive(:action).and_return(action)
-          allow(action_parser).to receive(:arguments).and_return([])
+          action = Action.new(route)
+          allow(Action).to receive(:new).and_return(action)
+          allow(action).to receive(:action_config).and_return(action_config)
+          allow(action).to receive(:arguments).and_return([])
         end
 
         context 'when action has specified type' do
-          let(:action_return_type) { GraphQL::STRING_TYPE }
+          let(:action_config_return_type) { GraphQL::STRING_TYPE }
 
           context 'when not allowed to return nil' do
-            it 'returns type from action with non null requirement' do
-              expect(type).to eq action.return_type.to_non_null_type
+            it 'ignores "can_return_nil" options and returns original type' do
+              expect(type).to eq action_config.return_type
             end
           end
 
           context 'when allowed to return nil' do
             let(:can_return_nil) { true }
 
-            it 'returns original type from action' do
-              expect(type).to eq action.return_type
+            it 'ignores "can_return_nil" options and returns original type' do
+              expect(type).to eq action_config.return_type
             end
           end
         end

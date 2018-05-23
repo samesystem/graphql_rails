@@ -31,7 +31,7 @@ RSpec.describe GraphqlRails::Router do
       end
 
       it 'generates correct controller action paths' do
-        action_paths = router.actions.map(&:controller_action_path)
+        action_paths = router.routes.map(&:path)
         expect(action_paths).to match_array(%w[foo/bar/users#find foo/users#find])
       end
     end
@@ -46,7 +46,7 @@ RSpec.describe GraphqlRails::Router do
       end
 
       it 'generates correct controller action paths' do
-        action_paths = router.actions.map(&:controller_action_path)
+        action_paths = router.routes.map(&:path)
 
         expect(action_paths).to match_array(%w[foo/users#index foo/users#find])
       end
@@ -56,14 +56,14 @@ RSpec.describe GraphqlRails::Router do
   describe '#query' do
     it 'adds new query to the list' do
       expect { router.query('findUser', to: 'users#find') }
-        .to change(router.actions, :count).by(1)
+        .to change(router.routes, :count).by(1)
     end
   end
 
   describe '#mutation' do
     it 'adds new mutation to the list' do
       expect { router.mutation('createUser', to: 'users#create') }
-        .to change(router.actions, :count).by(1)
+        .to change(router.routes, :count).by(1)
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.describe GraphqlRails::Router do
     context 'without action filters' do
       it 'adds CRUD actions' do
         expect { router.resources(:users) }
-          .to change { router.actions.map(&:name) }
+          .to change { router.routes.map(&:name) }
           .from([]).to(%w[user users createUser updateUser destroyUser])
       end
     end
@@ -79,7 +79,7 @@ RSpec.describe GraphqlRails::Router do
     context 'with "only" action filter' do
       it 'adds only specified CRUD actions' do
         expect { router.resources(:users, only: :show) }
-          .to change { router.actions.map(&:name) }
+          .to change { router.routes.map(&:name) }
           .from([]).to(%w[user])
       end
     end
@@ -87,7 +87,7 @@ RSpec.describe GraphqlRails::Router do
     context 'with "except" action filter' do
       it 'adds only specified CRUD actions' do
         expect { router.resources(:users, except: %i[show create]) }
-          .to change { router.actions.map(&:name) }
+          .to change { router.routes.map(&:name) }
           .from([]).to(%w[users updateUser destroyUser])
       end
     end
@@ -102,7 +102,7 @@ RSpec.describe GraphqlRails::Router do
       end
 
       it 'adds extra actions' do
-        expect(router.actions.map(&:name)).to match_array %w[customUser customUsers changeSomeUser]
+        expect(router.routes.map(&:name)).to match_array %w[customUser customUsers changeSomeUser]
       end
     end
   end

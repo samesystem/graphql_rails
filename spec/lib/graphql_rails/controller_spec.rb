@@ -10,6 +10,18 @@ module GraphqlRails
       action(:create).permit(:id, user!: DummyUserInput)
     end
 
+    class DummyBeforeActionsController < GraphqlRails::Controller
+      before_action :action1
+      before_action :action2
+      before_action :action3
+
+      def action1; end
+
+      def action2; end
+
+      def action3; end
+    end
+
     class DummyCallController < GraphqlRails::Controller
       def respond_with_render
         render 'Hello from render'
@@ -50,13 +62,40 @@ module GraphqlRails
 
       let(:controller_action) { :respond_with_render }
 
+      before do
+        allow(context).to receive(:add_error)
+      end
+
+      context 'when before actions are set' do
+        let(:controller) { DummyBeforeActionsController.new(request) }
+
+        context 'when before_action raises error' do
+          let(:error) { StandardError.new('Boom!') }
+
+          before do
+            allow(controller).to receive(:action2).and_raise(error)
+          end
+
+          it 'does not raise error' do
+            expect { call }.not_to raise_error
+          end
+
+          it 'adds first error in to context' do
+            call
+            expect(context).to have_received(:add_error).once
+          end
+
+          it 'stops executing before actions after first failure' do
+            allow(controller).to receive(:action3)
+            call
+            expect(controller).not_to have_received(:action3)
+          end
+        end
+      end
+
       context 'when render was used' do
         context 'when errors was rendered' do
           let(:controller_action) { :respond_with_rendered_errors }
-
-          before do
-            allow(context).to receive(:add_error)
-          end
 
           it 'returns result as nil' do
             expect(call).to be_nil

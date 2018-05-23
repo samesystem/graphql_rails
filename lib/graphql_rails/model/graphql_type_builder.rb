@@ -13,7 +13,7 @@ module GraphqlRails
       def call
         type_name = name
         type_description = description
-        type_attributes = attributes
+        type_attributes = visible_attributes
 
         GraphQL::ObjectType.define do
           name(type_name)

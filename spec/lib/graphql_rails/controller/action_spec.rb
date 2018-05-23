@@ -17,15 +17,15 @@ module GraphqlRails
       let(:action_name) { 'create' }
 
       let(:route) do
-        instance_double(
-          Router::Route,
-          path: "dummy_users##{action_name}",
-          module_name: 'graphql_rails/controller',
-          collection?: is_collection_route
+        Router::QueryRoute.new(
+          :dummy_users,
+          to: "dummy_users##{action_name}",
+          module: 'graphql_rails/controller',
+          on: route_type
         )
       end
 
-      let(:is_collection_route) { false }
+      let(:route_type) { :member }
 
       describe '#controller' do
         it 'returns correct controller class' do

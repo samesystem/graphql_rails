@@ -28,12 +28,7 @@ module GraphqlRails
       end
 
       let(:route) do
-        instance_double(
-          Router::Route,
-          path: route_path,
-          module_name: 'graphql_rails/controller/dummy/foo',
-          collection?: false
-        )
+        Router::QueryRoute.new(:users, on: :member, to: route_path, module: 'graphql_rails/controller/dummy/foo')
       end
 
       let(:route_path) { 'users#show' }

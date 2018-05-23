@@ -24,7 +24,7 @@ module GraphqlRails
       end
 
       def name
-        @name ||= action_path.split('#').last
+        @name ||= action_relative_path.split('#').last
       end
 
       private
@@ -45,12 +45,8 @@ module GraphqlRails
         type
       end
 
-      def action_path
-        route.path
-      end
-
-      def module_name
-        route.module_name
+      def action_relative_path
+        route.relative_path
       end
 
       def action_config
@@ -58,11 +54,11 @@ module GraphqlRails
       end
 
       def namespaced_controller_name
-        [module_name, controller_name].reject(&:empty?).join('/')
+        [route.module_name, controller_name].reject(&:empty?).join('/')
       end
 
       def controller_name
-        @controller_name ||= action_path.split('#').first
+        @controller_name ||= action_relative_path.split('#').first
       end
 
       def action_model

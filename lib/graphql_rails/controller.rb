@@ -26,9 +26,8 @@ module GraphqlRails
     end
 
     def call(method_name)
-      self.class.controller_configuration.before_actions.each { |action_name| send(action_name) }
-
       begin
+        self.class.controller_configuration.before_actions.each { |action_name| send(action_name) }
         response = public_send(method_name)
         render response if graphql_request.no_object_to_return?
       rescue StandardError => error

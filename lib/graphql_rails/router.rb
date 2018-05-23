@@ -10,6 +10,8 @@ require 'graphql_rails/router/resource_routes_builder'
 module GraphqlRails
   # graphql router that mimics Rails.application.routes
   class Router
+    RAW_ACTION_NAMES = %i[rescue_from query_analyzer instrument].freeze
+
     def self.draw(&block)
       router = new
       router.instance_eval(&block)
@@ -21,6 +23,7 @@ module GraphqlRails
     def initialize(module_name: '')
       @module_name = module_name
       @routes ||= Set.new
+      @raw_graphql_actions ||= []
     end
 
     def scope(**options, &block)
@@ -45,16 +48,27 @@ module GraphqlRails
       routes << build_route(MutationRoute, name, **options)
     end
 
+    RAW_ACTION_NAMES.each do |action_name|
+      define_method(action_name) do |*args, &block|
+        add_raw_action(action_name, *args, &block)
+      end
+    end
+
     def graphql_schema
       SchemaBuilder.new(
         queries: routes.select(&:query?),
-        mutations: routes.select(&:mutation?)
+        mutations: routes.select(&:mutation?),
+        raw_actions: raw_graphql_actions
       ).call
     end
 
     private
 
     attr_reader :module_name
+
+    def add_raw_action(name, *args, &block)
+      raw_graphql_actions << { name: name, args: args, block: block }
+    end
 
     def build_route(route_builder, name, **options)
       route_options = default_route_options.merge(options)

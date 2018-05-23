@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     graphql_rails (0.1.0)
-      activesupport (~> 5)
+      activesupport (>= 4)
       graphql (~> 1)
 
 GEM

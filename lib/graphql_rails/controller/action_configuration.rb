@@ -38,8 +38,7 @@ module GraphqlRails
 
       def permit_attribute(name, type = nil)
         field_name = name.to_s.remove(/!\Z/)
-        required = name.to_s.end_with?('!')
-        attributes[field_name] = Attribute.new(field_name, type, required: required)
+        attributes[field_name] = Attribute.new(field_name, type)
       end
     end
   end

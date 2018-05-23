@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'model/configuration'
+require 'graphql_rails/model/configuration'
 
 module GraphqlRails
   # this module allows to convert any ruby class in to grapql type object

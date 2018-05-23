@@ -1,25 +1,19 @@
 # frozen_string_literal: true
 
 require 'graphql'
+require 'graphql_rails/attribute/attribute_type_parser'
 
 module GraphqlRails
   # contains info about single graphql attribute
   class Attribute
-    attr_reader :name, :type
+    attr_reader :name, :graphql_field_type, :property, :type_name
 
-    def initialize(name, type = nil, required: false, hidden: false)
+    def initialize(name, type = nil, hidden: false, property: name)
       @name = name.to_s
-      @type = parse_type(type || type_by_attribute_name)
-      @required = required
+      @type_name = type.to_s
+      @graphql_field_type = parse_type(type || type_by_attribute_name)
       @hidden = hidden
-    end
-
-    def graphql_field_type
-      @graphql_field_type ||= required? ? type.to_non_null_type : type
-    end
-
-    def required?
-      @required
+      @property = property.to_s
     end
 
     def hidden?
@@ -51,36 +45,7 @@ module GraphqlRails
     end
 
     def parse_type(type)
-      if graphql_type?(type)
-        type
-      elsif type.is_a?(String) || type.is_a?(Symbol)
-        map_type_name_to_type(type.to_s.downcase)
-      else
-        raise "Unsupported type #{type.inspect} (class: #{type.class})"
-      end
-    end
-
-    def graphql_type?(type)
-      type.is_a?(GraphQL::BaseType) ||
-        type.is_a?(GraphQL::ObjectType) ||
-        (defined?(GraphQL::Schema::Member) && type.is_a?(Class) && type < GraphQL::Schema::Member)
-    end
-
-    def map_type_name_to_type(type_name)
-      case type_name
-      when 'id'
-        GraphQL::ID_TYPE
-      when 'int', 'integer'
-        GraphQL::INT_TYPE
-      when 'string', 'str', 'text', 'time', 'date'
-        GraphQL::STRING_TYPE
-      when 'bool', 'boolean', 'mongoid::boolean'
-        GraphQL::BOOLEAN_TYPE
-      when 'float', 'double', 'decimal'
-        GraphQL::FLOAT_TYPE
-      else
-        raise "Don't know how to parse type with name #{type_name.inspect}"
-      end
+      AttributeTypeParser.new(type).call
     end
   end
 end

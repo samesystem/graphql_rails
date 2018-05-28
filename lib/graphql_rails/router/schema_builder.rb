@@ -32,7 +32,7 @@ module GraphqlRails
           name type_name
 
           routes.each do |route|
-            field route.name, function: Controller::ControllerFunction.from_route(route)
+            field route.name, function: route.function
           end
         end
       end

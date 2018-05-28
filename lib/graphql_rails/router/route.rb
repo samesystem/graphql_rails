@@ -8,9 +8,10 @@ module GraphqlRails
     class Route
       attr_reader :name, :module_name, :on, :relative_path
 
-      def initialize(name, to:, on:, **options)
+      def initialize(name, to: '', on:, **options)
         @name = name.to_s.camelize(:lower)
         @module_name = options[:module].to_s
+        @function = options[:function]
         @relative_path = to
         @on = on.to_sym
       end
@@ -28,8 +29,8 @@ module GraphqlRails
         on == :member
       end
 
-      def options
-        { function: Controller::ControllerFunction.build(path) }
+      def function
+        @function ||= Controller::ControllerFunction.from_route(self)
       end
     end
   end

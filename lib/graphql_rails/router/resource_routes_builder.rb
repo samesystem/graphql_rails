@@ -63,7 +63,7 @@ module GraphqlRails
       end
 
       def build_route(builder, action, prefix: action, on: :member, **custom_options)
-        action_options = options.merge(custom_options)
+        action_options = options.merge(custom_options).merge(on: on)
         action_name = [prefix, resource_name(on)].reject(&:empty?).join('_')
         builder.new(action_name, to: "#{name}##{action}", **action_options)
       end

@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/string/inflections'
+require 'graphql_rails/errors/error'
+require 'graphql_rails/model'
 require_relative 'request'
 
 module GraphqlRails
   class Controller
     # analyzes route and extracts controller action related data
     class Action
+      class MissingConfigurationError < GraphqlRails::Error; end
+
       def initialize(route)
         @route = route
       end
@@ -32,11 +36,22 @@ module GraphqlRails
       attr_reader :route
 
       def default_inner_return_type
+        raise_missing_return_type_error if model_graphql_type.nil?
+
         if action_config.can_return_nil?
           model_graphql_type
         else
           model_graphql_type.to_non_null_type
         end
+      end
+
+      def raise_missing_return_type_error
+        error_message = \
+          "Return type for #{route.path.inspect} is not defined. " \
+          "To do so, add `action(:#{name}).returns(YourType)` in #{controller.name} " \
+          "or make sure that you have model named #{namespaced_model_name}"
+
+        raise MissingConfigurationError, error_message
       end
 
       def default_type
@@ -62,7 +77,7 @@ module GraphqlRails
       end
 
       def action_model
-        namespace = namespaced_controller_name.singularize.classify.split('::')
+        namespace = namespaced_model_name.split('::')
         model_name = namespace.pop
         model = nil
 
@@ -71,7 +86,7 @@ module GraphqlRails
           namespace.pop
         end
 
-        model || model_name.constantize
+        model || namespaced_model(namespace, model_name)
       end
 
       def namespaced_model(namespace, model_name)
@@ -81,7 +96,14 @@ module GraphqlRails
         nil
       end
 
+      def namespaced_model_name
+        namespaced_controller_name.singularize.classify
+      end
+
       def model_graphql_type
+        return unless action_model
+        return unless action_model < GraphqlRails::Model
+
         action_model.graphql.graphql_type
       end
     end

@@ -6,18 +6,14 @@ require 'graphql_rails/attribute/attribute_type_parser'
 module GraphqlRails
   # contains info about single graphql attribute
   class Attribute
-    attr_reader :name, :graphql_field_type, :property, :type_name
+    attr_reader :name, :graphql_field_type, :property, :type_name, :description
 
-    def initialize(name, type = nil, hidden: false, property: name)
+    def initialize(name, type = nil, description: nil, property: name)
       @name = name.to_s
       @type_name = type.to_s
       @graphql_field_type = parse_type(type || type_by_attribute_name)
-      @hidden = hidden
+      @description = description
       @property = property.to_s
-    end
-
-    def hidden?
-      @hidden
     end
 
     def field_name
@@ -29,6 +25,10 @@ module GraphqlRails
         end
 
       field.camelize(:lower)
+    end
+
+    def field_args
+      [field_name, graphql_field_type, { property: property.to_sym, description: description }]
     end
 
     private

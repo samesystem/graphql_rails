@@ -31,6 +31,10 @@ module GraphqlRails
         @name ||= action_relative_path.split('#').last
       end
 
+      def description
+        action_config.description
+      end
+
       private
 
       attr_reader :route

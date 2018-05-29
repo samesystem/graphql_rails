@@ -20,6 +20,15 @@ module GraphqlRails
         self
       end
 
+      def description(new_description = nil)
+        if new_description
+          @description = new_description
+          self
+        else
+          @description
+        end
+      end
+
       def can_return_nil
         @can_return_nil = true
         self

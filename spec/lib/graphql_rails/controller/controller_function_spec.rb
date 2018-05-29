@@ -62,6 +62,7 @@ module GraphqlRails
           instance_double(
             ActionConfiguration,
             return_type: action_config_return_type,
+            description: nil,
             can_return_nil?: can_return_nil
           )
         end

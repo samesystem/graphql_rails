@@ -10,9 +10,10 @@ module GraphqlRails
       include GraphqlRails::Model
 
       graphql do |c|
+        c.description 'Used for test purposes'
         c.attribute :id
         c.attribute :valid?
-        c.attribute :level, type: :int
+        c.attribute :level, type: :int, description: 'over 9000!'
       end
     end
 
@@ -28,10 +29,22 @@ module GraphqlRails
 
     let(:model) { DummyModel }
 
-    describe '.graphql_type' do
+    describe '#graphql_type' do
+      subject(:graphql_type) { config.graphql_type }
+
       context 'when model is simple ruby class' do
         it 'returns type with correct fields' do
-          expect(model.graphql.graphql_type.fields.keys).to match_array(%w[id isValid level])
+          expect(graphql_type.fields.keys).to match_array(%w[id isValid level])
+        end
+
+        it 'includes field descriptions' do
+          expect(graphql_type.fields.values.last.description).to eq 'over 9000!'
+        end
+      end
+
+      context 'when type has description' do
+        it 'adds same description in graphql type' do
+          expect(graphql_type.description).to eq 'Used for test purposes'
         end
       end
 
@@ -39,12 +52,12 @@ module GraphqlRails
         let(:model) { DummyModelWithCustomName }
 
         it 'returns correct name' do
-          expect(config.graphql_type.name).to eq 'ChangedName'
+          expect(graphql_type.name).to eq 'ChangedName'
         end
       end
 
       it 'returns instance of graphql  type' do
-        expect(config.graphql_type).to be_a(GraphQL::ObjectType)
+        expect(graphql_type).to be_a(GraphQL::ObjectType)
       end
     end
   end

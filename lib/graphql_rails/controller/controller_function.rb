@@ -20,17 +20,21 @@ module GraphqlRails
       def self.from_route(route)
         action = Action.new(route)
 
-        action_function = Class.new(self) do
-          action.arguments.each do |attribute|
-            argument(attribute.field_name, attribute.graphql_field_type)
-          end
-        end
-
-        action_function.new(
+        action_function_class(action).new(
           controller: action.controller,
           action_name: action.name,
           type: action.return_type
         )
+      end
+
+      def self.action_function_class(action)
+        Class.new(self) do
+          description(action.description)
+
+          action.arguments.each do |attribute|
+            argument(attribute.field_name, attribute.graphql_field_type)
+          end
+        end
       end
 
       def call(object, inputs, ctx)

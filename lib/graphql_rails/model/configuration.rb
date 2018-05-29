@@ -18,12 +18,19 @@ module GraphqlRails
         @name ||= type_name
       end
 
-      def description(description = nil)
-        @description ||= description
+      def description(new_description = nil)
+        @description = new_description if new_description
+        @description
       end
 
-      def attribute(attribute_name, type: nil, hidden: false, property: attribute_name)
-        attributes[attribute_name.to_s] = Attribute.new(attribute_name, type, hidden: hidden, property: property)
+      def attribute(attribute_name, type: nil, description: nil, property: attribute_name)
+        attributes[attribute_name.to_s] = \
+          Attribute.new(
+            attribute_name,
+            type,
+            description: description,
+            property: property
+          )
       end
 
       def graphql_type

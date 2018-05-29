@@ -8,6 +8,7 @@ module GraphqlRails
 
   class Controller
     RSpec.describe Action do
+      class CustomDummyUsersController < GraphqlRails::Controller; end
       class DummyUsersController < GraphqlRails::Controller
         action(:show).returns(GraphQL::STRING_TYPE.to_non_null_type).can_return_nil
       end
@@ -19,13 +20,15 @@ module GraphqlRails
       let(:route) do
         Router::QueryRoute.new(
           :dummy_users,
-          to: "dummy_users##{action_name}",
+          to: route_path,
           module: 'graphql_rails/controller',
           on: route_type
         )
       end
 
       let(:route_type) { :member }
+      let(:controller_name) { 'dummy_users' }
+      let(:route_path) { "#{controller_name}##{action_name}" }
 
       describe '#controller' do
         it 'returns correct controller class' do
@@ -45,8 +48,18 @@ module GraphqlRails
         end
 
         context 'when action configuration does not specify return type' do
-          it 'generates type from controller model' do
-            expect(action.return_type).to eq(DummyUser.graphql.graphql_type.to_non_null_type)
+          context 'when controller has model' do
+            it 'generates type from controller model' do
+              expect(action.return_type).to eq(DummyUser.graphql.graphql_type.to_non_null_type)
+            end
+          end
+
+          context 'when controller does not have model' do
+            let(:controller_name) { 'custom_dummy_users' }
+
+            it 'raises exception' do
+              expect { action.return_type }.to raise_error(Action::MissingConfigurationError)
+            end
           end
         end
       end

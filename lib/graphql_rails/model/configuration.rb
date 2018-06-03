@@ -35,9 +35,9 @@ module GraphqlRails
 
       def graphql_type
         @graphql_type ||= begin
-         type_name = name || name_by_class_name
-         GrapqhlTypeBuilder.new(name: type_name, description: description, attributes: attributes).call
-       end
+          type_name = name || name_by_class_name
+          GrapqhlTypeBuilder.new(name: type_name, description: description, attributes: attributes).call
+        end
       end
 
       private

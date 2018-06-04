@@ -88,11 +88,19 @@ module GraphqlRails
 
       def type_by_name
         TYPE_MAPPING.fetch(inner_type_name) do
-          raise(
+          dynamicly_defined_type || raise(
             UnknownTypeError,
-            "Type #{unparsed_type.inspect} is not supported. Supported types are: #{TYPE_MAPPING.keys}"
+            "Type #{unparsed_type.inspect} is not supported. Supported scalar types are: #{TYPE_MAPPING.keys}." \
+            ' All the classes that includes `GraphqlRails::Model` are also supported as types.'
           )
         end
+      end
+
+      def dynamicly_defined_type
+        type_class = inner_type_name.capitalize.safe_constantize
+        return unless type_class.respond_to?(:graphql)
+
+        type_class.graphql.graphql_type
       end
     end
   end

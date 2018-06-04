@@ -20,6 +20,15 @@ module GraphqlRails
         end
       end
 
+      context 'when model type is provided' do
+        let(:type) { 'Image' }
+
+        it 'returns grapqhl type defined on that model' do
+          image = Object.const_set('Image', Class.new { include GraphqlRails::Model })
+          expect(call).to eq image.graphql.graphql_type
+        end
+      end
+
       context 'when attribute is required' do
         it { is_expected.to be_non_null }
       end

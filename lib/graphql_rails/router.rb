@@ -10,7 +10,7 @@ require 'graphql_rails/router/resource_routes_builder'
 module GraphqlRails
   # graphql router that mimics Rails.application.routes
   class Router
-    RAW_ACTION_NAMES = %i[rescue_from query_analyzer instrument].freeze
+    RAW_ACTION_NAMES = %i[rescue_from query_analyzer instrument default_max_page_size].freeze
 
     def self.draw(&block)
       router = new

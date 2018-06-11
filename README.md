@@ -47,8 +47,8 @@ class User # works with any class including ActiveRecord
     # most common attributes, like :id, :name, :title has default type, so you don't have to specify it (but you can!)
     c.attribute :id
 
-    c.attribute :email, :string
-    c.attribute :surname, :string
+    c.attribute :email, type: :string
+    c.attribute :surname, type: :string
   end
 end
 ```

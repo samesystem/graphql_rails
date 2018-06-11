@@ -37,21 +37,20 @@ module GraphqlRails
     attr_reader :original_name
 
     def type_by_attribute_name
-      type = \
-        case name
-        when 'id', /_id\Z/
-          GraphQL::ID_TYPE
-        when /\?\Z/
-          GraphQL::BOOLEAN_TYPE
-        else
-          GraphQL::STRING_TYPE
-        end
-
-      original_name['!'] ? type.to_non_null_type : type
+      case name
+      when 'id', /_id\Z/
+        GraphQL::ID_TYPE
+      when /\?\Z/
+        GraphQL::BOOLEAN_TYPE
+      else
+        GraphQL::STRING_TYPE
+      end
     end
 
     def parse_type(type)
-      AttributeTypeParser.new(type).call
+      type = AttributeTypeParser.new(type).call
+
+      original_name['!'] ? type.to_non_null_type : type
     end
   end
 end

@@ -7,6 +7,40 @@ module GraphqlRails
     RSpec.describe ActionConfiguration do
       subject(:config) { described_class.new }
 
+      describe '#permit' do
+        subject(:permitted_attribute) { config.attributes['name'].graphql_field_type }
+
+        let(:permit_params) { { attribute_name => attribute_type } }
+        let(:attribute_name) { :name }
+        let(:attribute_type) { 'string' }
+
+        before do
+          config.permit(permit_params)
+        end
+
+        context 'when attribute name has bang at the end' do
+          let(:attribute_name) { :name! }
+
+          it 'sets attribute as required' do
+            expect(permitted_attribute).to be_non_null
+          end
+        end
+
+        context 'when attribute type has bang at the end' do
+          let(:attribute_type) { 'string!' }
+
+          it 'sets attribute as required' do
+            expect(permitted_attribute).to be_non_null
+          end
+        end
+
+        context 'when attribute name and type as no bang inside' do
+          it 'sets attribute as optional' do
+            expect(permitted_attribute).not_to be_non_null
+          end
+        end
+      end
+
       describe '#description' do
         context 'when some value is set' do
           it 'changes config description value' do

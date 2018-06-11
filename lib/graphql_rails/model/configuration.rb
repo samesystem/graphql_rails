@@ -15,7 +15,8 @@ module GraphqlRails
       end
 
       def name(type_name = nil)
-        @name ||= type_name
+        @name = type_name if type_name
+        @name || name_by_class_name
       end
 
       def description(new_description = nil)
@@ -23,21 +24,19 @@ module GraphqlRails
         @description
       end
 
-      def attribute(attribute_name, type: nil, description: nil, property: attribute_name)
+      def attribute(attribute_name, type: nil, **attribute_options)
         attributes[attribute_name.to_s] = \
           Attribute.new(
             attribute_name,
             type,
-            description: description,
-            property: property
+            attribute_options
           )
       end
 
       def graphql_type
-        @graphql_type ||= begin
-          type_name = name || name_by_class_name
-          GrapqhlTypeBuilder.new(name: type_name, description: description, attributes: attributes).call
-        end
+        @graphql_type ||= GrapqhlTypeBuilder.new(
+          name: name, description: description, attributes: attributes
+        ).call
       end
 
       private

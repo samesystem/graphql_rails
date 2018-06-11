@@ -47,7 +47,7 @@ module GraphqlRails
 
       def permit_attribute(name, type = nil)
         field_name = name.to_s.remove(/!\Z/)
-        attributes[field_name] = Attribute.new(field_name, type)
+        attributes[field_name] = Attribute.new(name.to_s, type)
       end
     end
   end

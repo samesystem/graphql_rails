@@ -3,6 +3,7 @@
 require 'active_support/hash_with_indifferent_access'
 require 'graphql_rails/controller/configuration'
 require 'graphql_rails/controller/request'
+require 'graphql_rails/controller/format_results'
 
 module GraphqlRails
   # base class for all graphql_rails controllers
@@ -26,15 +27,14 @@ module GraphqlRails
     end
 
     def call(method_name)
-      begin
-        self.class.controller_configuration.before_actions.each { |action_name| send(action_name) }
-        response = public_send(method_name)
-        render response if graphql_request.no_object_to_return?
-      rescue StandardError => error
-        render error: error
-      end
+      call_with_rendering(method_name)
 
-      graphql_request.object_to_return
+      FormatResults.new(
+        graphql_request.object_to_return,
+        action_config: self.class.action(method_name),
+        params: params,
+        graphql_context: graphql_request.context
+      ).call
     end
 
     protected
@@ -54,6 +54,14 @@ module GraphqlRails
     end
 
     private
+
+    def call_with_rendering(method_name)
+      self.class.controller_configuration.before_actions.each { |action_name| send(action_name) }
+      response = public_send(method_name)
+      render response if graphql_request.no_object_to_return?
+    rescue StandardError => error
+      render error: error
+    end
 
     def grapqhl_errors_from_render_params(rendering_params)
       return [] unless rendering_params.is_a?(Hash)

@@ -59,9 +59,22 @@ module GraphqlRails
       end
 
       def default_type
-        type = default_inner_return_type
-        type = type.to_list_type.to_non_null_type if route.collection?
-        type
+        return default_collection_type if route.collection?
+        default_inner_return_type
+      end
+
+      def default_collection_type
+        if action_config.paginated?
+          default_connection_type
+        else
+          default_inner_return_type.to_list_type.to_non_null_type
+        end
+      end
+
+      def default_connection_type
+        model_graphql_type.define_connection do
+          field :total, types.Int, resolve: ->(obj, _args, _ctx) { obj.nodes.size }
+        end
       end
 
       def action_relative_path

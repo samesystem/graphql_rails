@@ -11,6 +11,7 @@ module GraphqlRails
       class CustomDummyUsersController < GraphqlRails::Controller; end
       class DummyUsersController < GraphqlRails::Controller
         action(:show).returns(GraphQL::STRING_TYPE.to_non_null_type).can_return_nil
+        action(:paginated_index).paginated
       end
 
       subject(:action) { described_class.new(route) }
@@ -50,7 +51,39 @@ module GraphqlRails
         context 'when action configuration does not specify return type' do
           context 'when controller has model' do
             it 'generates type from controller model' do
-              expect(action.return_type).to eq(DummyUser.graphql.graphql_type.to_non_null_type)
+              expect(return_type).to eq(DummyUser.graphql.graphql_type.to_non_null_type)
+            end
+
+            context 'when return type is for collection route' do
+              let(:route_type) { :collection }
+
+              context 'when action is paginated' do
+                let(:action_name) { 'paginated_index' }
+
+                it 'returns connection' do
+                  expect(return_type.to_s).to eq 'DummyUserConnection'
+                end
+              end
+
+              context 'when action is not paginated' do
+                it 'returns list type' do
+                  expect(return_type).to be_list
+                end
+
+                it 'returns non null type' do
+                  expect(return_type).to be_non_null
+                end
+              end
+            end
+
+            context 'when return type is for member route' do
+              it 'returns singular type' do
+                expect(return_type).not_to be_list
+              end
+
+              it 'returns non null type' do
+                expect(return_type).to be_non_null
+              end
             end
           end
 

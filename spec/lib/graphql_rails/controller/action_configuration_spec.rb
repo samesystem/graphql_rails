@@ -7,6 +7,34 @@ module GraphqlRails
     RSpec.describe ActionConfiguration do
       subject(:config) { described_class.new }
 
+      describe '#paginated' do
+        it 'sets pagination options' do
+          expect { config.paginated(max_per_page: 1) }.to change(config, :pagination_options)
+        end
+
+        it 'sets pagination flag' do
+          expect { config.paginated(max_per_page: 1) }.to change(config, :paginated?).to(true)
+        end
+
+        it 'permits "before", "after", "first" and "last" attribtues' do
+          expect { config.paginated }.to change { config.attributes.keys }.to(%w[before after first last])
+        end
+      end
+
+      describe '#paginated?' do
+        context 'when paginated flat is not set' do
+          it 'is not paginated' do
+            expect(config).not_to be_paginated
+          end
+        end
+
+        context 'when paginated flag is set' do
+          it 'is paginated' do
+            expect(config.paginated).to be_paginated
+          end
+        end
+      end
+
       describe '#permit' do
         subject(:permitted_attribute) { config.attributes['name'].graphql_field_type }
 

@@ -7,7 +7,7 @@ module GraphqlRails
   class Controller
     # stores all graphql_rails contoller specific config
     class ActionConfiguration
-      attr_reader :attributes, :return_type
+      attr_reader :attributes, :return_type, :pagination_options
 
       def initialize
         @attributes = {}
@@ -18,6 +18,11 @@ module GraphqlRails
         no_type_attributes.each { |attribute| permit_attribute(attribute) }
         typed_attributes.each { |attribute, type| permit_attribute(attribute, type) }
         self
+      end
+
+      def paginated(pagination_options = {})
+        @pagination_options = pagination_options
+        permit(:before, :after, first: :int, last: :int)
       end
 
       def description(new_description = nil)
@@ -41,6 +46,10 @@ module GraphqlRails
 
       def can_return_nil?
         @can_return_nil
+      end
+
+      def paginated?
+        !!pagination_options # rubocop:disable Style/DoubleNegation
       end
 
       private

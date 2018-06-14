@@ -26,12 +26,12 @@ module GraphqlRails
 
     let(:action_params) { { 'id' => 1 } }
     let(:action_context) { { current_user_id: 1 } }
-    let(:fake) {GraphqlRails::RSpecControllerHelpers::FakeSchema.new}
 
     describe '#query' do
       before do
         allow(GraphqlRails::RSpecControllerHelpers::FakeSchema).to receive(:new).and_call_original
       end
+
       it 'triggers controller with correct params' do
         runner.query(:index, params: action_params, context: action_context)
 

@@ -65,6 +65,19 @@ module GraphqlRails
       def add_error(error)
         @errors << error
       end
+
+      def schema
+        FakeSchema.new
+      end
+    end
+
+    # instance which has similar behavior as
+    class FakeSchema
+      def initialize; end
+
+      def cursor_encoder
+        GraphQL::Schema::Base64Encoder
+      end
     end
 
     # controller request object more suitable for testing

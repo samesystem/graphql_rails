@@ -73,13 +73,7 @@ module GraphqlRails
 
     # instance which has similar behavior as
     class FakeSchema
-      def initialize
-        @errors = []
-      end
-
-      def add_error(error)
-        @errors << error
-      end
+      def initialize; end
 
       def cursor_encoder
         GraphQL::Schema::Base64Encoder

@@ -28,10 +28,6 @@ module GraphqlRails
     let(:action_context) { { current_user_id: 1 } }
 
     describe '#query' do
-      before do
-        allow(GraphqlRails::RSpecControllerHelpers::FakeSchema).to receive(:new).and_call_original
-      end
-
       it 'triggers controller with correct params' do
         runner.query(:index, params: action_params, context: action_context)
 
@@ -44,6 +40,24 @@ module GraphqlRails
       it 'FakeSchema returns cursor' do
         runner.query(:index, params: action_params, context: action_context)
 
+        expect(RSpecControllerHelpers::FakeSchema.new.cursor_encoder).to eq(GraphQL::Schema::Base64Encoder)
+      end
+    end
+
+    describe 'FakeConext' do
+      let(:context) { GraphqlRails::RSpecControllerHelpers::FakeContext.new(values: action_context) }
+
+      it 'retruns shema' do
+        expect(context.schema.class).to eq(GraphqlRails::RSpecControllerHelpers::FakeSchema)
+      end
+    end
+
+    describe 'FakeSchema' do
+      before do
+        allow(GraphqlRails::RSpecControllerHelpers::FakeSchema).to receive(:new).and_call_original
+      end
+
+      it 'retruns encode' do
         expect(RSpecControllerHelpers::FakeSchema.new.cursor_encoder).to eq(GraphQL::Schema::Base64Encoder)
       end
     end

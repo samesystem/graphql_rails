@@ -65,15 +65,9 @@ module GraphqlRails
 
       def default_collection_type
         if action_config.paginated?
-          default_connection_type
+          action_model.graphql.connection_type
         else
           default_inner_return_type.to_list_type.to_non_null_type
-        end
-      end
-
-      def default_connection_type
-        model_graphql_type.define_connection do
-          field :total, types.Int, resolve: ->(obj, _args, _ctx) { obj.nodes.size }
         end
       end
 

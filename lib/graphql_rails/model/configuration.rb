@@ -39,6 +39,14 @@ module GraphqlRails
         ).call
       end
 
+      def connection_type
+        @connection_type ||= begin
+          graphql_type.define_connection do
+            field :total, types.Int, resolve: ->(obj, _args, _ctx) { obj.nodes.size }
+          end
+        end
+      end
+
       private
 
       attr_reader :model_class

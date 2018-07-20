@@ -60,5 +60,15 @@ module GraphqlRails
         expect(graphql_type).to be_a(GraphQL::ObjectType)
       end
     end
+
+    describe '#connection_type' do
+      subject(:connection_type) { config.connection_type }
+
+      context 'when model is simple ruby class' do
+        it 'returns Conection' do
+          expect(connection_type.to_s).to eq('DummyModelConnection')
+        end
+      end
+    end
   end
 end

@@ -74,6 +74,25 @@ module GraphqlRails
                   expect(return_type).to be_non_null
                 end
               end
+
+              context 'when exits many collection action' do
+                subject(:action2) { described_class.new(route2) }
+
+                let(:route2) do
+                  Router::QueryRoute.new(
+                    :dummy_users,
+                    to: route_path2,
+                    module: 'graphql_rails/controller',
+                    on: route_type
+                  )
+                end
+                let(:route_path) { "#{controller_name}##{action_name2}" }
+                let(:action_name2) { 'paginated_new_action' }
+
+                it 'returns non null type' do
+                  expect(return_type).to be_non_null
+                end
+              end
             end
 
             context 'when return type is for member route' do

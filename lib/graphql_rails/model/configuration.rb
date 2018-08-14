@@ -42,12 +42,12 @@ module GraphqlRails
       def connection_type
         @connection_type ||= begin
           graphql_type.define_connection do
-            field :total, types.Int, resolve: ->(obj, _args, _ctx) do
+            field(:total, types.Int, resolve: lambda do |obj, _args, _ctx|
               obj_nodes = obj.nodes
               obj_nodes = obj_nodes.except(:offset) if obj_nodes.is_a?(ActiveRecord::Relation)
 
               obj_nodes.size
-            end
+            end)
           end
         end
       end

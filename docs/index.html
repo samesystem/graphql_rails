@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/docsify/lib/themes/vue.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    function parseQueryString (queryString) {
+      var params = {};
+      var temp;
+      // Split into key/value pairs
+      queries = queryString.split("&");
+      // Convert the array of strings into an object
+      for (var i = 0, l = queries.length; i < l; i++ ) {
+        temp = queries[i].split('=');
+        params[temp[0]] = temp[1];
+      }
+      return params;
+    };
+
+    function getJsonFromUrl() {
+      return parseQueryString(location.search.substr(1));
+    }
+
+    window.$docsify = {
+      auto2top: true,
+      name: 'GraphqlRails',
+      repo: 'https://github.com/samesystem/graphql_rails',
+      subMaxLevel: 3,
+      loadSidebar: true,
+      formatUpdated: '{MM}/{DD} {HH}:{mm}',
+      branchBasePath: 'https://raw.githubusercontent.com/samesystem/graphql_rails/',
+      plugins: [
+        function (hook, vm) { // reasign any config value by param attribute
+          Object.assign(window.$docsify, getJsonFromUrl());
+        },
+
+        function (hook, vm) { // allow to change branch
+          if (!window.$docsify.branchBasePath || !window.$docsify.branch) {
+            return;
+          }
+
+          var branch = window.$docsify.branch;
+          var basePath = window.$docsify.branchBasePath + branch;
+          window.$docsify.basePath = basePath;
+        },
+
+        function (hook, vm) { // add edit page link
+          hook.beforeEach(function (html) {
+            var branch = window.$docsify.branch || 'master'
+            var url = 'https://github.com/samesystem/graphql_rails/edit/' + branch + '/docs/' + vm.route.file
+            var editHtml = '[:memo: Edit Document](' + url + ')\n'
+            return html
+              + '\n\n----\n\n'
+              + editHtml
+          })
+        }
+      ]
+    }
+  </script>
+  <script src="https://unpkg.com/docsify/lib/docsify.js"></script>
+  <script src="https://unpkg.com/docsify/lib/plugins/search.min.js"></script>
+</body>
+</html>

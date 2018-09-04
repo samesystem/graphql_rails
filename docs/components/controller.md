@@ -1,0 +1,103 @@
+# Controller
+
+Each controller should inherit from `GraphqlRails::Controller`. It is handy to have `ApplicationGraphqlController`:
+
+```ruby
+class ApplicationGraphqlController < GraphqlRails::Controller
+  # write your shared code here
+end
+```
+
+## *action*
+
+to specify details about each controller action, you need to call method `action` inside controller. For example:
+
+```ruby
+class ApplicationGraphqlController < GraphqlRails::Controller
+  # write your shared code here
+end
+```
+
+## *permit*
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create).describe('Creates user')
+
+  def create
+    User.create(params)
+  end
+end
+```
+
+## *can_return_nil*
+
+By default it is expected that each controller action returns model or array of models. `nil` is not allowed. You can change that by adding `can_return_nil` like this:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:show).permit(:email).can_return_nil
+
+  def show
+    user = User.find_by(email: params[:email])
+    return nil if user.blank?
+    user
+  end
+end
+```
+
+## *paginated*
+
+You can mark collection action as `paginated`. In this case controller will return relay connection type and it will be possible to return only partial results. No need to do anything on controller side (you should always return full list of items)
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:index).paginated
+
+  def index
+    User.all
+  end
+end
+```
+
+### *max_page_size*
+
+Allows to specify max items count per request
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:index).paginated(max_page_size: 10) # add max items limit
+
+  def index
+    User.all # it will render 10 users even you have more
+  end
+end
+```
+
+## *returns*
+
+By default return type is determined by controller name. When you want to return some custom object, you can specify that with `returns` method:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:last_order).permit(:id).returns(Order)
+
+  def last_order
+    user = User.find(params[:id]).orders.last
+  end
+end
+```
+
+## *describe*
+
+If you want to improve graphql documentation, you can add description for each action. To do so, use `describe` method:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create).describe('Creates user')
+
+  def create
+    User.create(params)
+  end
+end
+```

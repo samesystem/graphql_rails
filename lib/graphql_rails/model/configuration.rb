@@ -9,6 +9,12 @@ module GraphqlRails
     class Configuration
       attr_reader :attributes
 
+      COUNT_TOTAL_ITEMS = lambda do |obj, _args, _ctx|
+        obj_nodes = obj.nodes
+        obj_nodes = obj_nodes.except(:offset) if obj_nodes.is_a?(ActiveRecord::Relation)
+        obj_nodes.size
+      end
+
       def initialize(model_class)
         @model_class = model_class
         @attributes = {}
@@ -42,7 +48,7 @@ module GraphqlRails
       def connection_type
         @connection_type ||= begin
           graphql_type.define_connection do
-            field :total, types.Int, resolve: ->(obj, _args, _ctx) { obj.nodes.size }
+            field :total, types.Int, resolve: COUNT_TOTAL_ITEMS
           end
         end
       end

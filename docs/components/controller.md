@@ -18,7 +18,7 @@ class ApplicationGraphqlController < GraphqlRails::Controller
 end
 ```
 
-## *permit*
+### *permit*
 
 ```ruby
 class UsersController < GraphqlRails::Controller
@@ -30,7 +30,7 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
-## *can_return_nil*
+### *can_return_nil*
 
 By default it is expected that each controller action returns model or array of models. `nil` is not allowed. You can change that by adding `can_return_nil` like this:
 
@@ -46,7 +46,7 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
-## *paginated*
+### *paginated*
 
 You can mark collection action as `paginated`. In this case controller will return relay connection type and it will be possible to return only partial results. No need to do anything on controller side (you should always return full list of items)
 
@@ -60,7 +60,7 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
-### *max_page_size*
+#### *max_page_size*
 
 Allows to specify max items count per request
 
@@ -74,7 +74,7 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
-## *returns*
+### *returns*
 
 By default return type is determined by controller name. When you want to return some custom object, you can specify that with `returns` method:
 
@@ -88,7 +88,7 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
-## *describe*
+### *describe*
 
 If you want to improve graphql documentation, you can add description for each action. To do so, use `describe` method:
 
@@ -98,6 +98,55 @@ class UsersController < GraphqlRails::Controller
 
   def create
     User.create(params)
+  end
+end
+```
+
+## *before_action*
+
+You can add `before_action` to run some filters before calling your controller action. Here is an example:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  before_action :require_auth_token
+
+  def create
+    User.create(params)
+  end
+
+  private
+
+  def require_auth_token # will run before `UsersController#create` action
+    raise 'Not authenticated' unless User.where(token: params[:token]).exist?
+  end
+end
+```
+
+### *only* and *except* option
+
+`UsersController.before_action` accepts `only` or `except` options which allows to skip filters for some actions.
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  before_action :require_auth_token, except: :show
+  before_action :require_admin_token, only: %i[update destroy]
+
+  def create
+    User.create(params)
+  end
+
+  def destroy
+    User.create(params)
+  end
+
+  private
+
+  def require_auth_token
+    raise 'Not authenticated' unless User.where(token: params[:token]).exist?
+  end
+
+  def require_auth_token
+    raise 'Admin not authenticated' unless Admin.where(token: params[:admin_token]).exist?
   end
 end
 ```

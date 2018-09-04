@@ -11,15 +11,39 @@ module GraphqlRails
     end
 
     class DummyBeforeActionsController < GraphqlRails::Controller
-      before_action :action1
-      before_action :action2
-      before_action :action3
+      before_action :filter1
+      before_action :filter2
+      before_action :filter3
 
-      def action1; end
+      def filter1; end
 
-      def action2; end
+      def filter2; end
 
-      def action3; end
+      def filter3; end
+    end
+
+    class DummyBeforeActionsFiltersController < GraphqlRails::Controller
+      before_action :filter_for_only, only: :action_with_only_option
+      before_action :filter_for_except, except: :action_with_except_option
+
+      def filter_for_only; end
+
+      def filter_for_except; end
+
+      def action_with_no_option; end
+
+      def action_with_except_option; end
+
+      def action_with_only_option; end
+    end
+
+    class DummyMultipleBeforeActionsController < GraphqlRails::Controller
+      before_action :filter
+      before_action :filter, only: :action
+
+      def action; end
+
+      def filter; end
     end
 
     class DummyCallController < GraphqlRails::Controller
@@ -69,11 +93,74 @@ module GraphqlRails
       context 'when before actions are set' do
         let(:controller) { DummyBeforeActionsController.new(request) }
 
+        context 'when before action with same filter is specified more than once' do
+          let(:controller) { DummyMultipleBeforeActionsController.new(request) }
+          let(:controller_action) { :action }
+
+          before do
+            allow(controller).to receive(:filter)
+          end
+
+          it 'triggers filter only once' do
+            call
+            expect(controller).to have_received(:filter).once
+          end
+        end
+
+        context 'when `only` or `except` actions are given' do
+          let(:controller) { DummyBeforeActionsFiltersController.new(request) }
+
+          before do
+            allow(controller).to receive(:filter_for_except)
+            allow(controller).to receive(:filter_for_only)
+          end
+
+          context 'when before action filter has `except` option' do
+            context 'when action was included in `except` option' do
+              let(:controller_action) { :action_with_except_option }
+
+              it 'does not trigger before action filter' do
+                call
+                expect(controller).not_to have_received(:filter_for_except)
+              end
+            end
+
+            context 'when action was not included in `except` option' do
+              let(:controller_action) { :action_with_no_option }
+
+              it 'triggers before action filter' do
+                call
+                expect(controller).to have_received(:filter_for_except)
+              end
+            end
+          end
+
+          context 'when before action has `only` option' do
+            context 'when action was included in `only` option' do
+              let(:controller_action) { :action_with_only_option }
+
+              it 'triggers before action filter' do
+                call
+                expect(controller).to have_received(:filter_for_only)
+              end
+            end
+
+            context 'when action was not included in `only` option' do
+              let(:controller_action) { :action_with_no_option }
+
+              it 'does not trigger before action filter' do
+                call
+                expect(controller).not_to have_received(:filter_for_only)
+              end
+            end
+          end
+        end
+
         context 'when before_action raises error' do
           let(:error) { StandardError.new('Boom!') }
 
           before do
-            allow(controller).to receive(:action2).and_raise(error)
+            allow(controller).to receive(:filter2).and_raise(error)
           end
 
           it 'does not raise error' do
@@ -86,9 +173,9 @@ module GraphqlRails
           end
 
           it 'stops executing before actions after first failure' do
-            allow(controller).to receive(:action3)
+            allow(controller).to receive(:filter3)
             call
-            expect(controller).not_to have_received(:action3)
+            expect(controller).not_to have_received(:filter3)
           end
         end
       end

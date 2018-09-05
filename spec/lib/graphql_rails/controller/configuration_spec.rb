@@ -21,5 +21,26 @@ module GraphqlRails
         expect(configuration.action(:some_method).attributes.keys).to match_array(%w[id])
       end
     end
+
+    describe '#add_before_action' do
+      it 'adds filter' do
+        expect { configuration.add_before_action(:filter) }
+          .to change { configuration.before_actions_for(:any).count }.by(1)
+      end
+
+      context 'when adding same filter multiple times' do
+        before { configuration.add_before_action(:filter) }
+
+        it 'replaces existing before action filter' do
+          expect { configuration.add_before_action(:filter) }
+            .not_to change { configuration.before_actions_for(:any).count }
+        end
+
+        it 'applies options from last assigned filter' do
+          expect { configuration.add_before_action(:filter, except: :action) }
+            .to change { configuration.before_actions_for(:action).count }.by(-1)
+        end
+      end
+    end
   end
 end

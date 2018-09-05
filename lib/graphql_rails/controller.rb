@@ -9,12 +9,12 @@ module GraphqlRails
   # base class for all graphql_rails controllers
   class Controller
     class << self
-      def before_action(action_name)
-        controller_configuration.add_before_action(action_name)
+      def before_action(*args)
+        controller_configuration.add_before_action(*args)
       end
 
-      def action(method_name)
-        controller_configuration.action(method_name)
+      def action(action_name)
+        controller_configuration.action(action_name)
       end
 
       def controller_configuration
@@ -55,9 +55,11 @@ module GraphqlRails
 
     private
 
-    def call_with_rendering(method_name)
-      self.class.controller_configuration.before_actions.each { |action_name| send(action_name) }
-      response = public_send(method_name)
+    def call_with_rendering(action_name)
+      before_actions = self.class.controller_configuration.before_actions_for(action_name)
+      before_actions.each { |before_action| send(before_action.name) }
+      response = public_send(action_name)
+
       render response if graphql_request.no_object_to_return?
     rescue StandardError => error
       render error: error

@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/samesystem/graphql_rails.svg?branch=master)](https://travis-ci.org/samesystem/graphql_rails)
 [![codecov](https://codecov.io/gh/samesystem/graphql_rails/branch/master/graph/badge.svg)](https://codecov.io/gh/samesystem/graphql_rails)
+[![Documentation](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://samesystem.github.io/graphql_rails)
 
 Rails style structure for GrapQL API.
 
@@ -169,6 +170,10 @@ RSpec.describe MyGraphqlController, type: :graphql_controller do
   end
 end
 ```
+
+## Detailed documentation
+
+Check https://samesystem.github.io/graphql_rails for more details
 
 
 ## Development

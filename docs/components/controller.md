@@ -122,6 +122,48 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+## *after_action*
+
+You can add `after_action` to run some filters after calling your controller action. Here is an example:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  after_action :clear_cache
+
+  def create
+    User.create(params)
+  end
+
+  private
+
+  def clear_cache # will run after `UsersController#create` action
+    logger.log('Create action is completed')
+  end
+end
+```
+
+## *around_action*
+
+You can add `around_action` to run some filters before and after calling your controller action. Here is an example:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  around_action :use_custom_locale
+
+  def create
+    User.create(params)
+  end
+
+  private
+
+  def with_custom_locale
+    I18n.with_locale('it') do
+      yield # yield is mandatory
+    end
+  end
+end
+```
+
 ### *only* and *except* option
 
 `UsersController.before_action` accepts `only` or `except` options which allows to skip filters for some actions.

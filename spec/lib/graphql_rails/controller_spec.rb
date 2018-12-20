@@ -46,6 +46,51 @@ module GraphqlRails
       def filter; end
     end
 
+    class DummyWithAllActionFiltersController < GraphqlRails::Controller
+      around_action :around_action1
+      around_action :around_action2
+      after_action :after_action1
+      after_action :after_action2
+      before_action :before_action1
+      before_action :before_action2
+
+      def action; end
+
+      def log
+        @log ||= []
+      end
+
+      private
+
+      def before_action1
+        log << 'before_action1'
+      end
+
+      def before_action2
+        log << 'before_action2'
+      end
+
+      def after_action1
+        log << 'after_action1'
+      end
+
+      def after_action2
+        log << 'after_action2'
+      end
+
+      def around_action1
+        log << 'before around_action1'
+        yield
+        log << 'after around_action1'
+      end
+
+      def around_action2
+        log << 'before around_action2'
+        yield
+        log << 'after around_action2'
+      end
+    end
+
     class DummyCallController < GraphqlRails::Controller
       def respond_with_render
         render 'Hello from render'
@@ -88,6 +133,22 @@ module GraphqlRails
 
       before do
         allow(context).to receive(:add_error)
+      end
+
+      context 'when various before filters are set' do
+        let(:controller) { DummyWithAllActionFiltersController.new(request) }
+
+        it 'triggers all action filters in correct order' do # rubocop:disable RSpec/ExampleLength
+          controller.call(:action)
+          expect(controller.log).to eq(
+            [
+              'before_action1', 'before_action2',
+              'before around_action1', 'before around_action2',
+              'after around_action2', 'after around_action1',
+              'after_action1', 'after_action2'
+            ]
+          )
+        end
       end
 
       context 'when before actions are set' do

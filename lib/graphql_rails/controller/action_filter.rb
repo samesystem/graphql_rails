@@ -3,7 +3,7 @@
 module GraphqlRails
   class Controller
     # stores information about controller filter
-    class BeforeActionFilter
+    class ActionFilter
       attr_reader :name
 
       def initialize(name, only: [], except: [])

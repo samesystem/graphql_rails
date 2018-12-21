@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module GraphqlRails
   class Controller
-    RSpec.describe BeforeActionFilter do
+    RSpec.describe ActionFilter do
       subject(:filter) { described_class.new(action_name, only: only_actions, except: except_actions) }
 
       let(:only_actions) { [] }

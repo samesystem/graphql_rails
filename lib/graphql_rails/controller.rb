@@ -4,6 +4,7 @@ require 'active_support/hash_with_indifferent_access'
 require 'graphql_rails/controller/configuration'
 require 'graphql_rails/controller/request'
 require 'graphql_rails/controller/format_results'
+require 'graphql_rails/controller/action_hooks_runner'
 
 module GraphqlRails
   # base class for all graphql_rails controllers
@@ -13,12 +14,20 @@ module GraphqlRails
         controller_configuration.add_before_action(*args)
       end
 
+      def around_action(*args)
+        controller_configuration.add_around_action(*args)
+      end
+
+      def after_action(*args)
+        controller_configuration.add_after_action(*args)
+      end
+
       def action(action_name)
         controller_configuration.action(action_name)
       end
 
       def controller_configuration
-        @controller_configuration ||= Controller::Configuration.new(self)
+        @controller_configuration ||= Controller::Configuration.new
       end
     end
 
@@ -42,7 +51,7 @@ module GraphqlRails
     attr_reader :graphql_request
 
     def render(object_or_errors)
-      errors = grapqhl_errors_from_render_params(object_or_errors)
+      errors = graphql_errors_from_render_params(object_or_errors)
       object = errors.empty? ? object_or_errors : nil
 
       graphql_request.errors = errors
@@ -56,16 +65,15 @@ module GraphqlRails
     private
 
     def call_with_rendering(action_name)
-      before_actions = self.class.controller_configuration.before_actions_for(action_name)
-      before_actions.each { |before_action| send(before_action.name) }
-      response = public_send(action_name)
+      hooks_runner = ActionHooksRunner.new(action_name: action_name, controller: self)
+      response = hooks_runner.call { public_send(action_name) }
 
       render response if graphql_request.no_object_to_return?
     rescue StandardError => error
       render error: error
     end
 
-    def grapqhl_errors_from_render_params(rendering_params)
+    def graphql_errors_from_render_params(rendering_params)
       return [] unless rendering_params.is_a?(Hash)
       return [] if rendering_params.keys.count != 1
 

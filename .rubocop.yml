@@ -6,8 +6,6 @@ RSpec/NestedGroups:
 Metrics/LineLength:
   Enabled: true
   Max: 120
-  Exclude:
-    - db/migrate/*
 
 Metrics/BlockLength:
   Exclude:

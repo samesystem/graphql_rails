@@ -16,6 +16,14 @@ module GraphqlRails
         @action_by_name = {}
       end
 
+      def initialize_copy(other)
+        super
+        @before_actions = other.instance_variable_get(:@before_actions).dup
+        @around_actions = other.instance_variable_get(:@around_actions).dup
+        @after_actions = other.instance_variable_get(:@after_actions).dup
+        @action_by_name = other.instance_variable_get(:@action_by_name).dup
+      end
+
       def before_actions_for(action_name)
         action_filters_for(action_name, before_actions)
       end

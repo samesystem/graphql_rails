@@ -111,6 +111,14 @@ module GraphqlRails
       end
     end
 
+    class DummyMultipleBeforeActionsParentController < DummyMultipleBeforeActionsController
+      before_action :parent_filter
+    end
+
+    class DummyMultipleBeforeActionsChildController < DummyMultipleBeforeActionsParentController
+      before_action :child_filter
+    end
+
     subject(:controller) { DummyCallController.new(request) }
 
     let(:request) { Controller::Request.new(graphql_object, inputs, context) }
@@ -133,6 +141,28 @@ module GraphqlRails
 
       before do
         allow(context).to receive(:add_error)
+      end
+
+      context 'when before filters are set on parent and child controller' do
+        let(:controller) { DummyMultipleBeforeActionsChildController.new(request) }
+
+        it 'contains parent and child actions' do
+          before_actions = \
+            DummyMultipleBeforeActionsChildController
+            .controller_configuration
+            .before_actions_for(:any).map(&:name)
+
+          expect(before_actions).to eq %i[parent_filter child_filter]
+        end
+
+        it 'does not modify parent config' do
+          before_actions = \
+            DummyMultipleBeforeActionsParentController
+            .controller_configuration
+            .before_actions_for(:any).map(&:name)
+
+          expect(before_actions).to eq [:parent_filter]
+        end
       end
 
       context 'when various before filters are set' do

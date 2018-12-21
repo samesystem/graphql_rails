@@ -80,7 +80,7 @@ By default return type is determined by controller name. When you want to return
 
 ```ruby
 class UsersController < GraphqlRails::Controller
-  action(:last_order).permit(:id).returns(Order)
+  action(:last_order).permit(:id).returns('Order!') # Order is your model class name
 
   def last_order
     user = User.find(params[:id]).orders.last

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'graphql'
-require 'graphql_rails/attribute/attribute_type_parser'
+require 'graphql_rails/type_parser'
 
 module GraphqlRails
   # contains info about single graphql attribute
@@ -48,7 +48,7 @@ module GraphqlRails
     end
 
     def parse_type(type)
-      type = AttributeTypeParser.new(type).call
+      type = TypeParser.new(type).call
 
       original_name['!'] ? type.to_non_null_type : type
     end

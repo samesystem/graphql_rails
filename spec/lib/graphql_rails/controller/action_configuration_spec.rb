@@ -5,6 +5,10 @@ require 'spec_helper'
 module GraphqlRails
   class Controller
     RSpec.describe ActionConfiguration do
+      class DummyModel
+        include GraphqlRails::Model
+      end
+
       subject(:config) { described_class.new }
 
       describe '#paginated' do
@@ -86,6 +90,16 @@ module GraphqlRails
           it 'returns description value' do
             expect(config.description).to eq 'test'
           end
+        end
+      end
+
+      describe '#returns' do
+        it 'parses type correctly' do
+          config.returns('[bool]!')
+
+          expect(config.return_type)
+            .to be_non_null
+            .and be_list
         end
       end
     end

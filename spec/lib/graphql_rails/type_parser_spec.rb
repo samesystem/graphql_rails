@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'graphql_rails/attribute'
+require 'graphql_rails/type_parser'
 
 module GraphqlRails
-  RSpec.describe Attribute::AttributeTypeParser do
+  RSpec.describe TypeParser do
     subject(:parser) { described_class.new(type) }
 
     let(:type) { 'String!' }
@@ -67,7 +67,7 @@ module GraphqlRails
         let(:type) { 'unknown' }
 
         it 'raises error' do
-          expect { call }.to raise_error(Attribute::AttributeTypeParser::UnknownTypeError)
+          expect { call }.to raise_error(TypeParser::UnknownTypeError)
         end
       end
 

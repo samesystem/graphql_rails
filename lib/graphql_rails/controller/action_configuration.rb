@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/string/filters'
+require 'graphql_rails/type_parser'
 require 'graphql_rails/attribute'
 
 module GraphqlRails
@@ -40,7 +41,7 @@ module GraphqlRails
       end
 
       def returns(new_return_type)
-        @return_type = new_return_type
+        @return_type = TypeParser.new(new_return_type).call
         self
       end
 

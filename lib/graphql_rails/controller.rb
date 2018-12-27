@@ -10,6 +10,10 @@ module GraphqlRails
   # base class for all graphql_rails controllers
   class Controller
     class << self
+      def inherited(sublass)
+        sublass.instance_variable_set(:@controller_configuration, controller_configuration.dup)
+      end
+
       def before_action(*args)
         controller_configuration.add_before_action(*args)
       end

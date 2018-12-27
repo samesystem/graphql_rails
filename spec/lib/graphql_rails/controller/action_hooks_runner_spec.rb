@@ -5,20 +5,20 @@ require 'spec_helper'
 module GraphqlRails
   class Controller
     RSpec.describe ActionHooksRunner do
-      shared_context 'with action filters' do |type|
+      shared_context 'with action hooks' do |type|
         before do
-          [:"#{type}_action1", :"#{type}_action2"].each do |action_filter_name|
-            controller_configuration.public_send("add_#{type}_action", action_filter_name)
-            allow(controller).to receive(action_filter_name)
+          [:"#{type}_action1", :"#{type}_action2"].each do |action_hook_name|
+            controller_configuration.add_action_hook(type, action_hook_name)
+            allow(controller).to receive(action_hook_name)
           end
         end
       end
 
-      shared_context 'with around action filters' do
+      shared_context 'with around action hooks' do
         before do
-          %i[around_action1 around_action2].each do |action_filter_name|
-            controller_configuration.add_around_action(action_filter_name)
-            allow(controller).to receive(action_filter_name).and_yield
+          %i[around_action1 around_action2].each do |action_hook_name|
+            controller_configuration.add_action_hook(:around, action_hook_name)
+            allow(controller).to receive(action_hook_name).and_yield
           end
         end
       end
@@ -43,7 +43,7 @@ module GraphqlRails
         end
 
         context 'when before actions are defined' do
-          include_context 'with action filters', :before
+          include_context 'with action hooks', :before
 
           it 'runs all before actions', :aggregate_failures do
             runner.call {}
@@ -57,7 +57,7 @@ module GraphqlRails
         end
 
         context 'when after actions are defined' do
-          include_context 'with action filters', :after
+          include_context 'with action hooks', :after
 
           it 'runs all after actions', :aggregate_failures do
             runner.call {}
@@ -71,7 +71,7 @@ module GraphqlRails
         end
 
         context 'when around actions are defined' do
-          include_context 'with around action filters'
+          include_context 'with around action hooks'
 
           it 'runs all around actions', :aggregate_failures do
             runner.call {}
@@ -85,9 +85,9 @@ module GraphqlRails
         end
 
         context 'when various actions are defined' do
-          include_context 'with action filters', :after
-          include_context 'with action filters', :before
-          include_context 'with around action filters'
+          include_context 'with action hooks', :after
+          include_context 'with action hooks', :before
+          include_context 'with around action hooks'
 
           it 'executes actions in correct order', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
             runner.call {}

@@ -14,16 +14,16 @@ module GraphqlRails
         sublass.instance_variable_set(:@controller_configuration, controller_configuration.dup)
       end
 
-      def before_action(*args)
-        controller_configuration.add_before_action(*args)
+      def before_action(*args, &block)
+        controller_configuration.add_action_hook(:before, *args, &block)
       end
 
-      def around_action(*args)
-        controller_configuration.add_around_action(*args)
+      def around_action(*args, &block)
+        controller_configuration.add_action_hook(:around, *args, &block)
       end
 
-      def after_action(*args)
-        controller_configuration.add_after_action(*args)
+      def after_action(*args, &block)
+        controller_configuration.add_action_hook(:after, *args, &block)
       end
 
       def action(action_name)
@@ -35,11 +35,14 @@ module GraphqlRails
       end
     end
 
+    attr_reader :action_name
+
     def initialize(graphql_request)
       @graphql_request = graphql_request
     end
 
     def call(method_name)
+      @action_name = method_name
       call_with_rendering(method_name)
 
       FormatResults.new(
@@ -48,6 +51,8 @@ module GraphqlRails
         params: params,
         graphql_context: graphql_request.context
       ).call
+    ensure
+      @action_name = nil
     end
 
     protected

@@ -10,6 +10,11 @@ module GraphqlRails
     class ActionConfiguration
       attr_reader :attributes, :return_type, :pagination_options
 
+      def initialize_copy(other)
+        super
+        @attributes = other.instance_variable_get(:@attributes).dup.transform_values(&:dup)
+      end
+
       def initialize
         @attributes = {}
         @can_return_nil = false

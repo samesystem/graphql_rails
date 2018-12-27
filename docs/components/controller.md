@@ -164,6 +164,26 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+## anonymous action filters
+
+before/after/around action filters can be written as blocks too:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  around_action do |controller, block|
+    I18n.with_locale('it') do
+      block.call
+    end
+  end
+
+  def create
+    User.create(params)
+  end
+end
+```
+
+it's not recommended but might be helpful in some edge cases.
+
 ### *only* and *except* option
 
 `UsersController.before_action` accepts `only` or `except` options which allows to skip filters for some actions.

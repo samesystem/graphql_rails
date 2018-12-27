@@ -10,43 +10,47 @@ module GraphqlRails
       end
 
       def call
-        run_before_action_hooks
-        run_around_actions { yield }.tap do
-          run_after_action_hooks
-        end
+        result = nil
+        run_action_hooks(:before)
+        run_around_action_hooks { result = yield }
+        run_action_hooks(:after)
+        result
       end
 
       private
 
       attr_reader :action_name, :controller
 
-      def all_around_actions
-        controller_configuration.around_actions_for(action_name)
+      def all_around_hooks
+        controller_configuration.action_hooks_for(:around, action_name)
       end
 
       def controller_configuration
         controller.class.controller_configuration
       end
 
-      def run_around_actions(around_actions = all_around_actions, &block)
-        pending_around_actions = around_actions.clone
-        around_action = pending_around_actions.shift
+      def run_around_action_hooks(around_hooks = all_around_hooks, &block)
+        pending_around_hooks = around_hooks.clone
+        action_hook = pending_around_hooks.shift
 
-        if around_action
-          controller.send(around_action.name) { run_around_actions(pending_around_actions, &block) }
+        if action_hook
+          execute_hook(action_hook) { run_around_action_hooks(pending_around_hooks, &block) }
         else
           yield
         end
       end
 
-      def run_before_action_hooks
-        before_actions = controller_configuration.before_actions_for(action_name)
-        before_actions.each { |filter| controller.send(filter.name) }
+      def execute_hook(action_hook, &block)
+        if action_hook.anonymous?
+          action_hook.action_proc.call(controller, *block)
+        else
+          controller.send(action_hook.name, &block)
+        end
       end
 
-      def run_after_action_hooks
-        after_actions = controller_configuration.after_actions_for(action_name)
-        after_actions.each { |filter| controller.send(filter.name) }
+      def run_action_hooks(hook_type)
+        action_hooks = controller_configuration.action_hooks_for(hook_type, action_name)
+        action_hooks.each { |hook| execute_hook(hook) }
       end
     end
   end

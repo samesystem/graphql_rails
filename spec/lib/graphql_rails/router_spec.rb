@@ -68,7 +68,7 @@ RSpec.describe GraphqlRails::Router do
   end
 
   describe '#resources' do
-    context 'without action filters' do
+    context 'without action hooks' do
       it 'adds CRUD actions' do
         expect { router.resources(:users) }
           .to change { router.routes.map(&:name) }
@@ -76,7 +76,7 @@ RSpec.describe GraphqlRails::Router do
       end
     end
 
-    context 'with "only" action filter' do
+    context 'with "only" action hook' do
       it 'adds only specified CRUD actions' do
         expect { router.resources(:users, only: :show) }
           .to change { router.routes.map(&:name) }
@@ -84,7 +84,7 @@ RSpec.describe GraphqlRails::Router do
       end
     end
 
-    context 'with "except" action filter' do
+    context 'with "except" action hook' do
       it 'adds only specified CRUD actions' do
         expect { router.resources(:users, except: %i[show create]) }
           .to change { router.routes.map(&:name) }

@@ -4,8 +4,8 @@ require 'spec_helper'
 
 module GraphqlRails
   class Controller
-    RSpec.describe ActionFilter do
-      subject(:filter) { described_class.new(action_name, only: only_actions, except: except_actions) }
+    RSpec.describe ActionHook do
+      subject(:hook) { described_class.new(name: action_name, only: only_actions, except: except_actions) }
 
       let(:only_actions) { [] }
       let(:except_actions) { [] }

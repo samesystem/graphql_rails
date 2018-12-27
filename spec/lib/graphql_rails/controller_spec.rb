@@ -46,6 +46,28 @@ module GraphqlRails
       def filter; end
     end
 
+    class DummyMultipleAnonymousAroundActionsController < GraphqlRails::Controller
+      # rubocop:disable Style/Semicolon
+      around_action { |controller, block| controller.log << 'around_action_1'; block.call }
+      around_action { |controller, block| controller.log << 'around_action_2'; block.call }
+      around_action(except: :action) { |controller| controller.log << 'around_action_3'; block.call }
+      # rubocop:enable Style/Semicolon
+
+      def log
+        @log ||= []
+      end
+    end
+
+    class DummyWithAroundActionWithValueController < GraphqlRails::Controller
+      action(:original).returns('String!')
+
+      around_action { |_controller, block| block.call; 'around_value' } # rubocop:disable Style/Semicolon
+
+      def original
+        'original_value'
+      end
+    end
+
     class DummyWithAllActionFiltersController < GraphqlRails::Controller
       around_action :around_action1
       around_action :around_action2
@@ -143,29 +165,29 @@ module GraphqlRails
         allow(context).to receive(:add_error)
       end
 
-      context 'when before filters are set on parent and child controller' do
+      context 'when before action hooks are set on parent and child controller' do
         let(:controller) { DummyMultipleBeforeActionsChildController.new(request) }
 
         it 'contains parent and child actions' do
-          before_actions = \
+          before_hooks = \
             DummyMultipleBeforeActionsChildController
             .controller_configuration
-            .before_actions_for(:any).map(&:name)
+            .action_hooks_for(:before, :any).map(&:name)
 
-          expect(before_actions).to eq %i[parent_filter child_filter]
+          expect(before_hooks).to eq %i[parent_filter child_filter]
         end
 
         it 'does not modify parent config' do
-          before_actions = \
+          before_hooks = \
             DummyMultipleBeforeActionsParentController
             .controller_configuration
-            .before_actions_for(:any).map(&:name)
+            .action_hooks_for(:before, :any).map(&:name)
 
-          expect(before_actions).to eq [:parent_filter]
+          expect(before_hooks).to eq [:parent_filter]
         end
       end
 
-      context 'when various before filters are set' do
+      context 'when various before action hooks are set' do
         let(:controller) { DummyWithAllActionFiltersController.new(request) }
 
         it 'triggers all action filters in correct order' do # rubocop:disable RSpec/ExampleLength
@@ -181,7 +203,7 @@ module GraphqlRails
         end
       end
 
-      context 'when before actions are set' do
+      context 'when before action hooks are set' do
         let(:controller) { DummyBeforeActionsController.new(request) }
 
         context 'when before action with same filter is specified more than once' do
@@ -267,6 +289,32 @@ module GraphqlRails
             allow(controller).to receive(:filter3)
             call
             expect(controller).not_to have_received(:filter3)
+          end
+        end
+      end
+
+      context 'when anonymous action hooks are set' do
+        let(:controller) { DummyMultipleAnonymousAroundActionsController.new(request) }
+
+        context 'when running action which was not included in "only" or "except" optio' do
+          it 'runs all hooks' do
+            controller.call(:any)
+            expect(controller.log).to eq %w[around_action_1 around_action_2 around_action_3]
+          end
+        end
+
+        context 'when running action which was included in "only" or "except" option' do
+          it 'runs only hooks based on "only" and "except" options' do
+            controller.call(:action)
+            expect(controller.log).to eq %w[around_action_1 around_action_2]
+          end
+        end
+
+        context 'when anonymous around action has some code after calling yield' do
+          let(:controller) { DummyWithAroundActionWithValueController.new(request) }
+
+          it 'returns value from action and not from hook' do
+            expect(controller.call(:original)).to eq 'original_value'
           end
         end
       end

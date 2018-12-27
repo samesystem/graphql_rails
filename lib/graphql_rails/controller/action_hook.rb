@@ -2,12 +2,13 @@
 
 module GraphqlRails
   class Controller
-    # stores information about controller filter
-    class ActionFilter
-      attr_reader :name
+    # stores information about controller hooks like before_action, after_action, etc.
+    class ActionHook
+      attr_reader :name, :action_proc
 
-      def initialize(name, only: [], except: [])
+      def initialize(name: nil, only: [], except: [], &action_proc)
         @name = name
+        @action_proc = action_proc
         @only_actions = Array(only).map(&:to_sym)
         @except_actions = Array(except).map(&:to_sym)
       end
@@ -20,6 +21,10 @@ module GraphqlRails
         else
           true
         end
+      end
+
+      def anonymous?
+        !!action_proc # rubocop:disable Style/DoubleNegation
       end
 
       private

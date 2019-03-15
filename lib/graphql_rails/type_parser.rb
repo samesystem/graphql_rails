@@ -82,11 +82,11 @@ module GraphqlRails
     end
 
     def inner_type_name
-      unparsed_type.to_s.downcase.tr('[]!', '')
+      unparsed_type.to_s.tr('[]!', '')
     end
 
     def type_by_name
-      TYPE_MAPPING.fetch(inner_type_name) do
+      TYPE_MAPPING.fetch(inner_type_name.downcase) do
         dynamicly_defined_type || raise(
           UnknownTypeError,
           "Type #{unparsed_type.inspect} is not supported. Supported scalar types are: #{TYPE_MAPPING.keys}." \
@@ -96,7 +96,7 @@ module GraphqlRails
     end
 
     def dynamicly_defined_type
-      type_class = inner_type_name.capitalize.safe_constantize
+      type_class = inner_type_name.safe_constantize
       return unless type_class.respond_to?(:graphql)
 
       type_class.graphql.graphql_type

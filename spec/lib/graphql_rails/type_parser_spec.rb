@@ -21,10 +21,10 @@ module GraphqlRails
       end
 
       context 'when model type is provided' do
-        let(:type) { 'Image' }
+        let(:type) { 'SomeImage' }
 
         it 'returns grapqhl type defined on that model' do
-          image = Object.const_set('Image', Class.new { include GraphqlRails::Model })
+          image = Object.const_set('SomeImage', Class.new { include GraphqlRails::Model })
           expect(call).to eq image.graphql.graphql_type
         end
       end

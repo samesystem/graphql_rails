@@ -48,7 +48,7 @@ module GraphqlRails
     end
 
     def parse_type(type)
-      type = TypeParser.new(type).call
+      type = TypeParser.new(type).graphql_type
 
       original_name['!'] ? type.to_non_null_type : type
     end

@@ -8,7 +8,7 @@ module GraphqlRails
   class Controller
     # stores all graphql_rails contoller specific config
     class ActionConfiguration
-      attr_reader :attributes, :return_type, :pagination_options
+      attr_reader :attributes, :pagination_options
 
       def initialize_copy(other)
         super
@@ -27,6 +27,7 @@ module GraphqlRails
       end
 
       def paginated(pagination_options = {})
+        @return_type = nil
         @pagination_options = pagination_options
         permit(:before, :after, first: :int, last: :int)
       end
@@ -45,8 +46,9 @@ module GraphqlRails
         self
       end
 
-      def returns(new_return_type)
-        @return_type = TypeParser.new(new_return_type).call
+      def returns(custom_return_type)
+        @return_type = nil
+        @custom_return_type = custom_return_type
         self
       end
 
@@ -58,7 +60,27 @@ module GraphqlRails
         !!pagination_options # rubocop:disable Style/DoubleNegation
       end
 
+      def return_type
+        @return_type ||= build_return_type
+      end
+
       private
+
+      attr_reader :custom_return_type
+
+      def build_return_type
+        return nil if custom_return_type.nil?
+
+        if paginated?
+          type_parser.graphql_model ? type_parser.graphql_model.graphql.connection_type : nil
+        else
+          type_parser.graphql_type
+        end
+      end
+
+      def type_parser
+        TypeParser.new(custom_return_type)
+      end
 
       def permit_attribute(name, type = nil)
         field_name = name.to_s.remove(/!\Z/)

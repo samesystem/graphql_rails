@@ -31,7 +31,7 @@ module GraphqlRails
       @unparsed_type = unparsed_type
     end
 
-    def call
+    def graphql_type
       return unparsed_type if raw_graphql_type?
 
       if list?
@@ -39,6 +39,12 @@ module GraphqlRails
       else
         parsed_inner_type
       end
+    end
+
+    def graphql_model
+      type_class = inner_type_name.safe_constantize
+      return unless type_class.respond_to?(:graphql)
+      type_class
     end
 
     private
@@ -96,8 +102,8 @@ module GraphqlRails
     end
 
     def dynamicly_defined_type
-      type_class = inner_type_name.safe_constantize
-      return unless type_class.respond_to?(:graphql)
+      type_class = graphql_model
+      return unless type_class
 
       type_class.graphql.graphql_type
     end

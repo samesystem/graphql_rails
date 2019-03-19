@@ -9,6 +9,29 @@ module GraphqlRails
 
     let(:type) { 'String!' }
 
+    describe '#graphql_model' do
+      subject(:graphql_model) { parser.graphql_model }
+
+      context 'when costom type is provided' do
+        let(:type) { 'SomeImage' }
+
+        it 'returns custom model' do
+          image = Object.const_set('SomeImage', Class.new { include GraphqlRails::Model })
+          expect(graphql_model).to eq(image)
+        end
+      end
+
+      context 'when graphql type is provided' do
+        let(:type) { GraphQL::INT_TYPE }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when standard type is provided' do
+        it { is_expected.to be_nil }
+      end
+    end
+
     describe '#graphql_type' do
       subject(:graphql_type) { parser.graphql_type }
 

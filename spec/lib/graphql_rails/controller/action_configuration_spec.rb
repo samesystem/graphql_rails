@@ -11,6 +11,36 @@ module GraphqlRails
 
       subject(:config) { described_class.new }
 
+      describe '#return_type' do
+        subject(:return_type) { config.return_type }
+
+        context 'when custom type is set' do
+          before do
+            config.returns(DummyModel.name)
+          end
+
+          context 'when pagination is enabled' do
+            before do
+              config.paginated
+            end
+
+            it 'returns connection type' do
+              expect(return_type).to eq DummyModel.graphql.connection_type
+            end
+          end
+
+          context 'when pagination is not enabled' do
+            it 'returns model graphql_type' do
+              expect(return_type).to eq DummyModel.graphql.graphql_type
+            end
+          end
+        end
+
+        context 'when custom type is not set' do
+          it { is_expected.to be_nil }
+        end
+      end
+
       describe '#paginated' do
         it 'sets pagination options' do
           expect { config.paginated(max_per_page: 1) }.to change(config, :pagination_options)

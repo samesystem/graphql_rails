@@ -20,9 +20,25 @@ end
 
 ### *permit*
 
+to define attributes which are accepted by each controller action, you need to call `permit` method, like this:
+
 ```ruby
 class UsersController < GraphqlRails::Controller
-  action(:create).describe('Creates user')
+  action(:create).permit(:id!, :some_string_value)
+
+  def create
+    User.create(params)
+  end
+end
+```
+
+permitted values will be available via `params` method in controller action. By default all attributes will have `String` type. Also you can add exclamation mark after attribute name if you want to forbid `nil` value for that attribute.
+
+If you want to use custom input type, you can define it like this:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create).permit(:id!, some_integer_value: :int!, something_custom: YourGraphqlInputType)
 
   def create
     User.create(params)

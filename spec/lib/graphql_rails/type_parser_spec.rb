@@ -9,14 +9,14 @@ module GraphqlRails
 
     let(:type) { 'String!' }
 
-    describe '#call' do
-      subject(:call) { parser.call }
+    describe '#graphql_type' do
+      subject(:graphql_type) { parser.graphql_type }
 
       context 'when grapqhl type is provided' do
         let(:type) { GraphQL::INT_TYPE }
 
         it 'returns original grapqhl type' do
-          expect(call).to eq type
+          expect(graphql_type).to eq type
         end
       end
 
@@ -25,7 +25,7 @@ module GraphqlRails
 
         it 'returns grapqhl type defined on that model' do
           image = Object.const_set('SomeImage', Class.new { include GraphqlRails::Model })
-          expect(call).to eq image.graphql.graphql_type
+          expect(graphql_type).to eq image.graphql.graphql_type
         end
       end
 
@@ -67,7 +67,7 @@ module GraphqlRails
         let(:type) { 'unknown' }
 
         it 'raises error' do
-          expect { call }.to raise_error(TypeParser::UnknownTypeError)
+          expect { graphql_type }.to raise_error(TypeParser::UnknownTypeError)
         end
       end
 

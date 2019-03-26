@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Povilas Jurčys']
   spec.email         = ['po.jurcys@gmail.com']
 
-  spec.summary       = %q{GrapQL server and client for rails}
+  spec.summary       = %q{GraphQL server and client for rails}
   spec.homepage      = 'https://github.com/povilasjurcys/graphql_rails'
   spec.license       = 'MIT'
 

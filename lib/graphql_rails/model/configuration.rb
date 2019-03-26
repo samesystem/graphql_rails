@@ -2,12 +2,14 @@
 
 require 'graphql_rails/attribute'
 require 'graphql_rails/model/graphql_type_builder'
+require 'graphql_rails/model/input'
+require 'graphql_rails/model/configurable'
 
 module GraphqlRails
   module Model
     # stores information about model specific config, like attributes and types
     class Configuration
-      attr_reader :attributes
+      include Configurable
 
       COUNT_TOTAL_ITEMS = lambda do |obj, _args, _ctx|
         obj_nodes = obj.nodes
@@ -17,17 +19,6 @@ module GraphqlRails
 
       def initialize(model_class)
         @model_class = model_class
-        @attributes = {}
-      end
-
-      def name(type_name = nil)
-        @name = type_name if type_name
-        @name || name_by_class_name
-      end
-
-      def description(new_description = nil)
-        @description = new_description if new_description
-        @description
       end
 
       def attribute(attribute_name, type: nil, **attribute_options)
@@ -39,8 +30,22 @@ module GraphqlRails
           )
       end
 
+      def input(input_name = nil)
+        @input ||= {}
+        name = input_name.to_s
+
+        if block_given?
+          @input[name] ||= Model::Input.new(model_class, input_name)
+          yield(@input[name])
+        end
+
+        @input.fetch(name) do
+          raise("GraphQL input with name #{input_name.inspect} is not defined for #{model_class}")
+        end
+      end
+
       def graphql_type
-        @graphql_type ||= GrapqhlTypeBuilder.new(
+        @graphql_type ||= GraphqlTypeBuilder.new(
           name: name, description: description, attributes: attributes
         ).call
       end
@@ -57,8 +62,8 @@ module GraphqlRails
 
       attr_reader :model_class
 
-      def name_by_class_name
-        @name_by_class_name ||= model_class.name.split('::').last
+      def default_name
+        @default_name ||= model_class.name.split('::').last
       end
     end
   end

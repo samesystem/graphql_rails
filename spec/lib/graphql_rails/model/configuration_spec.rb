@@ -70,5 +70,40 @@ module GraphqlRails
         end
       end
     end
+
+    describe '#input' do
+      subject(:input) { config.input(:new_input) }
+
+      context 'when config block is not given' do
+        it 'raises error' do
+          expect { input }
+            .to raise_error('GraphQL input with name :new_input is not defined for GraphqlRails::DummyModel')
+        end
+      end
+
+      context 'when config block is given' do
+        subject(:input) do
+          config.input(:new_input) do |c|
+            c.attribute :name
+          end
+        end
+
+        it 'returns input instance' do
+          expect(input).to be_a(Model::Input)
+        end
+
+        context 'when block is given second time for same input' do
+          before do
+            config.input(:new_input) do |c|
+              c.attribute :second_name
+            end
+          end
+
+          it 'extends existing input' do
+            expect(input.attributes.keys).to match_array(%w[name second_name])
+          end
+        end
+      end
+    end
   end
 end

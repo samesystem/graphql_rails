@@ -1,7 +1,6 @@
 # GraphqlRails
 
-
-Rails style structure for GrapQL API.
+Rails style structure for GraphQL API.
 
 ## Installation
 
@@ -101,7 +100,7 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
 end
 ```
 
-## Testing your GrapqhlRails::Controller in RSpec
+## Testing your GraphqlRails::Controller in RSpec
 
 ### Setup
 

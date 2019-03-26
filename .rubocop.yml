@@ -13,6 +13,9 @@ Metrics/BlockLength:
 Metrics/ModuleLength:
   Exclude:
     - spec/**/*_spec.rb
+Metrics/ClassLength:
+  Exclude:
+    - spec/**/*_spec.rb
 
 Lint/AmbiguousBlockAssociation:
   Exclude:

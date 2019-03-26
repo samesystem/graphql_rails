@@ -3,7 +3,7 @@
 module GraphqlRails
   module Model
     # stores information about model specific config, like attributes and types
-    class GraphqlTypeBuilder
+    class GraphqlInputTypeBuilder
       def initialize(name:, description: nil, attributes:)
         @name = name
         @attributes = attributes
@@ -15,12 +15,12 @@ module GraphqlRails
         type_description = description
         type_attributes = attributes
 
-        GraphQL::ObjectType.define do
-          name(type_name)
+        Class.new(GraphQL::Schema::InputObject) do
+          graphql_name(type_name)
           description(type_description)
 
-          type_attributes.each_value do |attribute|
-            field(*attribute.field_args)
+          type_attributes.each_value do |type_attribute|
+            argument(*type_attribute.input_argument_args)
           end
         end
       end

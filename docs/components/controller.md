@@ -46,6 +46,26 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+If your model has defined input, then you can provide your model as input type, like this:
+
+```ruby
+class User
+  graphql.input do
+    c.attribute :name
+  end
+end
+
+class UsersController < GraphqlRails::Controller
+  action(:create).permit(create_params: 'User')
+  # this is equivalent to:
+  # `action(:create).permit(create_params: User.graphql.input)`
+
+  def create
+    User.create(params[:create_params])
+  end
+end
+```
+
 ### *can_return_nil*
 
 By default it is expected that each controller action returns model or array of models. `nil` is not allowed. You can change that by adding `can_return_nil` like this:

@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/samesystem/graphql_rails/branch/master/graph/badge.svg)](https://codecov.io/gh/samesystem/graphql_rails)
 [![Documentation](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://samesystem.github.io/graphql_rails)
 
-Rails style structure for GrapQL API.
+Rails style structure for GraphQL API.
 
 ## Installation
 
@@ -104,7 +104,7 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
 end
 ```
 
-## Testing your GrapqhlRails::Controller in RSpec
+## Testing your GraphqlRails::Controller in RSpec
 
 ### Setup
 
@@ -174,7 +174,6 @@ end
 ## Detailed documentation
 
 Check https://samesystem.github.io/graphql_rails for more details
-
 
 ## Development
 

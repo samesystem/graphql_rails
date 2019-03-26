@@ -18,6 +18,7 @@ module GraphqlRails
 
       def path
         return relative_path if module_name.empty?
+
         [module_name, relative_path].join('/')
       end
 

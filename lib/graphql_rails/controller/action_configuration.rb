@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/string/filters'
-require 'graphql_rails/type_parser'
+require 'graphql_rails/attribute/type_parser'
 require 'graphql_rails/attribute'
+require 'graphql_rails/model/input_attribute'
 
 module GraphqlRails
   class Controller
@@ -79,12 +80,12 @@ module GraphqlRails
       end
 
       def type_parser
-        TypeParser.new(custom_return_type)
+        GraphqlRails::Attribute::TypeParser.new(custom_return_type)
       end
 
       def permit_attribute(name, type = nil)
         field_name = name.to_s.remove(/!\Z/)
-        attributes[field_name] = Attribute.new(name.to_s, type)
+        attributes[field_name] = Model::InputAttribute.new(name.to_s, type)
       end
     end
   end

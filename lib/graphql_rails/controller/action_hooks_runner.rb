@@ -9,10 +9,10 @@ module GraphqlRails
         @controller = controller
       end
 
-      def call
+      def call(&block)
         result = nil
         run_action_hooks(:before)
-        run_around_action_hooks { result = yield }
+        run_around_action_hooks { result = controller.instance_exec(&block) }
         run_action_hooks(:after)
         result
       end
@@ -42,7 +42,7 @@ module GraphqlRails
 
       def execute_hook(action_hook, &block)
         if action_hook.anonymous?
-          action_hook.action_proc.call(controller, *block)
+          controller.instance_exec(controller, *block, &action_hook.action_proc)
         else
           controller.send(action_hook.name, &block)
         end

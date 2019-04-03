@@ -1,6 +1,6 @@
 ## [Unreleased]
 
-* Your contribution here.
+* Fixed controller action hooks context [@povilasjurcys](https://github.com/povilasjurcys).
 
 ## 0.5.0 (2019-04-03)
 

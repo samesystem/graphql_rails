@@ -32,7 +32,7 @@ module GraphqlRails
           description(action.description)
 
           action.arguments.each do |attribute|
-            argument(attribute.field_name, attribute.graphql_field_type)
+            argument(*attribute.function_argument_args)
           end
         end
       end

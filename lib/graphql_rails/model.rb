@@ -3,7 +3,7 @@
 require 'graphql_rails/model/configuration'
 
 module GraphqlRails
-  # this module allows to convert any ruby class in to grapql type object
+  # this module allows to convert any ruby class in to graphql type object
   #
   # usage:
   # class YourModel
@@ -15,7 +15,7 @@ module GraphqlRails
   #   end
   # end
   #
-  # YourModel.new.grapql_type # => type with [:id, :title] attributes
+  # YourModel.new.graphql_type # => type with [:id, :title] attributes
   module Model
     def self.included(base)
       base.extend(ClassMethods)

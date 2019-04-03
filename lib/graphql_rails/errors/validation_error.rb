@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GraphqlRails
-  # GrapqhQL error that is raised when invalid data is given
+  # GraphQL error that is raised when invalid data is given
   class ValidationError < ExecutionError
     attr_reader :short_message, :field
 

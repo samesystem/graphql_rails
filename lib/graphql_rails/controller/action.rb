@@ -60,6 +60,7 @@ module GraphqlRails
 
       def default_type
         return default_collection_type if route.collection?
+
         default_inner_return_type
       end
 
@@ -104,6 +105,7 @@ module GraphqlRails
         [namespace, model_name].join('::').constantize
       rescue NameError => err
         raise unless err.message.match?(/uninitialized constant/)
+
         nil
       end
 

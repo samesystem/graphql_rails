@@ -36,10 +36,14 @@ module GraphqlRails
       end
 
       describe '#call' do
-        context 'when no action is defined' do
-          it 'exectes given block' do
-            expect { |b| runner.call(&b) }.to yield_control
-          end
+        it 'executes block in controller context' do
+          instance = nil
+          runner.call { instance = self }
+          expect(instance).to be(controller)
+        end
+
+        it 'exectes given block' do
+          expect { |b| runner.call(&b) }.to yield_control
         end
 
         context 'when before actions are defined' do
@@ -101,6 +105,15 @@ module GraphqlRails
 
           it 'executes given block once' do
             expect { |b| runner.call(&b) }.to yield_control
+          end
+        end
+
+        context 'when anonymous hook is defined' do
+          it 'is executed in controller context' do
+            instance = nil
+            controller_configuration.add_action_hook(:before) { instance = self }
+            runner.call {}
+            expect(instance).to be(controller)
           end
         end
       end

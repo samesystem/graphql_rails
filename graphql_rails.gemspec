@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['po.jurcys@gmail.com']
 
   spec.summary       = %q{GraphQL server and client for rails}
-  spec.homepage      = 'https://github.com/povilasjurcys/graphql_rails'
+  spec.homepage      = 'https://github.com/samesystem/graphql_rails'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|

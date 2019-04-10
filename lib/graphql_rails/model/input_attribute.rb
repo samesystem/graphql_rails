@@ -8,10 +8,11 @@ module GraphqlRails
 
       attr_reader :description
 
-      def initialize(name, type = nil, description: nil)
+      def initialize(name, type = nil, description: nil, options: {})
         @initial_name = name
         @initial_type = type
         @description = description
+        @options = options
       end
 
       def function_argument_args
@@ -29,7 +30,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :initial_name, :initial_type
+      attr_reader :initial_name, :initial_type, :options
 
       def raw_input_type
         return initial_type if initial_type.is_a?(GraphQL::InputObjectType)

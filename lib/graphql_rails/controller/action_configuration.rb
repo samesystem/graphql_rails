@@ -18,7 +18,13 @@ module GraphqlRails
 
       def initialize
         @attributes = {}
+        @action_options = {}
         @can_return_nil = false
+      end
+
+      def options(input_format:)
+        @action_options[:input_format] = input_format
+        self
       end
 
       def permit(*no_type_attributes, **typed_attributes)
@@ -67,7 +73,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :custom_return_type
+      attr_reader :custom_return_type, :action_options
 
       def build_return_type
         return nil if custom_return_type.nil?
@@ -85,7 +91,7 @@ module GraphqlRails
 
       def permit_attribute(name, type = nil)
         field_name = name.to_s.remove(/!\Z/)
-        attributes[field_name] = Model::InputAttribute.new(name.to_s, type)
+        attributes[field_name] = Model::InputAttribute.new(name.to_s, type, options: action_options)
       end
     end
   end

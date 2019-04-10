@@ -138,6 +138,21 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+### *options*
+
+You can customize your queries using `options` method. So far we've added `input_format` and allowed value is `:original` which specifies to keep the field name format.
+`options` method can be used like so:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create).options(input_format: :original).permit(:full_name)
+
+  def create
+    User.create(params)
+  end
+end
+```
+
 ## *before_action*
 
 You can add `before_action` to run some filters before calling your controller action. Here is an example:

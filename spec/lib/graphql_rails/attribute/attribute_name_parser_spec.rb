@@ -5,9 +5,10 @@ require 'spec_helper'
 module GraphqlRails
   class Attribute
     RSpec.describe AttributeNameParser do
-      subject(:parser) { described_class.new(name) }
+      subject(:parser) { described_class.new(name, options: options) }
 
       let(:name) { 'name' }
+      let(:options) { {} }
 
       describe '#field_name' do
         subject(:field_name) { parser.field_name }
@@ -15,8 +16,18 @@ module GraphqlRails
         context 'when name contains multiple words' do
           let(:name) { 'full_name' }
 
-          it 'camelizes name' do
-            expect(field_name).to eq('fullName')
+          context 'without options' do
+            it 'camelizes name' do
+              expect(field_name).to eq('fullName')
+            end
+          end
+
+          context 'with original format option' do
+            let(:options) { { input_format: :original } }
+
+            it 'keeps original format' do
+              expect(field_name).to eq(name)
+            end
           end
         end
 

@@ -39,6 +39,10 @@ module GraphqlRails
 
       protected
 
+      def options
+        {}
+      end
+
       def nullable_type
         type = type_parser.graphql_type
         type.non_null? ? type.of_type : type
@@ -51,7 +55,7 @@ module GraphqlRails
       end
 
       def attribute_name_parser
-        @attribute_name_parser ||= AttributeNameParser.new(initial_name)
+        @attribute_name_parser ||= AttributeNameParser.new(initial_name, options: options)
       end
     end
   end

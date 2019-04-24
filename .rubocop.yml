@@ -30,6 +30,10 @@ Naming/UncommunicativeMethodParamName:
     - 'in'
     - 'as'
 
+Style/ClassAndModuleChildren:
+  Exclude:
+    - spec/**/*_spec.rb
+
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:

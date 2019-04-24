@@ -1,10 +1,25 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 ## [Unreleased]
 
-* Fixed controller action hooks context [@povilasjurcys](https://github.com/povilasjurcys).
-* Added options for controller actions [@vastas1996](https://github.com/vastas1996).
+* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
+
+## 0.5.2 (2019-04-24)
+
+* Fixed: do not crash when using Connection types in non Ruby on Rails project [@povilasjurcys](https://github.com/povilasjurcys).
+
+## 0.5.1 (2019-04-10)
+
+* Fixed: controller action hooks context [@povilasjurcys](https://github.com/povilasjurcys).
+* Added: options for controller actions [@vastas1996](https://github.com/vastas1996).
 
 ## 0.5.0 (2019-04-03)
 
-* [#56](https://github.com/ashkan18/graphlient/pull/56) Added GraphQL input type generators [@povilasjurcys](https://github.com/povilasjurcys).
-* Added CHANGELOG [@povilasjurcys](https://github.com/povilasjurcys).
-* Fixed GraphQL word typos in documentation and code [@povilasjurcys](https://github.com/povilasjurcys).
+* Added: GraphQL input type generators [@povilasjurcys](https://github.com/povilasjurcys).
+* Added: CHANGELOG [@povilasjurcys](https://github.com/povilasjurcys).
+* Fixed: GraphQL word typos in documentation and code [@povilasjurcys](https://github.com/povilasjurcys).

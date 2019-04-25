@@ -4,18 +4,13 @@ require 'graphql_rails/attribute'
 require 'graphql_rails/model/graphql_type_builder'
 require 'graphql_rails/model/input'
 require 'graphql_rails/model/configurable'
+require 'graphql_rails/model/configuration/count_items'
 
 module GraphqlRails
   module Model
     # stores information about model specific config, like attributes and types
     class Configuration
       include Configurable
-
-      COUNT_TOTAL_ITEMS = lambda do |obj, _args, _ctx|
-        obj_nodes = obj.nodes
-        obj_nodes = obj_nodes.except(:offset) if obj_nodes.is_a?(ActiveRecord::Relation)
-        obj_nodes.size
-      end
 
       def initialize(model_class)
         @model_class = model_class
@@ -53,7 +48,7 @@ module GraphqlRails
       def connection_type
         @connection_type ||= begin
           graphql_type.define_connection do
-            field :total, types.Int, resolve: COUNT_TOTAL_ITEMS
+            field :total, types.Int, resolve: CountItems
           end
         end
       end

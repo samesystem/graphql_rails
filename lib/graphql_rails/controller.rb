@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/hash_with_indifferent_access'
+require 'active_support/core_ext/hash'
 require 'graphql_rails/controller/configuration'
 require 'graphql_rails/controller/request'
 require 'graphql_rails/controller/format_results'
@@ -68,7 +69,7 @@ module GraphqlRails
     end
 
     def params
-      @params = HashWithIndifferentAccess.new(graphql_request.params)
+      @params ||= graphql_request.params.deep_transform_keys(&:underscore).with_indifferent_access
     end
 
     private

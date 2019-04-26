@@ -4,6 +4,8 @@ module GraphqlRails
   class Router
     # builds GraphQL::Schema based on previously defined grahiti data
     class SchemaBuilder
+      require_relative './plain_cursor_encoder'
+
       attr_reader :queries, :mutations, :raw_actions
 
       def initialize(queries:, mutations:, raw_actions:)
@@ -18,6 +20,7 @@ module GraphqlRails
         raw = raw_actions
 
         GraphQL::Schema.define do
+          cursor_encoder(PlainCursorEncoder)
           raw.each { |action| send(action[:name], *action[:args], &action[:block]) }
 
           query(query_type)

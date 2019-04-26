@@ -5,12 +5,30 @@ require 'graphql_rails/rspec_controller_helpers'
 
 module GraphqlRails
   RSpec.describe RSpecControllerHelpers do
-    class TestableClass < GraphqlRails::Controller
+    class TestableController < GraphqlRails::Controller
+      Stats = Struct.new(:json) do
+        include GraphqlRails::Model
+
+        graphql do |c|
+          c.attribute :json, type: :string!
+        end
+      end
+
+      action(:paginated_index).paginated.returns('[string!]!')
+      action(:boom).returns('bool!')
+      action(:index).returns(Stats)
+
+      def paginated_index
+        []
+      end
+
       def index
-        {
-          received_params: params,
-          received_context: graphql_request.context.to_h
-        }
+        Stats.new(
+          {
+            received_params: params,
+            received_context: graphql_request.context.to_h
+          }.to_json
+        )
       end
 
       def boom
@@ -22,51 +40,45 @@ module GraphqlRails
       include RSpecControllerHelpers
     end
 
-    subject(:runner) { RSpecLikeRunner.new(TestableClass) }
+    subject(:runner) { RSpecLikeRunner.new(TestableController) }
 
-    let(:action_params) { { 'id' => 1 } }
+    let(:action_params) { { id: 1 } }
     let(:action_context) { { current_user_id: 1 } }
 
     describe '#query' do
-      it 'triggers controller with correct params' do
-        runner.query(:index, params: action_params, context: action_context)
+      subject(:json_result) do
+        runner.query(action_name, params: action_params, context: action_context)
+        JSON.parse(runner.response.result.json).deep_symbolize_keys
+      end
 
-        expect(runner.response.result).to eq(
+      let(:action_name) { :index }
+
+      it 'triggers controller with correct params' do
+        expect(json_result).to eq(
           received_params: action_params.to_h,
           received_context: action_context.to_h
         )
       end
 
-      it 'FakeSchema returns cursor' do
-        runner.query(:index, params: action_params, context: action_context)
+      context 'when testing paginated action' do
+        let(:action_name) { :paginated_index }
 
-        expect(RSpecControllerHelpers::FakeSchema.new.cursor_encoder).to eq(GraphQL::Schema::Base64Encoder)
-      end
-    end
+        it 'triggers controller with correct params' do
+          runner.query(:paginated_index, context: action_context)
 
-    describe 'FakeConext' do
-      let(:context) { GraphqlRails::RSpecControllerHelpers::FakeContext.new(values: action_context) }
-
-      it 'retruns shema' do
-        expect(context.schema.class).to eq(GraphqlRails::RSpecControllerHelpers::FakeSchema)
-      end
-    end
-
-    describe 'FakeSchema' do
-      before do
-        allow(GraphqlRails::RSpecControllerHelpers::FakeSchema).to receive(:new).and_call_original
-      end
-
-      it 'retruns encode' do
-        expect(RSpecControllerHelpers::FakeSchema.new.cursor_encoder).to eq(GraphQL::Schema::Base64Encoder)
+          expect(runner.response.result).to eq([])
+        end
       end
     end
 
     describe '#mutation' do
-      it 'triggers controller with correct params' do
+      subject(:json_result) do
         runner.mutation(:index, params: action_params, context: action_context)
+        JSON.parse(runner.response.result.json).deep_symbolize_keys
+      end
 
-        expect(runner.response.result).to eq(
+      it 'triggers controller with correct params' do
+        expect(json_result).to eq(
           received_params: action_params.to_h,
           received_context: action_context.to_h
         )

@@ -55,28 +55,38 @@ module GraphqlRails
     class FakeContext
       extend Forwardable
 
+      attr_reader :schema
+
       def_delegators :@provided_values, :[], :[]=, :to_h, :key?, :fetch
 
-      def initialize(values:)
+      def initialize(values:, schema:)
         @errors = []
         @provided_values = values
+        @schema = schema
       end
 
       def add_error(error)
         @errors << error
       end
-
-      def schema
-        FakeSchema.new
-      end
     end
 
-    # instance which has similar behavior as
-    class FakeSchema
-      def initialize; end
+    class SingleControllerSchemaBuilder
+      attr_reader :controller
 
-      def cursor_encoder
-        GraphQL::Schema::Base64Encoder
+      def initialize(controller)
+        @controller = controller
+      end
+
+      def call
+        config = controller.controller_configuration
+        action_by_name = config.action_by_name
+        controller_path = controller.name.underscore.sub(/_controller\Z/, '')
+
+        Router.draw do
+          action_by_name.keys.each do |action_name|
+            query("#{action_name}_test", to: "#{controller_path}##{action_name}")
+          end
+        end
       end
     end
 
@@ -88,7 +98,8 @@ module GraphqlRails
     end
 
     def query(query_name, params: {}, context: {})
-      context_object = FakeContext.new(values: context)
+      schema_builder = SingleControllerSchemaBuilder.new(described_class)
+      context_object = FakeContext.new(values: context, schema: schema_builder.call)
       request = Request.new(params, context_object)
       described_class.new(request).call(query_name)
 

@@ -69,7 +69,7 @@ module GraphqlRails
     end
 
     def params
-      @params ||= graphql_request.params.deep_transform_keys(&:underscore).with_indifferent_access
+      @params ||= graphql_request.params.deep_transform_keys { |key| key.to_s.underscore }.with_indifferent_access
     end
 
     private

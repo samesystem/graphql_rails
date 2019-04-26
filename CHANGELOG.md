@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
+* Breaking change: cursor in paginated responses has plain index value by default [@povilasjurcys](https://github.com/povilasjurcys).
+
 ## 0.5.2 (2019-04-24)
 
 * Fixed: do not crash when using Connection types in non Ruby on Rails project [@povilasjurcys](https://github.com/povilasjurcys).

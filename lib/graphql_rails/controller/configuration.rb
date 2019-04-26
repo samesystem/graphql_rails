@@ -9,6 +9,8 @@ module GraphqlRails
   class Controller
     # stores all graphql_rails contoller specific config
     class Configuration
+      attr_reader :action_by_name
+
       def initialize
         @hooks = {
           before: {},

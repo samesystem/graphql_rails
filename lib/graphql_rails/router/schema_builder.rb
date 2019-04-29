@@ -20,7 +20,7 @@ module GraphqlRails
         raw = raw_actions
 
         GraphQL::Schema.define do
-          cursor_encoder(PlainCursorEncoder)
+          cursor_encoder(Router::PlainCursorEncoder)
           raw.each { |action| send(action[:name], *action[:args], &action[:block]) }
 
           query(query_type)

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
+## 0.6.0 (2019-04-29)
+
 * Breaking change: controller params are always underscored [@povilasjurcys](https://github.com/povilasjurcys).
 * Breaking change: cursor in paginated responses has plain index value by default [@povilasjurcys](https://github.com/povilasjurcys).
 * Fixed: do not crash when testing paginated actions [@povilasjurcys](https://github.com/povilasjurcys).

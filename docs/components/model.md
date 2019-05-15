@@ -15,15 +15,15 @@ class User # works with any class including ActiveRecord
 end
 ```
 
-## _graphql_
+## graphql
 
 This method must be called inside your model body. `grapqhl` is used for making your model convertible to graphql type.
 
-### _attribute_
+## attribute
 
 Most commonly you will use `attribute` to make your model methods and attributes visible via graphql endpoint.
 
-#### _type_
+## attribute type
 
 Some types can be determined by attribute name, so you can skip this attribute:
 
@@ -54,7 +54,7 @@ class User
 end
 ```
 
-#### _property_
+### attribute property
 
 By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `propery` option:
 
@@ -72,7 +72,7 @@ class User
 end
 ```
 
-#### _description_
+### attribute description
 
 You can also describe each attribute and make graphql documentation even more readable. To do so, add `description` option:
 
@@ -86,7 +86,7 @@ class User
 end
 ```
 
-### _name_
+## name
 
 By default grapqhl type name will be same as model name, but you can change it via `name` method
 
@@ -100,7 +100,7 @@ class User
 end
 ```
 
-### _description_
+## description
 
 To improve grapqhl documentation, you can description for your graphql type:
 
@@ -114,7 +114,7 @@ class User
 end
 ```
 
-### _graphql\_type_
+## graphql_type
 
 Sometimes it's handy to get raw graphql type. To do so you can call:
 
@@ -122,7 +122,7 @@ Sometimes it's handy to get raw graphql type. To do so you can call:
 YourModel.graphql.grapqhl_type
 ```
 
-### _input_
+## input
 
 You can define input types:
 
@@ -153,11 +153,11 @@ class User
 end
 ```
 
-#### _attribute_
+### input attribute
 
 Most commonly you will use `attribute` to define what kind of values your endpoint accepts
 
-##### _type_
+#### input type
 
 You can specify your input attribute type. If type is not provided then type is set to `:string`.
 
@@ -171,7 +171,7 @@ class User
 end
 ```
 
-##### _enum_
+#### input enum type
 
 You can specify your input attribute as enum:
 
@@ -185,7 +185,7 @@ class User
 end
 ```
 
-##### _description_
+#### input attribute description
 
 To improve graphql endpoint documentation, you can add description for each input attribute:
 

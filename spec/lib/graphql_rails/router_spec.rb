@@ -18,6 +18,13 @@ RSpec.describe GraphqlRails::Router do
     end
   end
 
+  describe '#rescue_from' do
+    it 'allows rescuing from errors' do
+      expect { router.rescue_from(StandardError) { 'ups!' } }
+        .to change { router.graphql_schema.send(:rescues?) }.from(false).to(true)
+    end
+  end
+
   describe '#scope' do
     context 'with nested scopes' do
       before do

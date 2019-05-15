@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'graphql_rails/attribute/type_parser'
-require 'graphql_rails/attribute/attribute_name_parser'
+require 'graphql_rails/attributes/type_parser'
+require 'graphql_rails/attributes/attribute_name_parser'
 
 module GraphqlRails
-  class Attribute
+  module Attributes
     # contains methods which are shared between various attribute-like classes
     # expects `initial_name` and `initial_type` to be defined
     module Attributable

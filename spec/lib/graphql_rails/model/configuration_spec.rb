@@ -6,28 +6,24 @@ require 'active_record'
 
 module GraphqlRails
   RSpec.describe Model::Configuration do
-    class DummyModel
-      include GraphqlRails::Model
-
-      graphql do |c|
-        c.description 'Used for test purposes'
-        c.attribute :id
-        c.attribute :valid?
-        c.attribute :level, type: :int, description: 'over 9000!'
-      end
-    end
-
-    class DummyModelWithCustomName < ActiveRecord::Base
-      include GraphqlRails::Model
-
-      graphql do |c|
-        c.name 'ChangedName'
-      end
-    end
-
     subject(:config) { model.graphql }
 
-    let(:model) { DummyModel }
+    let(:model) do
+      Class.new do
+        include GraphqlRails::Model
+
+        graphql do |c|
+          c.description 'Used for test purposes'
+          c.attribute :id
+          c.attribute :valid?
+          c.attribute :level, type: :int, description: 'over 9000!'
+        end
+
+        def self.name
+          'DummyModel'
+        end
+      end
+    end
 
     describe '#graphql_type' do
       subject(:graphql_type) { config.graphql_type }
@@ -49,7 +45,19 @@ module GraphqlRails
       end
 
       context 'when model has custom name' do
-        let(:model) { DummyModelWithCustomName }
+        let(:model) do
+          Class.new do
+            include GraphqlRails::Model
+
+            graphql do |c|
+              c.name 'ChangedName'
+            end
+
+            def self.name
+              'DummyModelWithCustomName'
+            end
+          end
+        end
 
         it 'returns correct name' do
           expect(graphql_type.name).to eq 'ChangedName'
@@ -77,7 +85,7 @@ module GraphqlRails
       context 'when config block is not given' do
         it 'raises error' do
           expect { input }
-            .to raise_error('GraphQL input with name :new_input is not defined for GraphqlRails::DummyModel')
+            .to raise_error('GraphQL input with name :new_input is not defined for DummyModel')
         end
       end
 

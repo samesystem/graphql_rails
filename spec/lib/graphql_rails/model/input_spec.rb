@@ -5,21 +5,38 @@ require 'spec_helper'
 module GraphqlRails
   module Model
     RSpec.describe Input do
-      class DummyModel
-        include GraphqlRails::Model
-
-        graphql do |c|
-          c.description 'Used for test purposes'
-          c.attribute :id
-          c.attribute :valid?
-          c.attribute :level, type: :int, description: 'over 9000!'
-        end
-      end
-
       subject(:input) { described_class.new(DummyModel, input_name) }
 
       let(:input_name) { :search_criteria }
-      let(:model) { DummyModel }
+
+      let(:model) do
+        Class.new do
+          include GraphqlRails::Model
+
+          graphql do |c|
+            c.description 'Used for test purposes'
+            c.attribute :id
+            c.attribute :valid?
+            c.attribute :level, type: :int, description: 'over 9000!'
+          end
+
+          def self.name
+            'DummyModel'
+          end
+        end
+      end
+
+      describe '#attribute' do
+        context 'when attribute has enum type' do
+          before do
+            input.attribute(:fruit, enum: %i[apple orange])
+          end
+
+          it 'adds attribute with enum type' do
+            expect(input.attributes['fruit'].graphql_field_type < GraphQL::Schema::Enum).to be true
+          end
+        end
+      end
 
       describe '#graphql_input_type' do
         subject(:graphql_input_type) { input.graphql_input_type }

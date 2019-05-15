@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module GraphqlRails
-  class Attribute
+  module Attributes
     RSpec.describe TypeParser do
       subject(:parser) { described_class.new(type) }
 

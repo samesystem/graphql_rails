@@ -3,7 +3,7 @@
 require 'graphql'
 
 module GraphqlRails
-  class Attribute
+  module Attributes
     # converts string value in to GraphQL type
     class TypeParser
       class UnknownTypeError < ArgumentError; end

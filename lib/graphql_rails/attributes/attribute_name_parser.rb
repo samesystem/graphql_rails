@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GraphqlRails
-  class Attribute
+  module Attributes
     # Parses attribute name and can generates graphql scalar type,
     # grapqhl name and etc. based on that
     class AttributeNameParser

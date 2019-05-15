@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/string/inflections'
-require 'graphql_rails/attribute'
 require 'graphql_rails/controller/action_configuration'
 require 'graphql_rails/controller/action_hook'
 

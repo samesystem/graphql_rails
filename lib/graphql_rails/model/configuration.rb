@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'graphql_rails/attribute'
-require 'graphql_rails/model/graphql_type_builder'
+require 'graphql_rails/attributes'
+require 'graphql_rails/model/build_graphql_type'
+require 'graphql_rails/model/build_enum_type'
 require 'graphql_rails/model/input'
 require 'graphql_rails/model/configurable'
 require 'graphql_rails/model/configuration/count_items'
@@ -18,7 +19,7 @@ module GraphqlRails
 
       def attribute(attribute_name, type: nil, **attribute_options)
         attributes[attribute_name.to_s] = \
-          Attribute.new(
+          Attributes::Attribute.new(
             attribute_name,
             type,
             attribute_options
@@ -35,14 +36,14 @@ module GraphqlRails
         end
 
         @input.fetch(name) do
-          raise("GraphQL input with name #{input_name.inspect} is not defined for #{model_class}")
+          raise("GraphQL input with name #{input_name.inspect} is not defined for #{model_class.name}")
         end
       end
 
       def graphql_type
-        @graphql_type ||= GraphqlTypeBuilder.new(
+        @graphql_type ||= BuildGraphqlType.call(
           name: name, description: description, attributes: attributes
-        ).call
+        )
       end
 
       def connection_type

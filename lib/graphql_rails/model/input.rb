@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'graphql_rails/model/graphql_input_type_builder'
+require 'graphql_rails/model/build_graphql_input_type'
 require 'graphql_rails/model/configurable'
 
 module GraphqlRails
@@ -15,16 +15,16 @@ module GraphqlRails
       end
 
       def graphql_input_type
-        @graphql_input_type ||= GraphqlInputTypeBuilder.new(
+        @graphql_input_type ||= BuildGraphqlInputType.call(
           name: name, description: description, attributes: attributes
-        ).call
+        )
       end
 
-      def attribute(attribute_name, type: nil, **attribute_options)
+      def attribute(attribute_name, type: nil, enum: nil, **attribute_options)
         attributes[attribute_name.to_s] = \
-          InputAttribute.new(
+          GraphqlRails::Attributes::InputAttribute.new(
             attribute_name,
-            type,
+            attribute_type(attribute_name, type: type, enum: enum, **attribute_options),
             attribute_options
           )
       end
@@ -38,6 +38,16 @@ module GraphqlRails
           suffix = input_name_suffix ? input_name_suffix.to_s.tableize : ''
           "#{model_class.name.split('::').last}#{suffix}Input"
         end
+      end
+
+      def attribute_type(attribute_name, type:, enum:, description: nil, **_other)
+        return type unless enum
+
+        BuildEnumType.call(
+          "#{name}_#{attribute_name}_enum",
+          allowed_values: enum,
+          description: description
+        )
       end
     end
   end

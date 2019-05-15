@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module GraphqlRails
-  module Model
+  module Attributes
     # contains info about single graphql input attribute
     class InputAttribute
-      include GraphqlRails::Attribute::Attributable
+      include Attributable
 
       attr_reader :description
 

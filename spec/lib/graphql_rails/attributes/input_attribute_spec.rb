@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module GraphqlRails
-  module Model
+  module Attributes
     RSpec.describe InputAttribute do
       subject(:attribute) { described_class.new(name, type) }
 

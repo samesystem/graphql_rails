@@ -1,5 +1,9 @@
 # GraphqlRails
 
+[![Build Status](https://travis-ci.org/samesystem/graphql_rails.svg?branch=master)](https://travis-ci.org/samesystem/graphql_rails)
+[![codecov](https://codecov.io/gh/samesystem/graphql_rails/branch/master/graph/badge.svg)](https://codecov.io/gh/samesystem/graphql_rails)
+[![Documentation](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://samesystem.github.io/graphql_rails)
+
 Rails style structure for GraphQL API.
 
 ## Installation
@@ -167,6 +171,9 @@ RSpec.describe MyGraphqlController, type: :graphql_controller do
 end
 ```
 
+## Detailed documentation
+
+Check https://samesystem.github.io/graphql_rails for more details
 
 ## Development
 
@@ -176,7 +183,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/graphql_rails. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/samesystem/graphql_rails. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
@@ -184,4 +191,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the GraphqlRails project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/graphql_rails/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the GraphqlRails project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/samesystem/graphql_rails/blob/master/CODE_OF_CONDUCT.md).

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module GraphqlRails
+  require 'graphql'
+
   # base class which is returned in case something bad happens. Contains all error rendering tructure
   class ExecutionError < GraphQL::ExecutionError
     def to_h

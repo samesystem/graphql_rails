@@ -114,10 +114,87 @@ class User
 end
 ```
 
-### *graphql_type*
+### _graphql_type_
 
 Sometimes it's handy to get raw graphql type. To do so you can call:
 
 ```ruby
 YourModel.graphql.grapqhl_type
+```
+
+### _input_
+
+You can define input types:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute :name
+  end
+end
+```
+
+Also you can have multiple input types:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input(:create) do |c|
+    c.attribute :name
+  end
+
+  graphql.input(:update) do |c|
+    c.attribute :id
+    c.attribute :name
+  end
+end
+```
+
+### _attribute_
+
+Most commonly you will use `attribute` to define what kind of values your endpoint accepts
+
+#### _type_
+
+You can specify your input attribute type. If type is not provided then type is set to `:string`.
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute :friends_count, type: :integer!
+  end
+end
+```
+
+#### _enum_
+
+You can specify your input attribute as enum:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute :favorite_fruit, enum: %i[apple orange]
+  end
+end
+```
+
+#### _description_
+
+To improve graphql endpoint documentation, you can add description for each input attribute:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute :name, description: "User's first name"
+  end
+end
 ```

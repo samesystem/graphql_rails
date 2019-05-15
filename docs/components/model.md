@@ -114,7 +114,7 @@ class User
 end
 ```
 
-### _graphql_type_
+### _graphql\_type_
 
 Sometimes it's handy to get raw graphql type. To do so you can call:
 
@@ -153,11 +153,11 @@ class User
 end
 ```
 
-### _attribute_
+#### _attribute_
 
 Most commonly you will use `attribute` to define what kind of values your endpoint accepts
 
-#### _type_
+##### _type_
 
 You can specify your input attribute type. If type is not provided then type is set to `:string`.
 
@@ -171,7 +171,7 @@ class User
 end
 ```
 
-#### _enum_
+##### _enum_
 
 You can specify your input attribute as enum:
 
@@ -185,7 +185,7 @@ class User
 end
 ```
 
-#### _description_
+##### _description_
 
 To improve graphql endpoint documentation, you can add description for each input attribute:
 

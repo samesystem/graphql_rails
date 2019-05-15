@@ -30,7 +30,7 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
 end
 ```
 
-## _resources_
+## resources
 
 `resources` method generates routes to `index`, `show`, `create`, `update` and `destroy` controller actions.
 
@@ -58,6 +58,20 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
   end
 end
 ```
+
+#### Appending name to the end of resource name
+
+Sometimes, especially when working with member queries, it sounds better when action name is added to the end of resource name instead of start. To do so, you can add `suffix: true` to route:
+
+```ruby
+MyGraphqlSchema = GraphqlRails::Router.draw do
+  resouces :users do
+    query :details, on: :member, suffix: true
+  end
+end
+```
+
+This will generate `userDetails` field on GraphQL side.
 
 ## _query_ and _mutation_
 

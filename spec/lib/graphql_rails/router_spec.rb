@@ -18,6 +18,13 @@ RSpec.describe GraphqlRails::Router do
     end
   end
 
+  describe '#rescue_from' do
+    it 'allows rescuing from errors' do
+      expect { router.rescue_from(StandardError) { 'ups!' } }
+        .to change { router.graphql_schema.send(:rescues?) }.from(false).to(true)
+    end
+  end
+
   describe '#scope' do
     context 'with nested scopes' do
       before do
@@ -103,6 +110,19 @@ RSpec.describe GraphqlRails::Router do
 
       it 'adds extra actions' do
         expect(router.routes.map(&:name)).to match_array %w[customUser customUsers changeSomeUser]
+      end
+    end
+
+    context 'with suffix param' do
+      before do
+        router.resources :users, only: [] do
+          query :friends, on: :member, suffix: true
+          mutation :change_some, on: :collection, suffix: true
+        end
+      end
+
+      it 'adds actions with suffix' do
+        expect(router.routes.map(&:name)).to match_array %w[userFriends usersChangeSome]
       end
     end
   end

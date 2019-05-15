@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 * Added: input type now accepts `enum` param which allows create enum fields
+* Added: routes now accepts `suffix: true` flag which generates GraphQL field with appended action name to the end of resource name
 
 ## 0.6.0 (2019-04-29)
 

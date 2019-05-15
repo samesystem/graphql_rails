@@ -62,9 +62,14 @@ module GraphqlRails
         build_route(QueryRoute, *args)
       end
 
-      def build_route(builder, action, prefix: action, on: :member, **custom_options)
+      def build_route(builder, action, prefix: action, suffix: false, on: :member, **custom_options)
+        if suffix == true
+          suffix_name = action
+          prefix = ''
+        end
+
         action_options = options.merge(custom_options).merge(on: on)
-        action_name = [prefix, resource_name(on)].reject(&:empty?).join('_')
+        action_name = [prefix, resource_name(on), suffix_name].map(&:to_s).reject(&:empty?).join('_')
         builder.new(action_name, to: "#{name}##{action}", **action_options)
       end
 

@@ -105,5 +105,18 @@ RSpec.describe GraphqlRails::Router do
         expect(router.routes.map(&:name)).to match_array %w[customUser customUsers changeSomeUser]
       end
     end
+
+    context 'with suffix param' do
+      before do
+        router.resources :users, only: [] do
+          query :friends, on: :member, suffix: true
+          mutation :change_some, on: :collection, suffix: true
+        end
+      end
+
+      it 'adds actions with suffix' do
+        expect(router.routes.map(&:name)).to match_array %w[userFriends usersChangeSome]
+      end
+    end
   end
 end

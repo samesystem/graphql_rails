@@ -6,6 +6,7 @@ require 'graphql_rails/controller/configuration'
 require 'graphql_rails/controller/request'
 require 'graphql_rails/controller/format_results'
 require 'graphql_rails/controller/action_hooks_runner'
+require 'graphql_rails/controller/log_controller_action'
 
 module GraphqlRails
   # base class for all graphql_rails controllers
@@ -43,15 +44,11 @@ module GraphqlRails
     end
 
     def call(method_name)
-      @action_name = method_name
-      call_with_rendering(method_name)
-
-      FormatResults.new(
-        graphql_request.object_to_return,
-        action_config: self.class.action(method_name),
-        params: params,
-        graphql_context: graphql_request.context
-      ).call
+      with_controller_action_logging do
+        @action_name = method_name
+        call_with_rendering
+        format_controller_results
+      end
     ensure
       @action_name = nil
     end
@@ -74,7 +71,7 @@ module GraphqlRails
 
     private
 
-    def call_with_rendering(action_name)
+    def call_with_rendering
       hooks_runner = ActionHooksRunner.new(action_name: action_name, controller: self)
       response = hooks_runner.call { public_send(action_name) }
 
@@ -89,6 +86,25 @@ module GraphqlRails
 
       errors = rendering_params[:error] || rendering_params[:errors]
       Array(errors)
+    end
+
+    def with_controller_action_logging(&block)
+      LogControllerAction.call(
+        controller_name: self.class.name,
+        action_name: action_name,
+        params: params,
+        graphql_request: graphql_request,
+        &block
+      )
+    end
+
+    def format_controller_results
+      FormatResults.new(
+        graphql_request.object_to_return,
+        action_config: self.class.action(action_name),
+        params: params,
+        graphql_context: graphql_request.context
+      ).call
     end
   end
 end

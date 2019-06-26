@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'activerecord'
   spec.add_development_dependency 'pry-byebug'
+  spec.add_development_dependency 'rails', '~> 5'
 end

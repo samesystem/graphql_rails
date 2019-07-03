@@ -50,7 +50,7 @@ that's it - you should see GraphQL logs now.
 
 ## Sentry
 
-In order to improve sentry logs, you need to change Raven context. In order to do so, add it to your GraphqlRails::Controller:
+In order to improve sentry logs, you need to change Raven context. In order to do so, add it to your `GraphqlRails::Controller`:
 
 ```ruby
 # app/controllers/graphql/graphql_application_controller.rb

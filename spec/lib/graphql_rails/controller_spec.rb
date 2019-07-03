@@ -165,6 +165,15 @@ module GraphqlRails
         allow(context).to receive(:add_error)
       end
 
+      it 'logs with correct params' do
+        log = nil
+        log_key = Controller::LogControllerAction::START_PROCESSING_KEY
+        ActiveSupport::Notifications.subscribe(log_key) { |*_, it| log = it }
+
+        call
+        expect(log).to eq(action: controller_action, controller: DummyCallController.name, params: {})
+      end
+
       context 'when before action hooks are set on parent and child controller' do
         let(:controller) { DummyMultipleBeforeActionsChildController.new(request) }
 

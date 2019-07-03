@@ -65,6 +65,7 @@ class Graphql::GraphqlApplicationController < GraphqlRails::Controller
     Raven.capture_exception(error, {}) unless error.is_a?(GraphQL::ExecutionError)
     raise error
   end
+end
 ```
 
 It's sad that crashes are happening, but at least now you can see them in sentry

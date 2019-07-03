@@ -1,6 +1,6 @@
 # Logging and monitoring
 
-GraphqlRails behaves siliar as Ruby on Rails behavior. This allows to use existing monitoring and logging tools. Here we will add some examples on how to setup various tools for GraphqlRails
+GraphqlRails behaves similar as Ruby on Rails. This allows to use existing monitoring and logging tools. Here we will add some examples on how to setup various tools for GraphqlRails
 
 ## Instrumentation
 

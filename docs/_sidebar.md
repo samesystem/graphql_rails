@@ -6,4 +6,5 @@
   * [Routes](components/routes)
   * [Model](components/model)
   * [Controller](components/controller)
+* [Logging and monitoring](logging_and_monitoring/logging_and_monitoring)
 * [Testing](testing/testing)

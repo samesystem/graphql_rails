@@ -44,8 +44,8 @@ module GraphqlRails
     end
 
     def call(method_name)
+      @action_name = method_name
       with_controller_action_logging do
-        @action_name = method_name
         call_with_rendering
         format_controller_results
       end

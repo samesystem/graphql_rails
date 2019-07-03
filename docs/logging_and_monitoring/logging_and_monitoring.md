@@ -13,7 +13,7 @@ you can watch those actions using with `ActiveSupport::Notifications#subscribe` 
 
 ```ruby
 key = 'process_action.graphql_action_controller'
-ActiveSupport::Notifications.subscribe() do |*_, payload|
+ActiveSupport::Notifications.subscribe(key) do |*_, payload|
   YourLogger.do_something(payload)
 end
 ```

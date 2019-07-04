@@ -171,6 +171,22 @@ RSpec.describe MyGraphqlController, type: :graphql_controller do
 end
 ```
 
+### Integrating GraphqlRails with other tools
+
+In order to make GraphqlRails work with tools such as lograge or sentry, you need to enable them. In Ruby on Rails, you can add initializer:
+
+```ruby
+# config/initializers/graphql_rails.rb
+GraphqlRails::Integrations.enable(:lograge, :sentry)
+```
+
+At the moment, GraphqlRails supports following integrations:
+
+* lograge
+* sentry
+
+If you need to build something custom, check [logging_and_monitoring documentation](logging_and_monitoring/logging_and_monitoring.md) for more details.
+
 ## Detailed documentation
 
 Check https://samesystem.github.io/graphql_rails for more details

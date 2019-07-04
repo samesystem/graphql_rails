@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 * Added: controller action instrumentation [@povilasjurcys](https://github.com/povilasjurcys)
+* Added: sentry and lograge integrations
 
 ## 0.7.0 (2019-05-15)
 

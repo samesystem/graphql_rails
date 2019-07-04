@@ -8,4 +8,5 @@ require 'graphql_rails/attributes'
 
 # wonders starts here
 module GraphqlRails
+  autoload :Integrations, 'graphql_rails/integrations'
 end

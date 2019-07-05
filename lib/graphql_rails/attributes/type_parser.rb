@@ -28,6 +28,13 @@ module GraphqlRails
         'decimal' => GraphQL::FLOAT_TYPE
       }.freeze
 
+      RAW_GRAPHQL_TYPES = [
+        GraphQL::Schema::List,
+        GraphQL::BaseType,
+        GraphQL::ObjectType,
+        GraphQL::InputObjectType
+      ].freeze
+
       def initialize(unparsed_type)
         @unparsed_type = unparsed_type
       end
@@ -84,10 +91,11 @@ module GraphqlRails
       end
 
       def raw_graphql_type?
-        unparsed_type.is_a?(GraphQL::BaseType) ||
-          unparsed_type.is_a?(GraphQL::ObjectType) ||
-          unparsed_type.is_a?(GraphQL::InputObjectType) ||
-          (defined?(GraphQL::Schema::Member) && unparsed_type.is_a?(Class) && unparsed_type < GraphQL::Schema::Member)
+        return true if RAW_GRAPHQL_TYPES.detect { |raw_type| unparsed_type.is_a?(raw_type) }
+
+        defined?(GraphQL::Schema::Member) &&
+          unparsed_type.is_a?(Class) &&
+          unparsed_type < GraphQL::Schema::Member
       end
 
       def inner_type_name

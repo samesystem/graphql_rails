@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'active_record'
 
 module GraphqlRails
   RSpec.describe Controller do
@@ -114,14 +115,27 @@ module GraphqlRails
     end
 
     class DummyCallController < GraphqlRails::Controller
+      DummyDecorator = Class.new(SimpleDelegator)
+
+      attr_accessor :response_object
+
+      def initialize(*args)
+        super
+        @response_object = 'Hello'
+      end
+
       def respond_with_render
-        render 'Hello from render'
+        render response_object
         'This should not be returned'
       end
 
       def respond_with_rendered_errors
         render error: 'bam!'
-        'This should not be returned'
+        response_object
+      end
+
+      def respond_with_decorator
+        decorate(response_object, with: DummyDecorator)
       end
 
       def respond_with_raised_error
@@ -141,8 +155,11 @@ module GraphqlRails
       before_action :child_filter
     end
 
-    subject(:controller) { DummyCallController.new(request) }
+    subject(:controller) do
+      DummyCallController.new(request).tap { |c| c.response_object = raw_response_object }
+    end
 
+    let(:raw_response_object) { 'Hello' }
     let(:request) { Controller::Request.new(graphql_object, inputs, context) }
     let(:graphql_object) { nil }
     let(:inputs) { {} }
@@ -328,6 +345,32 @@ module GraphqlRails
         end
       end
 
+      context 'when decorator is used' do
+        let(:controller_action) { :respond_with_decorator }
+
+        it 'returns decorator instance' do
+          expect(call).to be_a(DummyCallController::DummyDecorator)
+        end
+
+        context 'when response is nil' do
+          let(:raw_response_object) { nil }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when response is instance of ActiveRecord::Relation' do
+          let(:raw_response_object) { instance_double(ActiveRecord::Relation) }
+
+          before do
+            allow(raw_response_object).to receive(:is_a?).with(ActiveRecord::Relation).and_return(true)
+          end
+
+          it 'returns decorator' do
+            expect(call).to be_a(Controller::ActiveRecordRelationDecorator)
+          end
+        end
+      end
+
       context 'when render was used' do
         context 'when errors was rendered' do
           let(:controller_action) { :respond_with_rendered_errors }
@@ -344,7 +387,7 @@ module GraphqlRails
 
         context 'when result was rendered' do
           it 'returns rendered result' do
-            expect(call).to eq 'Hello from render'
+            expect(call).to eq 'Hello'
           end
         end
 

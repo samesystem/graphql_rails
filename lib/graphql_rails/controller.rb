@@ -7,7 +7,7 @@ require 'graphql_rails/controller/request'
 require 'graphql_rails/controller/format_results'
 require 'graphql_rails/controller/action_hooks_runner'
 require 'graphql_rails/controller/log_controller_action'
-require 'graphql_rails/controller/active_record_relation_decorator'
+require 'graphql_rails/controller/relation_decorator'
 
 module GraphqlRails
   # base class for all graphql_rails controllers
@@ -72,8 +72,8 @@ module GraphqlRails
 
     def decorate(object, with:)
       decorator = with
-      if object.is_a?(ActiveRecord::Relation)
-        Controller::ActiveRecordRelationDecorator.new(
+      if Controller::RelationDecorator.decorates?(object)
+        Controller::RelationDecorator.new(
           relation: object, decorator: decorator
         )
       elsif object.nil?

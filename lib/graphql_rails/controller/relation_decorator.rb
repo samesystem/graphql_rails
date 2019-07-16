@@ -3,9 +3,14 @@
 module GraphqlRails
   class Controller
     # wrapps active record relation and returns decorated object instead
-    class ActiveRecordRelationDecorator
+    class RelationDecorator
       delegate :map, :each, to: :to_a
       delegate :limit_value, :offset_value, :count, :size, to: :relation
+
+      def self.decorates?(object)
+        (defined?(ActiveRecord) && object.is_a?(ActiveRecord::Relation)) ||
+          defined?(Mongoid) && object.is_a?(Mongoid::Criteria)
+      end
 
       def initialize(decorator:, relation:)
         @relation = relation
@@ -67,7 +72,7 @@ module GraphqlRails
     end
 
     GraphQL::Relay::BaseConnection.register_connection_implementation(
-      ActiveRecordRelationDecorator, GraphQL::Relay::RelationConnection
+      RelationDecorator, GraphQL::Relay::RelationConnection
     )
   end
 end

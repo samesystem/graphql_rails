@@ -366,7 +366,7 @@ module GraphqlRails
           end
 
           it 'returns decorator' do
-            expect(call).to be_a(Controller::ActiveRecordRelationDecorator)
+            expect(call).to be_a(Controller::RelationDecorator)
           end
         end
       end

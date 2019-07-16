@@ -5,7 +5,7 @@ require 'active_record'
 
 module GraphqlRails
   class Controller
-    RSpec.describe ActiveRecordRelationDecorator do
+    RSpec.describe RelationDecorator do
       subject(:relation_decorator) do
         described_class.new(relation: relation, decorator: decorator)
       end

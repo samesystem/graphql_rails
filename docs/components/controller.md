@@ -66,6 +66,68 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+### *permit_input*
+
+Allows to permit single input field. It allows to set additional options for each field.
+
+
+#### *type*
+
+Specifies input type:
+
+```ruby
+class OrderController < GraphqlRails::Controller
+  action(:create)
+    .permit_input(:price, type: :integer!)
+    # Same as `.permit(amount: :integer!)`
+end
+```
+
+#### *description*
+
+You can describe each input by adding `description` keyword argument:
+
+```ruby
+class OrderController < GraphqlRails::Controller
+  action(:create)
+    .permit_input(:price, type: :integer!, description: 'Price in Euro cents')
+end
+```
+
+#### *subtype*
+
+`subtype` allows to specify which named input should be used. Here is an example:
+
+Let's say you have user with two input types
+
+```ruby
+class User
+  graphql.input do |c|
+    c.attribute :full_name
+    c.attribute :email
+  end
+
+  graphql.input(:change_password) do |c|
+    c.attribute :password
+    c.attribute :password_confirmation
+  end
+end
+```
+
+If you do not specify `subtype` then default (without name) input will be used. You need to specify subtype if you want to use non-default input:
+
+```ruby
+class OrderController < GraphqlRails::Controller
+  # this is the input with email and full_name:
+  action(:create)
+    .permit_input(:input, type: 'User!')
+
+  # this is the input with password and password_confirmation:
+  action(:update_password)
+    .permit_input(:input, type: 'User!', subtype: :change_password)
+end
+```
+
 ### *can_return_nil*
 
 By default it is expected that each controller action returns model or array of models. `nil` is not allowed. You can change that by adding `can_return_nil` like this:

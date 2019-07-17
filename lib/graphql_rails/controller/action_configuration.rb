@@ -26,8 +26,20 @@ module GraphqlRails
       end
 
       def permit(*no_type_attributes, **typed_attributes)
-        no_type_attributes.each { |attribute| permit_attribute(attribute) }
-        typed_attributes.each { |attribute, type| permit_attribute(attribute, type) }
+        no_type_attributes.each { |attribute| permit_input(attribute) }
+        typed_attributes.each { |attribute, type| permit_input(attribute, type: type) }
+        self
+      end
+
+      def permit_input(name, type: nil, description: nil, subtype: nil)
+        field_name = name.to_s.remove(/!\Z/)
+
+        attributes[field_name] = Attributes::InputAttribute.new(
+          name.to_s, type,
+          description: description,
+          subtype: subtype,
+          options: action_options
+        )
         self
       end
 
@@ -85,11 +97,6 @@ module GraphqlRails
 
       def type_parser
         Attributes::TypeParser.new(custom_return_type)
-      end
-
-      def permit_attribute(name, type = nil)
-        field_name = name.to_s.remove(/!\Z/)
-        attributes[field_name] = Attributes::InputAttribute.new(name.to_s, type, options: action_options)
       end
     end
   end

@@ -6,6 +6,8 @@ module GraphqlRails
   module Attributes
     # converts string value in to GraphQL type
     class TypeParser
+      require_relative './type_name_info'
+
       class UnknownTypeError < ArgumentError; end
 
       TYPE_MAPPING = {
@@ -50,20 +52,31 @@ module GraphqlRails
       end
 
       def graphql_model
-        type_class = inner_type_name.safe_constantize
+        type_class = nullable_inner_name.safe_constantize
         return unless type_class.respond_to?(:graphql)
 
         type_class
       end
 
+      protected
+
+      def dynamicly_defined_type
+        type_class = graphql_model
+        return unless type_class
+
+        type_class.graphql.graphql_type
+      end
+
       private
+
+      delegate :list?, :required_inner_type?, :required_list?, :nullable_inner_name, to: :type_name_info
 
       attr_reader :unparsed_type
 
       def parsed_list_type
         list_type = parsed_inner_type.to_list_type
 
-        if required_list_type?
+        if required_list?
           list_type.to_non_null_type
         else
           list_type
@@ -78,18 +91,6 @@ module GraphqlRails
         end
       end
 
-      def required_inner_type?
-        !!unparsed_type[/\w!/] # rubocop:disable Style/DoubleNegation
-      end
-
-      def list?
-        unparsed_type.to_s.include?(']')
-      end
-
-      def required_list_type?
-        unparsed_type.to_s.include?(']!')
-      end
-
       def raw_graphql_type?
         return true if RAW_GRAPHQL_TYPES.detect { |raw_type| unparsed_type.is_a?(raw_type) }
 
@@ -98,25 +99,18 @@ module GraphqlRails
           unparsed_type < GraphQL::Schema::Member
       end
 
-      def inner_type_name
-        unparsed_type.to_s.tr('[]!', '')
+      def type_name_info
+        @type_name_info ||= TypeNameInfo.new(unparsed_type.to_s)
       end
 
       def type_by_name
-        TYPE_MAPPING.fetch(inner_type_name.downcase) do
+        TYPE_MAPPING.fetch(nullable_inner_name.downcase) do
           dynamicly_defined_type || raise(
             UnknownTypeError,
             "Type #{unparsed_type.inspect} is not supported. Supported scalar types are: #{TYPE_MAPPING.keys}." \
             ' All the classes that includes `GraphqlRails::Model` are also supported as types.'
           )
         end
-      end
-
-      def dynamicly_defined_type
-        type_class = graphql_model
-        return unless type_class
-
-        type_class.graphql.graphql_type
       end
     end
   end

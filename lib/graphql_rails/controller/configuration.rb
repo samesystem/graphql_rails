@@ -45,6 +45,8 @@ module GraphqlRails
 
       def action(method_name)
         @action_by_name[method_name.to_s] ||= ActionConfiguration.new
+        yield(@action_by_name[method_name.to_s]) if block_given?
+        @action_by_name[method_name.to_s]
       end
 
       private

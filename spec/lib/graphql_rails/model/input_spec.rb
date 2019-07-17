@@ -26,6 +26,12 @@ module GraphqlRails
         end
       end
 
+      describe '#name' do
+        it 'joins model name and input name' do
+          expect(input.name).to eq 'DummyModelSearchCriteriaInput'
+        end
+      end
+
       describe '#attribute' do
         context 'when attribute has enum type' do
           before do

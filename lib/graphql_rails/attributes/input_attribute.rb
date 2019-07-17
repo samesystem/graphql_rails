@@ -22,7 +22,8 @@ module GraphqlRails
       end
 
       def input_argument_args
-        type = raw_input_type || input_type_parser.graphql_type || nullable_type
+        type = raw_input_type || input_type_parser.nullable_type || nullable_type
+
         [field_name, type, { required: required?, description: description }]
       end
 

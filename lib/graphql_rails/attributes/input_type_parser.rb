@@ -14,17 +14,37 @@ module GraphqlRails
       def graphql_type
         return nil if unparsed_type.nil?
 
+        partly_parsed_type || parsed_type
+      end
+
+      def nullable_type
+        return nil if unparsed_type.nil?
+
+        partly_parsed_type || parsed_nullable_type
+      end
+
+      protected
+
+      def partly_parsed_type
         return unparsed_type if raw_graphql_type?
         return unparsed_type.graphql_input_type if unparsed_type.is_a?(GraphqlRails::Model::Input)
+      end
 
+      def parsed_nullable_type
+        if list?
+          parsed_inner_type.to_list_type
+        else
+          type_by_name
+        end
+      end
+
+      def parsed_type
         if list?
           parsed_list_type
         else
           parsed_inner_type
         end
       end
-
-      protected
 
       def raw_graphql_type?
         unparsed_type.is_a?(GraphQL::InputObjectType) || super

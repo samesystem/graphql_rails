@@ -52,8 +52,34 @@ module GraphqlRails
         context 'when type refers to Graphql::Model' do
           let(:type) { DummyModel.name }
 
-          it 'returns graphql input type' do
-            expect(graphql_input_type).to eq DummyModel.graphql.input.graphql_input_type
+          context 'when type is nullable' do
+            it 'returns graphql input type' do
+              expect(graphql_input_type).to eq DummyModel.graphql.input.graphql_input_type
+            end
+          end
+
+          context 'when type is not nullable' do
+            let(:type) { "#{DummyModel.name}!" }
+
+            it 'returns non nullable graphql input type' do
+              expect(graphql_input_type.to_type_signature).to eq 'DummyModelInput!'
+            end
+          end
+
+          context 'when type is not nullable array' do
+            let(:type) { "[#{DummyModel.name}!]!" }
+
+            it 'returns non nullable graphql input type' do
+              expect(graphql_input_type.to_s).to eq '[DummyModelInput!]!'
+            end
+          end
+
+          context 'when type is nullable array' do
+            let(:type) { "[#{DummyModel.name}!]" }
+
+            it 'returns nullable array input type' do
+              expect(graphql_input_type.to_type_signature).to eq '[DummyModelInput!]'
+            end
           end
         end
       end

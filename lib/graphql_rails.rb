@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/module/delegation'
+
 require 'graphql_rails/version'
 require 'graphql_rails/model'
 require 'graphql_rails/router'

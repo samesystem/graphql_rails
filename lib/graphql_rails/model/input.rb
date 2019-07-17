@@ -35,7 +35,7 @@ module GraphqlRails
 
       def default_name
         @default_name ||= begin
-          suffix = input_name_suffix ? input_name_suffix.to_s.tableize : ''
+          suffix = input_name_suffix ? input_name_suffix.to_s.camelize : ''
           "#{model_class.name.split('::').last}#{suffix}Input"
         end
       end

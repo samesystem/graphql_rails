@@ -2,6 +2,7 @@
 
 require 'active_support/core_ext/string/filters'
 require 'graphql_rails/attributes'
+require 'graphql_rails/input_configurable'
 require 'graphql_rails/errors/error'
 
 module GraphqlRails
@@ -10,6 +11,8 @@ module GraphqlRails
     class ActionConfiguration
       class MissingConfigurationError < GraphqlRails::Error; end
       class DeprecatedDefaultModelError < GraphqlRails::Error; end
+
+      include InputConfigurable
 
       attr_reader :attributes, :pagination_options
 
@@ -26,35 +29,17 @@ module GraphqlRails
       end
 
       def options(action_options = nil)
-        @options ||= {}
-        return @options if action_options.nil?
+        @input_attribute_options ||= {}
+        return @input_attribute_options if action_options.nil?
 
-        @options[:input_format] = action_options[:input_format] if action_options[:input_format]
+        @input_attribute_options[:input_format] = action_options[:input_format] if action_options[:input_format]
 
         self
       end
 
-      def permit(*no_type_attributes, **typed_attributes)
-        no_type_attributes.each { |attribute| permit_input(attribute) }
-        typed_attributes.each { |attribute, type| permit_input(attribute, type: type) }
-        self
-      end
-
-      def permit_input(name, type: nil, options: {}, **input_options)
-        field_name = name.to_s.remove(/!\Z/)
-
-        attributes[field_name] = Attributes::InputAttribute.new(
-          name.to_s, type,
-          options: self.options.merge(options),
-          **input_options
-        )
-        self
-      end
-
-      def paginated(pagination_options = {})
+      def paginated(*args)
         @return_type = nil
-        @pagination_options = pagination_options
-        permit(:before, :after, first: :int, last: :int)
+        super
       end
 
       def description(new_description = nil)
@@ -95,10 +80,6 @@ module GraphqlRails
         list_name = "#{list_name}!" if required_list
 
         returns(list_name)
-      end
-
-      def paginated?
-        !!pagination_options # rubocop:disable Style/DoubleNegation
       end
 
       def return_type

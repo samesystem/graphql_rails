@@ -5,11 +5,11 @@ require 'graphql/relay'
 
 module GraphqlRails
   class Controller
-    RSpec.describe GraphqlRails::Controller::FormatResults do
+    RSpec.describe GraphqlRails::Output::FormatResults do
       subject(:formatter) do
         described_class.new(
           original_result,
-          action_config: action_config,
+          input_config: action_config,
           graphql_context: nil,
           params: {}
         )

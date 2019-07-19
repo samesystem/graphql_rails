@@ -25,6 +25,57 @@ module GraphqlRails
       end
     end
 
+    describe '#attribute' do
+      let(:model) do
+        Class.new do
+          include GraphqlRails::Model
+
+          graphql do |c|
+            c.description 'Used for test purposes'
+            c.attribute :paginated_list, type: '[string!]!]', paginated: true
+            c.attribute :field_with_args, permit: { name: :string! }
+            c.attribute :paginated_list_with_args, permit: { name: :string! }
+          end
+
+          def self.name
+            'DummyModel'
+          end
+
+          def paginated_list
+            ['a'] * 1000
+          end
+
+          def field_with_args(name:)
+            "hello #{name}!"
+          end
+
+          def paginated_list_with_args(name:)
+            ["hello #{name}!"] * 10
+          end
+        end
+      end
+
+      context 'when attribute is paginated' do
+        it 'returns connection type' do
+          expect(model.graphql.graphql_type.fields['paginatedList'].type.to_type_signature).to eq 'sd'
+        end
+
+        it 'paginates results'
+      end
+
+      context 'when attribute accepts arguments' do
+        it 'returns correct type'
+        it 'passes arguments to appropirate method' do
+        end
+      end
+
+      context 'when attribute is paginated and accepts arguments' do
+        it 'returns connection type'
+        it 'paginates results'
+        it 'passes non pagination arguments'
+      end
+    end
+
     describe '#graphql_type' do
       subject(:graphql_type) { config.graphql_type }
 

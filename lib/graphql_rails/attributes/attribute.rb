@@ -2,12 +2,16 @@
 
 require 'graphql'
 require 'graphql_rails/attributes/attributable'
+require 'graphql_rails/input_configurable'
 
 module GraphqlRails
   module Attributes
     # contains info about single graphql attribute
     class Attribute
       include Attributable
+      include InputConfigurable
+
+      attr_reader :attributes
 
       def initialize(name, type = nil, description: nil, property: name, required: nil)
         @initial_type = type
@@ -15,6 +19,7 @@ module GraphqlRails
         @description = description
         @property = property.to_s
         @required = required
+        @attributes ||= {}
       end
 
       def type(new_type = nil)
@@ -46,6 +51,17 @@ module GraphqlRails
           {
             method: property.to_sym,
             null: optional?
+          }
+        ]
+      end
+
+      def argument_args
+        [
+          field_name,
+          type_parser.type_arg,
+          {
+            description: description,
+            required: required?
           }
         ]
       end

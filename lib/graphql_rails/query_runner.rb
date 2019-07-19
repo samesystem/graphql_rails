@@ -8,8 +8,9 @@ module GraphqlRails
 
     include ::GraphqlRails::Service
 
-    def initialize(router: :default, params:, **schema_options)
+    def initialize(router: :default, params:, schema: nil, **schema_options)
       @router_name = router
+      @graphql_schema = schema
       @params = params
       @schema_options = schema_options
     end
@@ -29,6 +30,10 @@ module GraphqlRails
 
     def variables
       ensure_hash(params[:variables])
+    end
+
+    def graphql_schema
+      @graphql_schema ||= router.graphql_schema
     end
 
     def router

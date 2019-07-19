@@ -45,7 +45,10 @@ module GraphqlRails
       private
 
       def type_parser
-        @type_parser ||= TypeParser.new(initial_type || attribute_name_parser.graphql_type)
+        @type_parser ||= begin
+          type_for_parser = initial_type || attribute_name_parser.graphql_type
+          TypeParser.new(type_for_parser, paginated: paginated?)
+        end
       end
 
       def attribute_name_parser

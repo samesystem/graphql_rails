@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GraphqlRails
-  class Controller
+  module Decorator
     # wrapps active record relation and returns decorated object instead
     class RelationDecorator
       delegate :map, :each, to: :to_a
@@ -12,9 +12,10 @@ module GraphqlRails
           defined?(Mongoid) && object.is_a?(Mongoid::Criteria)
       end
 
-      def initialize(decorator:, relation:)
+      def initialize(decorator:, relation:, decorator_args: [])
         @relation = relation
         @decorator = decorator
+        @decorator_args = decorator_args
       end
 
       %i[where limit order group offset from select having all unscope].each do |method_name|
@@ -41,7 +42,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :relation, :decorator
+      attr_reader :relation, :decorator, :decorator_args
 
       def decoratable_object_method(method_name, *args, &block)
         object = relation.public_send(method_name, *args, &block)
@@ -52,9 +53,9 @@ module GraphqlRails
         return object_or_list if object_or_list.blank?
 
         if object_or_list.is_a?(Array)
-          object_or_list.map { |it| decorator.new(it) }
+          object_or_list.map { |it| decorator.new(it, *decorator_args) }
         else
-          decorator.new(object_or_list)
+          decorator.new(object_or_list, *decorator_args)
         end
       end
 
@@ -67,7 +68,7 @@ module GraphqlRails
 
       def chainable_method(method_name, *args, &block)
         new_relation = relation.public_send(method_name, *args, &block)
-        self.class.new(decorator: decorator, relation: new_relation)
+        self.class.new(decorator: decorator, relation: new_relation, decorator_args: decorator_args)
       end
     end
 

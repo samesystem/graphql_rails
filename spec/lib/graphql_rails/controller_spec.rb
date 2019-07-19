@@ -345,31 +345,7 @@ module GraphqlRails
         end
       end
 
-      context 'when decorator is used' do
-        let(:controller_action) { :respond_with_decorator }
 
-        it 'returns decorator instance' do
-          expect(call).to be_a(DummyCallController::DummyDecorator)
-        end
-
-        context 'when response is nil' do
-          let(:raw_response_object) { nil }
-
-          it { is_expected.to be_nil }
-        end
-
-        context 'when response is instance of ActiveRecord::Relation' do
-          let(:raw_response_object) { instance_double(ActiveRecord::Relation) }
-
-          before do
-            allow(raw_response_object).to receive(:is_a?).with(ActiveRecord::Relation).and_return(true)
-          end
-
-          it 'returns decorator' do
-            expect(call).to be_a(Controller::RelationDecorator)
-          end
-        end
-      end
 
       context 'when render was used' do
         context 'when errors was rendered' do

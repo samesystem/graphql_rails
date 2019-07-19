@@ -158,6 +158,8 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+Also check ['decorating controller responses']('components/decorator') for more details about working with active record and decorators.
+
 #### *max_page_size*
 
 Allows to specify max items count per request
@@ -328,31 +330,4 @@ end
 
 ## decorating objects
 
-If you want to decorate your response you can use `Controller#decorate` method. It can decorate simple objects and ActiveRecord::Relation objects. This is very handy when you need to decorated paginated actions:
-
-```ruby
-class User < ActiveRecord::Base
-  # it's not GraphqlRails::Model !
-end
-
-class UserDecorator < SimpleDelegator
-  include GraphqlRails::Model
-
-  graphql_rails do
-    # some setup, attributes, etc...
-  end
-end
-
-class UsersController < GraphqlRails::Controller
-  action(:index).paginated.returns('[UserDecorator!]!')
-
-  def index
-    decorate(User.where(active: true), with: UserDecorator)
-  end
-
-  def create
-    user = User.create(params)
-    decorate(user, with: UserDecorator)
-  end
-end
-```
+See ['Decorating controller responses']('components/decorator') for various options how you can decorate paginated responses

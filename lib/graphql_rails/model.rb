@@ -23,6 +23,12 @@ module GraphqlRails
 
     # static methods for GraphqlRails::Model
     module ClassMethods
+      def inherited(subclass)
+        subclass.instance_variable_set(:@graphql, graphql.dup)
+        subclass.graphql.instance_variable_set(:@model_class, self)
+        subclass.graphql.instance_variable_set(:@graphql_type, nil)
+      end
+
       def graphql
         @graphql ||= Model::Configuration.new(self)
         yield(@graphql) if block_given?

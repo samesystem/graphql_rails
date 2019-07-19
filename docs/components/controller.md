@@ -217,6 +217,24 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+### configuring action with a block
+
+If you do not like chainable methods, you can use "block" style action configuration:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:index) do |action|
+    action.paginated
+    action.permit(limit: :int!)
+    action.returns '[User!]!'
+  end
+
+  def create
+    User.create(params)
+  end
+end
+```
+
 ## *before_action*
 
 You can add `before_action` to run some filters before calling your controller action. Here is an example:

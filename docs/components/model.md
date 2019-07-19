@@ -58,7 +58,7 @@ end
 
 By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `propery` option:
 
-```
+```ruby
 class User
   include GraphqlRails::Model
 
@@ -76,12 +76,45 @@ end
 
 You can also describe each attribute and make graphql documentation even more readable. To do so, add `description` option:
 
-```
+```ruby
 class User
   include GraphqlRails::Model
 
   graphql do |c|
     c.attribute :shop_id, description: 'references to shop'
+  end
+end
+```
+
+### "attribute" configuration with chainable methods
+
+If your attribute definition is complex, you can define attribute in more eye-friendly chainable way with:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute(:shop_id)
+      .type('ID!')
+      .description('references to shop')
+  end
+end
+```
+
+### "attribute" configuration with a block
+
+You can also use block in order to specify attribute configuration:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute(:shop_id) do |attr|
+      attr.type 'ID!'
+      attr.description 'references to shop'
+    end
   end
 end
 ```

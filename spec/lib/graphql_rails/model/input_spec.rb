@@ -5,7 +5,7 @@ require 'spec_helper'
 module GraphqlRails
   module Model
     RSpec.describe Input do
-      subject(:input) { described_class.new(DummyModel, input_name) }
+      subject(:input) { described_class.new(model, input_name) }
 
       let(:input_name) { :search_criteria }
 

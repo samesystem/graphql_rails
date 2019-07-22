@@ -10,6 +10,24 @@ module GraphqlRails
       let(:type) { 'String!' }
       let(:name) { 'full_name' }
 
+      describe '#property' do
+        it 'sets property correctly' do
+          expect { attribute.property(:new_property) }.to change(attribute, :property).to('new_property')
+        end
+      end
+
+      describe '#description' do
+        it 'sets description correctly' do
+          expect { attribute.description('new') }.to change(attribute, :description).to('new')
+        end
+      end
+
+      describe '#type' do
+        it 'sets type correctly' do
+          expect { attribute.type(:int!) }.to change(attribute, :type).to(:int!)
+        end
+      end
+
       describe '#graphql_field_type' do
         subject(:graphql_field_type) { attribute.graphql_field_type }
 

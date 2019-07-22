@@ -17,13 +17,26 @@ module GraphqlRails
         @model_class = model_class
       end
 
-      def attribute(attribute_name, type: nil, **attribute_options)
-        attributes[attribute_name.to_s] = \
-          Attributes::Attribute.new(
-            attribute_name,
-            type,
-            attribute_options
-          )
+      def initialize_copy(other)
+        super
+        @connection_type = nil
+        @graphql_type = nil
+        @input = other.instance_variable_get(:@input)&.transform_values(&:dup)
+        @attributes = other.instance_variable_get(:@attributes)&.transform_values(&:dup)
+      end
+
+      def attribute(attribute_name, **attribute_options)
+        key = attribute_name.to_s
+
+        attributes[key] ||= Attributes::Attribute.new(attribute_name)
+
+        attributes[key].tap do |attribute|
+          attribute_options.each do |method_name, args|
+            attribute.public_send(method_name, args)
+          end
+
+          yield(attribute) if block_given?
+        end
       end
 
       def input(input_name = nil)

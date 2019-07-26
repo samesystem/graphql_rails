@@ -61,7 +61,8 @@ module GraphqlRails
         list_type = parsed_inner_type.to_list_type
 
         if required_list?
-          list_type.to_graphql.to_non_null_type
+          list_type = list_type.to_graphql if list_type.respond_to?(:to_graphql)
+          list_type.to_non_null_type
         else
           list_type
         end

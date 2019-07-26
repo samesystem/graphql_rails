@@ -74,6 +74,14 @@ module GraphqlRails
             end
           end
 
+          context 'when list type is not nullable' do
+            let(:type) { '[Int!]!' }
+
+            it 'returns non nullable graphql input type' do
+              expect(graphql_input_type.to_s).to eq '[Int!]!'
+            end
+          end
+
           context 'when type is nullable array' do
             let(:type) { "[#{DummyModel.name}!]" }
 

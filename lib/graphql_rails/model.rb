@@ -24,6 +24,7 @@ module GraphqlRails
     # static methods for GraphqlRails::Model
     module ClassMethods
       def inherited(subclass)
+        super
         subclass.instance_variable_set(:@graphql, graphql.dup)
         subclass.graphql.instance_variable_set(:@model_class, self)
         subclass.graphql.instance_variable_set(:@graphql_type, nil)

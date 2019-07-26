@@ -13,6 +13,7 @@ module GraphqlRails
   class Controller
     class << self
       def inherited(sublass)
+        super
         sublass.instance_variable_set(:@controller_configuration, controller_configuration.dup)
       end
 

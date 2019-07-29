@@ -204,6 +204,34 @@ class User
 end
 ```
 
+#### required type
+
+There are few ways how to mark field as required.
+
+1. Adding exclamation mark at the end of type name:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute :friends_count, type: :integer!
+  end
+end
+```
+
+2. Adding `required: true` value
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute :friends_count, type: :integer, required: true
+  end
+end
+```
+
 #### input enum type
 
 You can specify your input attribute as enum:
@@ -214,6 +242,18 @@ class User
 
   graphql.input do |c|
     c.attribute :favorite_fruit, enum: %i[apple orange]
+  end
+end
+```
+
+By default enum type is not required. To make it required add `required: true`:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute :favorite_fruit, required: true, enum: %i[apple orange]
   end
 end
 ```

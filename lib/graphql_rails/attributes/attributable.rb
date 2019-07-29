@@ -21,7 +21,11 @@ module GraphqlRails
       end
 
       def required?
-        attribute_name_parser.required? || !initial_type.to_s[/!$/].nil?
+        if @required.nil?
+          attribute_name_parser.required? || !initial_type.to_s[/!$/].nil?
+        else
+          @required
+        end
       end
 
       def graphql_model

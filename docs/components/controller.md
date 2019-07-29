@@ -70,7 +70,6 @@ end
 
 Allows to permit single input field. It allows to set additional options for each field.
 
-
 #### *type*
 
 Specifies input type:
@@ -80,6 +79,34 @@ class OrderController < GraphqlRails::Controller
   action(:create)
     .permit_input(:price, type: :integer!)
     # Same as `.permit(amount: :integer!)`
+end
+```
+
+#### required type
+
+There are few ways how to mark field as required.
+
+1. Adding exclamation mark at the end of type name:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create).permit_input(:some_field, type: :int!)
+end
+```
+
+2. Adding exclamation mark at the end of name
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create).permit_input(:some_field!)
+end
+```
+
+3. Adding `required: true` options
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create).permit_input(:some_field, type: :bool, required: true)
 end
 ```
 

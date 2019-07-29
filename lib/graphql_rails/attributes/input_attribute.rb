@@ -9,13 +9,16 @@ module GraphqlRails
 
       attr_reader :description
 
-      def initialize(name, type = nil, description: nil, subtype: nil, options: {})
+      # rubocop:disable Metrics/ParameterLists
+      def initialize(name, type = nil, description: nil, subtype: nil, required: nil, options: {})
         @initial_name = name
         @initial_type = type
         @description = description
         @options = options
         @subtype = subtype
+        @required = required
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def function_argument_args
         [field_name, graphql_input_type, { description: description }]

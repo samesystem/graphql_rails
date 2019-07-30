@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: model decorators
 * Added: controller action instrumentation [@povilasjurcys](https://github.com/povilasjurcys)
 * Added: sentry and lograge integrations
+* Added: required: true flag for permitted attributes, inputs and model attributes
 
 ## 0.7.0 (2019-05-15)
 

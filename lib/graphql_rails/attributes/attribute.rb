@@ -9,11 +9,12 @@ module GraphqlRails
     class Attribute
       include Attributable
 
-      def initialize(name, type = nil, description: nil, property: name)
+      def initialize(name, type = nil, description: nil, property: name, required: nil)
         @initial_type = type
         @initial_name = name
         @description = description
         @property = property.to_s
+        @required = required
       end
 
       def type(new_type = nil)

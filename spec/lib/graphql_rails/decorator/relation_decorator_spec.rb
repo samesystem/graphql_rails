@@ -7,11 +7,22 @@ module GraphqlRails
   module Decorator
     RSpec.describe RelationDecorator do
       subject(:relation_decorator) do
-        described_class.new(relation: relation, decorator: decorator)
+        described_class.new(
+          relation: relation,
+          decorator: decorator,
+          decorator_args: decorator_args
+        )
       end
 
       let(:decorator) do
         Class.new(SimpleDelegator) do
+          attr_reader :args
+
+          def initialize(object, *args)
+            super(object)
+            @args = args
+          end
+
           def self.name
             'DummyDecorator'
           end
@@ -27,6 +38,7 @@ module GraphqlRails
         )
       end
 
+      let(:decorator_args) { ['arg1'] }
       let(:inner_relation) { instance_double(ActiveRecord::Relation) }
       let(:record) { OpenStruct.new(name: 'John') }
       let(:record2) { OpenStruct.new(name: 'Jack') }
@@ -86,6 +98,10 @@ module GraphqlRails
 
         it 'returns list of decorated items' do
           expect(to_a).to all be_a(decorator)
+        end
+
+        it 'decorates instances with given arguments' do
+          expect(to_a.first.args).to eq(decorator_args)
         end
       end
     end

@@ -37,7 +37,7 @@ module GraphqlRails
       end
 
       def to_a
-        @to_a ||= relation.to_a.map { |it| decorator.new(it) }
+        @to_a ||= relation.to_a.map { |it| decorator.new(it, *decorator_args) }
       end
 
       private

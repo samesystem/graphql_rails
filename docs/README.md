@@ -22,12 +22,21 @@ Or install it yourself as:
 
     $ gem install graphql_rails
 
+## Getting started
+
+Execute:
+
+    $ bundle exec rails g graphql_rails:install
+
+This will generate code which will let you start your graphql faster
+
 ## Usage
 
 ### Define GraphQL schema as RoR routes
 
 ```ruby
-MyGraphqlSchema = GraphqlRails::Router.draw do
+# config/graphql/routes.rb
+GraphqlRails::Router.draw do
   # will create createUser, updateUser, deleteUser mutations and user, users queries.
   # expects that UsersController class exist
   resources :users
@@ -41,6 +50,7 @@ end
 ### Define your Graphql model
 
 ```ruby
+# app/models/user.rb
 class User # works with any class including ActiveRecord
   include GraphqlRails::Model
 
@@ -57,7 +67,8 @@ end
 ### Define controller
 
 ```ruby
-class UsersController < GraphqlRails::Controller
+# app/controllers/graphql/users_controller.rb
+class Graphql::UsersController < GraphqlApplicationController
   # graphql requires to describe which attributes controller action accepts and which returns
   action(:change_user_password)
     .permit(:password!, :id!) # Bang (!) indicates that attribute is required
@@ -79,7 +90,7 @@ end
 ## Routes
 
 ```ruby
-MyGraphqlSchema = GraphqlRails::Router.draw do
+GraphqlRails::Router.draw do
   # generates `friend`, `createFriend`, `updateFriend`, `destroyFriend`, `friends` routes
   resources :friends
   resources :shops, only: [:show, :index] # generates `shop` and `shops` routes only

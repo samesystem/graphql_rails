@@ -1,9 +1,16 @@
 # Quick Start
 
+## Generate initial code
+
+```bash
+bundle exec rails g graphql_rails:install
+```
+
 ## Define GraphQL schema as RoR routes
 
 ```ruby
-MyGraphqlSchema = GraphqlRails::Router.draw do
+# config/graphql/routes.rb
+GraphqlRails::Router.draw do
   # will create createUser, updateUser, deleteUser mutations and user, users queries.
   # expects that UsersController class exist
   resources :users
@@ -33,7 +40,7 @@ end
 ## Define controller
 
 ```ruby
-class UsersController < GraphqlRails::Controller
+class UsersController < ApplicationGraphqlController
   # graphql requires to describe which attributes controller action accepts and which returns
   action(:change_user_password)
     .permit(:password!, :id!) # Bang (!) indicates that attribute is required

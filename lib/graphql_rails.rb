@@ -8,6 +8,7 @@ require 'graphql_rails/router'
 require 'graphql_rails/controller'
 require 'graphql_rails/attributes'
 require 'graphql_rails/decorator'
+require 'graphql_rails/query_runner'
 
 # wonders starts here
 module GraphqlRails

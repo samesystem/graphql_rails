@@ -26,10 +26,6 @@ module GraphqlRails
         on == :collection
       end
 
-      def member?
-        on == :member
-      end
-
       def function
         @function ||= Controller::ControllerFunction.from_route(self)
       end

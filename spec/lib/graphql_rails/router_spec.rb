@@ -16,12 +16,33 @@ RSpec.describe GraphqlRails::Router do
     it 'returns GraphQl::Schema' do
       expect(drawn_routes).to be_a(GraphQL::Schema)
     end
+
+    it 'remembers router' do
+      expect { drawn_routes }.to change(described_class.routers, :keys).to([:default])
+    end
+
+    context 'when building routes for the second time' do
+      let(:draw_additional_queries) do
+        described_class.draw do
+          query 'custom_query2', to: 'custom#action2'
+        end
+      end
+
+      before do
+        drawn_routes
+      end
+
+      it 'updates existing router' do
+        router = described_class.routers[:default]
+        expect { draw_additional_queries }.to change(router.routes, :count).from(6).to(7)
+      end
+    end
   end
 
   describe '#rescue_from' do
     it 'allows rescuing from errors' do
       expect { router.rescue_from(StandardError) { 'ups!' } }
-        .to change { router.graphql_schema.send(:rescues?) }.from(false).to(true)
+        .to change { router.tap(&:reload_schema).graphql_schema.send(:rescues?) }.from(false).to(true)
     end
   end
 

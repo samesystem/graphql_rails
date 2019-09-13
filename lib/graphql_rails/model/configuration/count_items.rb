@@ -6,9 +6,9 @@ module GraphqlRails
       # Used when generating ConnectionType.
       # It handles all the logic which is related with counting total items
       class CountItems
-        def self.call(*args)
-          new(*args).call
-        end
+        require 'graphql_rails/concerns/service'
+
+        include ::GraphqlRails::Service
 
         def initialize(graphql_object, _args, _ctx)
           @graphql_object = graphql_object

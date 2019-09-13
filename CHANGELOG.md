@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 * Added: default router added. No need to assign value to constant on Router.draw
+* Added: install generator. Now it's possible to generate boilerplate code
 
 ## [0.8.0] (2019-09-03)
 

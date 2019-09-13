@@ -14,10 +14,19 @@ module GraphqlRails
       rescue_from query_analyzer instrument cursor_encoder default_max_page_size
     ].freeze
 
-    def self.draw(&block)
-      router = new
+    def self.routers
+      @routers ||= {}
+    end
+
+    def self.reload
+      @routers = {}
+    end
+
+    def self.draw(name = :default, &block)
+      routers[name.to_sym] ||= new
+      router = routers[name.to_sym]
       router.instance_eval(&block)
-      router.graphql_schema
+      router.tap(&:reload_schema).graphql_schema
     end
 
     attr_reader :routes, :namespace_name, :raw_graphql_actions
@@ -57,11 +66,15 @@ module GraphqlRails
     end
 
     def graphql_schema
-      SchemaBuilder.new(
+      @graphql_schema ||= SchemaBuilder.new(
         queries: routes.select(&:query?),
         mutations: routes.select(&:mutation?),
         raw_actions: raw_graphql_actions
       ).call
+    end
+
+    def reload_schema
+      @graphql_schema = nil
     end
 
     private

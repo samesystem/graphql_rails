@@ -25,6 +25,10 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.before do
+    GraphqlRails::Router.reload
+  end
+
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end

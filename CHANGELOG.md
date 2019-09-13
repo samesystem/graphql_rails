@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
+* Added: default router added. No need to assign value to constant on Router.draw
 
 ## [0.8.0] (2019-09-03)
 

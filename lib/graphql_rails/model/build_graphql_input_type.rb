@@ -4,9 +4,9 @@ module GraphqlRails
   module Model
     # stores information about model specific config, like attributes and types
     class BuildGraphqlInputType
-      def self.call(*args)
-        new(*args).call
-      end
+      require 'graphql_rails/concerns/service'
+
+      include ::GraphqlRails::Service
 
       def initialize(name:, description: nil, attributes:)
         @name = name

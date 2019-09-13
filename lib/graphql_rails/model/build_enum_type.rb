@@ -7,9 +7,9 @@ module GraphqlRails
   module Model
     # contains info about single graphql attribute
     class BuildEnumType
-      def self.call(*args)
-        new(*args).call
-      end
+      require 'graphql_rails/concerns/service'
+
+      include ::GraphqlRails::Service
 
       def initialize(name, allowed_values:, description: nil)
         @name = name

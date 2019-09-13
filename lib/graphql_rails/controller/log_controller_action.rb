@@ -6,12 +6,12 @@ module GraphqlRails
   class Controller
     # logs controller start and end times
     class LogControllerAction
+      require 'graphql_rails/concerns/service'
+
+      include ::GraphqlRails::Service
+
       START_PROCESSING_KEY = 'start_processing.graphql_action_controller'
       PROCESS_ACTION_KEY = 'process_action.graphql_action_controller'
-
-      def self.call(**kwargs, &block)
-        new(**kwargs).call(&block)
-      end
 
       def initialize(controller_name:, action_name:, params:, graphql_request:)
         @controller_name = controller_name

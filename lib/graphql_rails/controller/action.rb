@@ -9,14 +9,12 @@ module GraphqlRails
   class Controller
     # analyzes route and extracts controller action related data
     class Action
-      class DeprecatedDefaultModelError < GraphqlRails::Error; end
-
       def initialize(route)
         @route = route
       end
 
       def return_type
-        action_config.return_type || raise_deprecation_error
+        action_config.return_type
       end
 
       def arguments
@@ -35,17 +33,15 @@ module GraphqlRails
         action_config.description
       end
 
+      def type_args
+        [type_parser.type_arg, null: !type_parser.required?]
+      end
+
       private
 
       attr_reader :route
 
-      def raise_deprecation_error
-        message = \
-          'Default return types are deprecated. ' \
-          "You need to set something like `action(:#{name}).returns('#{namespaced_model_name}')` " \
-          "for #{action_relative_path} action manualy"
-        raise DeprecatedDefaultModelError, message
-      end
+      delegate :type_parser, to: :action_config
 
       def action_relative_path
         route.relative_path

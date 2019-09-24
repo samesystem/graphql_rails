@@ -14,7 +14,7 @@ module GraphqlRails
         end
       end
 
-      action(:paginated_index).paginated.returns('[string!]!')
+      action(:paginated_index).paginated.returns("[#{Stats}!]!")
       action(:boom).returns('bool!')
       action(:index).returns(Stats)
 

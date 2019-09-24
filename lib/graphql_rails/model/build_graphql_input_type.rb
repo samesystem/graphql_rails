@@ -26,6 +26,10 @@ module GraphqlRails
           type_attributes.each_value do |type_attribute|
             argument(*type_attribute.input_argument_args)
           end
+
+          def self.inspect
+            "#{GraphQL::Schema::InputObject}(#{graphql_name})"
+          end
         end
       end
 

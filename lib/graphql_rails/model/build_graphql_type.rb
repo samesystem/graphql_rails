@@ -19,12 +19,16 @@ module GraphqlRails
         type_description = description
         type_attributes = attributes
 
-        GraphQL::ObjectType.define do
-          name(type_name)
+        Class.new(GraphQL::Schema::Object) do
+          graphql_name(type_name)
           description(type_description)
 
           type_attributes.each_value do |attribute|
             field(*attribute.field_args)
+          end
+
+          def self.inspect
+            "#{GraphQL::Schema::Object}(#{graphql_name})"
           end
         end
       end

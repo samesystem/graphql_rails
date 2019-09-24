@@ -18,12 +18,20 @@ module GraphqlRails
         end
       end
 
-      describe '#graphql_input_type' do
-        subject(:graphql_input_type) { attribute.graphql_input_type }
+      describe '#input_argument_args' do
+        subject(:input_argument_args) { attribute.input_argument_args }
+
+        let(:input_argument_options) { input_argument_args[2] }
+        let(:input_argument_name) { input_argument_args[0] }
+        let(:input_argument_type) { input_argument_args[1] }
 
         context 'when type is basic scalar type' do
           it 'returns graphql scalar type' do
-            expect(graphql_input_type).to eq(GraphQL::STRING_TYPE.to_non_null_type)
+            expect(input_argument_type).to eq(GraphQL::STRING_TYPE)
+          end
+
+          it 'returns required type' do
+            expect(input_argument_options[:required]).to be true
           end
         end
 
@@ -33,7 +41,7 @@ module GraphqlRails
           end
 
           it 'returns graphql input type' do
-            expect(graphql_input_type).to eq type.graphql_input_type
+            expect(input_argument_type).to eq type.graphql_input_type
           end
         end
 
@@ -45,7 +53,7 @@ module GraphqlRails
           end
 
           it 'returns orginal type' do
-            expect(graphql_input_type).to eq type
+            expect(input_argument_type).to eq type
           end
         end
 
@@ -54,7 +62,7 @@ module GraphqlRails
 
           context 'when type is nullable' do
             it 'returns graphql input type' do
-              expect(graphql_input_type).to eq DummyModel.graphql.input.graphql_input_type
+              expect(input_argument_type).to eq DummyModel.graphql.input.graphql_input_type
             end
           end
 
@@ -62,7 +70,11 @@ module GraphqlRails
             let(:type) { "#{DummyModel.name}!" }
 
             it 'returns non nullable graphql input type' do
-              expect(graphql_input_type.to_type_signature).to eq 'DummyModelInput!'
+              expect(input_argument_type.to_type_signature).to eq 'DummyModelInput'
+            end
+
+            it 'marks input as required' do
+              expect(input_argument_options[:required]).to be true
             end
           end
 
@@ -70,7 +82,11 @@ module GraphqlRails
             let(:type) { "[#{DummyModel.name}!]!" }
 
             it 'returns non nullable graphql input type' do
-              expect(graphql_input_type.to_s).to eq '[DummyModelInput!]!'
+              expect(input_argument_type.to_type_signature).to eq '[DummyModelInput!]'
+            end
+
+            it 'marks input as required' do
+              expect(input_argument_options[:required]).to be true
             end
           end
 
@@ -78,7 +94,11 @@ module GraphqlRails
             let(:type) { '[Int!]!' }
 
             it 'returns non nullable graphql input type' do
-              expect(graphql_input_type.to_s).to eq '[Int!]!'
+              expect(input_argument_type.to_type_signature).to eq '[Int!]'
+            end
+
+            it 'marks input as required' do
+              expect(input_argument_options[:required]).to be true
             end
           end
 
@@ -86,7 +106,7 @@ module GraphqlRails
             let(:type) { "[#{DummyModel.name}!]" }
 
             it 'returns nullable array input type' do
-              expect(graphql_input_type.to_type_signature).to eq '[DummyModelInput!]'
+              expect(input_argument_type.to_type_signature).to eq '[DummyModelInput!]'
             end
           end
         end

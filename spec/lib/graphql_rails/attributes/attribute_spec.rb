@@ -28,27 +28,31 @@ module GraphqlRails
         end
       end
 
-      describe '#graphql_field_type' do
-        subject(:graphql_field_type) { attribute.graphql_field_type }
+      describe '#field_args' do
+        subject(:field_args) { attribute.field_args }
 
         context 'when type is not set' do
           let(:type) { nil }
 
           context 'when attribute name ends without bang mark (!)' do
-            it { is_expected.not_to be_non_null }
+            it 'builds optional field' do
+              expect(field_args.last).to include(null: true)
+            end
           end
 
           context 'when attribute name ends with bang mark (!)' do
             let(:name) { :full_name! }
 
-            it { is_expected.to be_non_null }
+            it 'builds required field' do
+              expect(field_args.last).to include(null: false)
+            end
           end
 
           context 'when name ends with question mark (?)' do
             let(:name) { :admin? }
 
             it 'returns boolean type' do
-              expect(graphql_field_type).to eq GraphQL::BOOLEAN_TYPE
+              expect(field_args[1]).to eq GraphQL::BOOLEAN_TYPE
             end
           end
 
@@ -56,19 +60,23 @@ module GraphqlRails
             let(:name) { :id }
 
             it 'returns id type' do
-              expect(graphql_field_type).to eq GraphQL::ID_TYPE
+              expect(field_args[1]).to eq GraphQL::ID_TYPE
             end
           end
         end
 
         context 'when attribute is required' do
-          it { is_expected.to be_non_null }
+          it 'builds required field' do
+            expect(field_args.last).to include(null: false)
+          end
         end
 
         context 'when attribute is optional' do
           let(:type) { 'String' }
 
-          it { is_expected.not_to be_non_null }
+          it 'builds optional field' do
+            expect(field_args.last).to include(null: true)
+          end
         end
 
         context 'when attribute is array' do
@@ -77,27 +85,47 @@ module GraphqlRails
           context 'when array is required' do
             let(:type) { '[Int]!' }
 
-            it { is_expected.to be_non_null }
-            it { is_expected.to be_list }
+            it 'builds required outher field' do
+              expect(field_args.last).to include(null: false)
+            end
+
+            it 'builds optional list type field' do
+              expect(field_args[1]).to eq([GraphQL::INT_TYPE, null: true])
+            end
           end
 
           context 'when inner type of array is required' do
             let(:type) { '[Int!]' }
 
-            it { is_expected.not_to be_non_null }
-            it { is_expected.to be_list }
+            it 'builds optional outher field' do
+              expect(field_args.last).to include(null: true)
+            end
+
+            it 'builds required inner array type' do
+              expect(field_args[1]).to eq([GraphQL::INT_TYPE])
+            end
           end
 
           context 'when array and its inner type is required' do
-            it { is_expected.to be_non_null }
-            it { is_expected.to be_list }
+            it 'builds required outher field' do
+              expect(field_args.last).to include(null: false)
+            end
+
+            it 'builds required inner array type' do
+              expect(field_args[1]).to eq([GraphQL::INT_TYPE])
+            end
           end
 
           context 'when array and its inner type are optional' do
             let(:type) { '[Int]' }
 
-            it { is_expected.not_to be_non_null }
-            it { is_expected.to be_list }
+            it 'builds optional outher field' do
+              expect(field_args.last).to include(null: true)
+            end
+
+            it 'builds optional list type field' do
+              expect(field_args[1]).to eq([GraphQL::INT_TYPE, null: true])
+            end
           end
         end
       end

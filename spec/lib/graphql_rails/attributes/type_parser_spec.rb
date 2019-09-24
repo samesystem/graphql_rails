@@ -32,6 +32,32 @@ module GraphqlRails
         end
       end
 
+      describe '#type_arg' do
+        subject(:type_arg) { parser.type_arg }
+
+        context 'when type is an array' do
+          let(:type) { '[String!]!' }
+
+          context 'when inner type is optional' do
+            context 'when array is required' do
+              let(:type) { '[String]!' }
+
+              it 'returns correct structore' do
+                expect(type_arg).to eq([GraphQL::STRING_TYPE, { null: true }])
+              end
+            end
+
+            context 'when array is optional' do
+              let(:type) { '[String]' }
+
+              it 'returns correct structore' do
+                expect(type_arg).to eq([GraphQL::STRING_TYPE, { null: true }])
+              end
+            end
+          end
+        end
+      end
+
       describe '#graphql_type' do
         subject(:graphql_type) { parser.graphql_type }
 

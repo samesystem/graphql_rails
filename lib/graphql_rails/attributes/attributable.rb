@@ -32,24 +32,14 @@ module GraphqlRails
         type_parser.graphql_model
       end
 
-      def graphql_field_type
-        @graphql_field_type ||= \
-          if required?
-            nullable_type.to_non_null_type
-          else
-            nullable_type
-          end
+      def optional?
+        !required?
       end
 
       protected
 
       def options
         {}
-      end
-
-      def nullable_type
-        type = type_parser.graphql_type
-        type.non_null? ? type.of_type : type
       end
 
       private

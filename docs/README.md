@@ -72,6 +72,7 @@ class Graphql::UsersController < GraphqlApplicationController
   # graphql requires to describe which attributes controller action accepts and which returns
   action(:change_user_password)
     .permit(:password!, :id!) # Bang (!) indicates that attribute is required
+    .returns('User!')
 
   def change_user_password
     user = User.find(params[:id])
@@ -81,7 +82,9 @@ class Graphql::UsersController < GraphqlApplicationController
     user # or SomeDecorator.new(user)
   end
 
-  action(:search).permit(search_fields!: SearchFieldsInput) # you can specify your own input fields
+  action(:search)
+    .permit(search_fields!: SearchFieldsInput) # you can specify your own input fields
+    .returns('[User!]!')
   def search
   end
 end
@@ -143,11 +146,13 @@ There are 3 helper methods:
 
 ```ruby
 class MyGraphqlController
+  action(:create_user).permit(:full_name, :email).returns(User)
+  action(:index).returns('String')
+
   def index
     "Called from index: #{params[:message]}"
   end
 
-  action(:create_user).permit(:full_name, :email)
   def create_user
     User.create!(params)
   end

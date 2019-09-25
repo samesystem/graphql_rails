@@ -19,7 +19,7 @@ module GraphqlRails
           end
 
           class UsersController < GraphqlRails::Controller
-            action(:show).permit(:name!)
+            action(:show).permit(:name!).returns(User.to_s)
             def show
               render 'show:OK'
             end
@@ -62,13 +62,11 @@ module GraphqlRails
           instance_double(
             ActionConfiguration,
             return_type: action_config_return_type,
-            description: nil,
-            can_return_nil?: can_return_nil
+            description: nil
           )
         end
 
         let(:action_config_return_type) { nil }
-        let(:can_return_nil) { false }
 
         before do
           action = Action.new(route)
@@ -80,34 +78,14 @@ module GraphqlRails
         context 'when action has specified type' do
           let(:action_config_return_type) { GraphQL::STRING_TYPE }
 
-          context 'when not allowed to return nil' do
-            it 'ignores "can_return_nil" options and returns original type' do
-              expect(type).to eq action_config.return_type
-            end
-          end
-
-          context 'when allowed to return nil' do
-            let(:can_return_nil) { true }
-
-            it 'ignores "can_return_nil" options and returns original type' do
-              expect(type).to eq action_config.return_type
-            end
+          it 'returns specified type' do
+            expect(type).to eq action_config.return_type
           end
         end
 
         context 'when action did not specify any return type' do
-          context 'when not allowed to return nil' do
-            it 'returns type from controller related mode with non null requirement' do
-              expect(type).to eq Dummy::Foo::User.graphql.graphql_type.to_non_null_type
-            end
-          end
-
-          context 'when allowed to return nil' do
-            let(:can_return_nil) { true }
-
-            it 'returns type from controller related model' do
-              expect(type).to eq Dummy::Foo::User.graphql.graphql_type
-            end
+          it 'raises deprecation message' do
+            expect { type }.to raise_error(Action::DeprecatedDefaultModelError)
           end
         end
       end

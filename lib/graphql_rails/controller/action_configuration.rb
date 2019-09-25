@@ -17,7 +17,6 @@ module GraphqlRails
       def initialize
         @attributes = {}
         @action_options = {}
-        @can_return_nil = false
       end
 
       def options(input_format:)
@@ -57,19 +56,10 @@ module GraphqlRails
         end
       end
 
-      def can_return_nil
-        @can_return_nil = true
-        self
-      end
-
       def returns(custom_return_type)
         @return_type = nil
         @custom_return_type = custom_return_type
         self
-      end
-
-      def can_return_nil?
-        @can_return_nil
       end
 
       def paginated?

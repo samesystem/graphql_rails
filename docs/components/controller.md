@@ -155,22 +155,6 @@ class OrderController < GraphqlRails::Controller
 end
 ```
 
-### *can_return_nil*
-
-By default it is expected that each controller action returns model or array of models. `nil` is not allowed. You can change that by adding `can_return_nil` like this:
-
-```ruby
-class UsersController < GraphqlRails::Controller
-  action(:show).permit(:email).can_return_nil
-
-  def show
-    user = User.find_by(email: params[:email])
-    return nil if user.blank?
-    user
-  end
-end
-```
-
 ### *paginated*
 
 You can mark collection action as `paginated`. In this case controller will return relay connection type and it will be possible to return only partial results. No need to do anything on controller side (you should always return full list of items)
@@ -203,7 +187,7 @@ end
 
 ### *returns*
 
-By default return type is determined by controller name. When you want to return some custom object, you can specify that with `returns` method:
+You must specify what each action will return. This is done with `returns` method:
 
 ```ruby
 class UsersController < GraphqlRails::Controller

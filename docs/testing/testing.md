@@ -28,11 +28,13 @@ There are 3 helper methods:
 
 ```ruby
 class MyGraphqlController
+  action(:create_user).permit(:full_name, :email).returns(User)
+  action(:index).returns('String')
+
   def index
     "Called from index: #{params[:message]}"
   end
 
-  action(:create_user).permit(:full_name, :email)
   def create_user
     User.create!(params)
   end

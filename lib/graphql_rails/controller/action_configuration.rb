@@ -7,6 +7,8 @@ module GraphqlRails
   class Controller
     # stores all graphql_rails contoller specific config
     class ActionConfiguration
+      class MissingConfigurationError < Error; end
+
       attr_reader :attributes, :pagination_options
 
       def initialize_copy(other)
@@ -62,6 +64,31 @@ module GraphqlRails
         self
       end
 
+      def model(model_name = nil)
+        if model_name
+          @model = model_name
+          self
+        else
+          @model || raise_missing_config_error
+        end
+      end
+
+      def returns_single(required: true)
+        model_name = model.to_s
+        model_name = "#{model_name}!" if required
+
+        returns(model_name)
+      end
+
+      def returns_list(required_inner: true, required_list: true)
+        model_name = model.to_s
+        model_name = "#{model_name}!" if required_inner
+        list_name = "[#{model_name}]"
+        list_name = "#{list_name}!" if required_list
+
+        returns(list_name)
+      end
+
       def paginated?
         !!pagination_options # rubocop:disable Style/DoubleNegation
       end
@@ -73,6 +100,13 @@ module GraphqlRails
       private
 
       attr_reader :custom_return_type, :action_options
+
+      def raise_missing_config_error
+        error_message = \
+          'Default model for controller is not defined. To do so add `model(YourModel)`'
+
+        raise MissingConfigurationError, error_message
+      end
 
       def build_return_type
         return nil if custom_return_type.nil?

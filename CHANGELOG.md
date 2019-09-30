@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Removed: `action.can_return_nil` was removed, because it does no affect anymore
 * Removed: default `action` model was removed. Now each action must have `returns` part
 * Added: default router added. No need to assign value to constant on Router.draw
+* Added: default action added. Now actions can have custom defaults
+* Added: default controller model added. Now actions can be defined in more dynamic way
 * Added: install generator. Now it's possible to generate boilerplate code
 
 ## [0.8.0] (2019-09-03)

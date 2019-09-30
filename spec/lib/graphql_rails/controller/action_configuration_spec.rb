@@ -132,6 +132,79 @@ module GraphqlRails
             .and be_list
         end
       end
+
+      describe '#returns_single' do
+        context 'when model is not defined' do
+          it 'raises error' do
+            expect { config.returns_single }
+              .to raise_error(ActionConfiguration::MissingConfigurationError)
+          end
+        end
+
+        context 'without any options' do
+          before do
+            config.model('String')
+          end
+
+          it 'sets required model return type' do
+            config.returns_single
+            expect(config.return_type).to eq(!GraphQL::STRING_TYPE)
+          end
+        end
+
+        context 'when "required: false" flag is given' do
+          before do
+            config.model('String')
+          end
+
+          it 'sets nullable model return type' do
+            config.returns_single(required: false)
+            expect(config.return_type).to eq(GraphQL::STRING_TYPE)
+          end
+        end
+      end
+
+      describe '#returns_list' do
+        context 'when model is not defined' do
+          it 'raises error' do
+            expect { config.returns_list }
+              .to raise_error(ActionConfiguration::MissingConfigurationError)
+          end
+        end
+
+        context 'without any options' do
+          before do
+            config.model('String')
+          end
+
+          it 'sets required list model return type' do
+            config.returns_list
+            expect(config.return_type).to eq(!(!GraphQL::STRING_TYPE).to_list_type)
+          end
+        end
+
+        context 'when "required_inner: false" flag is given' do
+          before do
+            config.model('String')
+          end
+
+          it 'sets nullable model return type' do
+            config.returns_list(required_inner: false)
+            expect(config.return_type).to eq(!GraphQL::STRING_TYPE.to_list_type)
+          end
+        end
+
+        context 'when "required_list: false" flag is given' do
+          before do
+            config.model('String')
+          end
+
+          it 'sets nullable model return type' do
+            config.returns_list(required_list: false)
+            expect(config.return_type).to eq((!GraphQL::STRING_TYPE).to_list_type)
+          end
+        end
+      end
     end
   end
 end

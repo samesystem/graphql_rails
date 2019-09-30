@@ -31,7 +31,8 @@ module GraphqlRails
         template('graphql_controller.erb', 'app/controllers/graphql_controller.rb')
 
         empty_directory('app/controllers/graphql')
-        template('graphql_application_controller.erb', 'app/controllers/graphql_application_controller.rb')
+        template('graphql_application_controller.erb', 'app/controllers/graphql/graphql_application_controller.rb')
+        template('example_users_controller.erb', 'app/controllers/graphql/example_users_controller.rb')
 
         empty_directory('config/graphql')
         template('routes.erb', 'config/graphql/routes.rb')

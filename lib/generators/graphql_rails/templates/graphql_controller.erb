@@ -4,7 +4,7 @@ class GraphqlController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :execute
 
   def execute
-    GraphqlRails::QueryRunner.call(
+    render json: GraphqlRails::QueryRunner.call(
       params: params,
       context: graphql_context
     )

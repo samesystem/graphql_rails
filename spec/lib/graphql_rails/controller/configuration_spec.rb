@@ -6,9 +6,16 @@ module GraphqlRails
   RSpec.describe Controller::Configuration do
     subject(:configuration) { described_class.new }
 
-    before do
+    let(:define_default_action) { nil }
+
+    let(:define_actions) do
       configuration.action(:some_method).permit(:id)
       configuration.action(:some_other_method).permit(:id, :name)
+    end
+
+    before do
+      define_default_action
+      define_actions
     end
 
     describe '#dup' do
@@ -58,6 +65,25 @@ module GraphqlRails
     describe '#action' do
       it 'returns hash with specified acceptable arguments' do
         expect(configuration.action(:some_method).attributes.keys).to match_array(%w[id])
+      end
+
+      context 'when default_action was defined' do
+        let(:define_default_action) { configuration.default_action.permit(default: :string!) }
+
+        it 'inherits attributes from default_action' do
+          expect(configuration.action(:some_method).attributes.keys).to match_array(%w[default id])
+        end
+
+        it 'does not modify default action itself' do
+          expect(configuration.default_action.attributes.keys).to match_array(%w[default])
+        end
+      end
+    end
+
+    describe '#model' do
+      it 'sets model for default action' do
+        configuration.model('String')
+        expect(configuration.default_action.model).to eq 'String'
       end
     end
 

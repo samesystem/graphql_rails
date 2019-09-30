@@ -185,6 +185,26 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+### *model*
+
+If you want to define model dynamically, you can use combination of `model` and `returns_list` or `returns_single`. This is especially handy when model is used with `default_action`:
+
+```ruby
+class OrdersController < GraphqlRails::Controller
+  default_action.model('Order')
+  action(:show).returns_single # returns `Order!`
+  action(:index).returns_list # returns `[Order!]!`
+
+  def show
+    Order.first
+  end
+
+  def index
+    Order.all
+  end
+end
+```
+
 ### *returns*
 
 You must specify what each action will return. This is done with `returns` method:
@@ -196,6 +216,32 @@ class UsersController < GraphqlRails::Controller
   def last_order
     user = User.find(params[:id]).orders.last
   end
+end
+```
+
+### *returns_list*
+
+When you have defined `model` dynamically, you can use `returns_list` to indicate that action must return list without specifying model type for each action. By default list and inner types are required but you can change that with `required_list: false` and `required_inner: false`
+
+```ruby
+class OrdersController < GraphqlRails::Controller
+  model('Order')
+
+  action(:index).returns_list(required_list: false, required_inner: false) # returns `[Order]`
+  action(:search).permit(:filter).returns_list # returns `[Order!]!`
+end
+```
+
+### *returns_single*
+
+When you have defined `model` dynamically, you can use `returns_single` to indicate that action must return single item without specifying model type for each action. By default return type is required, but you can change that by providing `required: false` flag:
+
+```ruby
+class OrdersController < GraphqlRails::Controller
+  model('Order')
+
+  action(:show).returns_single(required: false) # returns `Order`
+  action(:update).permit(title: :string!).returns_single # returns `Order!`
 end
 ```
 
@@ -243,6 +289,39 @@ class UsersController < GraphqlRails::Controller
   def create
     User.create(params)
   end
+end
+```
+
+## *model*
+
+`model` is just a shorter version of `default_action.model`. See `action.model` and `default_action` for more information:
+
+```ruby
+class OrdersController < GraphqlRails::Controller
+  model('Order')
+  action(:show).returns_single # returns `Order!`
+  action(:index).returns_list # returns `[Order!]!`
+
+  def show
+    Order.first
+  end
+
+  def index
+    Order.all
+  end
+end
+```
+
+## *default_action*
+
+Sometimes you want to have some shared attributes for all your actions. In order to make this possible you need to use `default_action`. It acts identical to `action` and is "inherited" by all actions defined after `default_action` part:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  default_action.permit(token: :string!)
+
+  action(:update).returns('User!') # action(:update) has `permit(token: :string!)
+  action(:create).returns('User') # action(:create) has `permit(token: :string!)
 end
 ```
 

@@ -13,5 +13,7 @@ GraphqlRails::Router.draw do
     #     query :find_one, on: :member
     #     query :find_many, on: :collection
     #   end
+
+    resources :example_users, only: %i[show update]
   end
 end

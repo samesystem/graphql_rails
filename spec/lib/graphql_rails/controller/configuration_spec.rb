@@ -78,6 +78,30 @@ module GraphqlRails
           expect(configuration.default_action.attributes.keys).to match_array(%w[default])
         end
       end
+
+      context 'when options was used' do
+        let(:define_actions) do
+          configuration.action(:some_method).options(input_format: :original).permit(:id)
+          configuration.action(:some_other_method).permit(:id, :name)
+        end
+
+        it 'sets options only for given action', :aggregate_failures do
+          expect(configuration.action(:some_method).options).to eq(input_format: :original)
+          expect(configuration.action(:some_other_method).options).to eq({})
+        end
+      end
+
+      context 'when pagination options was set' do
+        let(:define_actions) do
+          configuration.action(:some_method).paginated(max_page_size: 200).permit(:id)
+          configuration.action(:some_other_method).permit(:id, :name)
+        end
+
+        it 'sets options only for given action', :aggregate_failures do
+          expect(configuration.action(:some_method).pagination_options).to eq(max_page_size: 200)
+          expect(configuration.action(:some_other_method).pagination_options).to be_nil
+        end
+      end
     end
 
     describe '#model' do

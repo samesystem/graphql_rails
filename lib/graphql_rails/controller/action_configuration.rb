@@ -14,6 +14,8 @@ module GraphqlRails
       def initialize_copy(other)
         super
         @attributes = other.instance_variable_get(:@attributes).dup.transform_values(&:dup)
+        @action_options = other.instance_variable_get(:@action_options).dup.transform_values(&:dup)
+        @pagination_options = other.instance_variable_get(:@pagination_options)&.dup&.transform_values(&:dup)
       end
 
       def initialize
@@ -21,8 +23,12 @@ module GraphqlRails
         @action_options = {}
       end
 
-      def options(input_format:)
-        @action_options[:input_format] = input_format
+      def options(action_options = nil)
+        @options ||= {}
+        return @options if action_options.nil?
+
+        @options[:input_format] = action_options[:input_format] if action_options[:input_format]
+
         self
       end
 
@@ -37,7 +43,7 @@ module GraphqlRails
 
         attributes[field_name] = Attributes::InputAttribute.new(
           name.to_s, type,
-          options: action_options.merge(options),
+          options: self.options.merge(options),
           **input_options
         )
         self
@@ -99,7 +105,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :custom_return_type, :action_options
+      attr_reader :custom_return_type
 
       def raise_missing_config_error
         error_message = \

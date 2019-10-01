@@ -41,10 +41,11 @@ module GraphqlRails
       def field_args
         [
           field_name,
-          graphql_field_type,
+          type_parser.type_arg,
+          *description,
           {
-            property: property.to_sym,
-            description: description
+            method: property.to_sym,
+            null: optional?
           }
         ]
       end

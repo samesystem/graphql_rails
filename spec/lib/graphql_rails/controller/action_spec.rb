@@ -47,12 +47,6 @@ module GraphqlRails
             expect(return_type).to eq(GraphQL::STRING_TYPE.to_non_null_type)
           end
         end
-
-        context 'when action configuration does not specify return type' do
-          it 'raises deprecation message' do
-            expect { return_type }.to raise_error(Action::DeprecatedDefaultModelError)
-          end
-        end
       end
     end
   end

@@ -2,7 +2,7 @@
 
 module GraphqlRails
   module Model
-    class Configuration
+    class BuildConnectionType
       # Used when generating ConnectionType.
       # It handles all the logic which is related with counting total items
       class CountItems

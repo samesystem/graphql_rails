@@ -37,12 +37,12 @@ module GraphqlRails
         end
 
         it 'does not modify parent class config' do
-          parent_fields = plain_model.graphql.graphql_type.all_fields.map(&:name)
+          parent_fields = plain_model.graphql.graphql_type.fields.keys
           expect(parent_fields).to match_array(%w[isPlain])
         end
 
         it 'inherits parent class graphql configuration' do
-          child_fields = model.graphql.graphql_type.all_fields.map(&:name)
+          child_fields = model.graphql.graphql_type.fields.keys
           expect(child_fields).to match_array(%w[isPlain isChild])
         end
       end

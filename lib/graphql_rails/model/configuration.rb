@@ -5,7 +5,7 @@ require 'graphql_rails/model/build_graphql_type'
 require 'graphql_rails/model/build_enum_type'
 require 'graphql_rails/model/input'
 require 'graphql_rails/model/configurable'
-require 'graphql_rails/model/configuration/count_items'
+require 'graphql_rails/model/build_connection_type'
 
 module GraphqlRails
   module Model
@@ -60,11 +60,7 @@ module GraphqlRails
       end
 
       def connection_type
-        @connection_type ||= begin
-          graphql_type.define_connection do
-            field :total, types.Int, resolve: CountItems
-          end
-        end
+        @connection_type ||= BuildConnectionType.call(graphql_type)
       end
 
       private

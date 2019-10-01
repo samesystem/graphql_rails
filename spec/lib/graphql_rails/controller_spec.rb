@@ -345,8 +345,6 @@ module GraphqlRails
         end
       end
 
-
-
       context 'when render was used' do
         context 'when errors was rendered' do
           let(:controller_action) { :respond_with_rendered_errors }

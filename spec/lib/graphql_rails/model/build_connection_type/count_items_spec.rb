@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'active_record'
 
-class GraphqlRails::Model::Configuration
+class GraphqlRails::Model::BuildConnectionType
   RSpec.describe CountItems do
     subject(:count_items) { described_class.new(graphql_object, nil, nil) }
 

@@ -2,12 +2,14 @@
 
 require 'active_support/core_ext/string/filters'
 require 'graphql_rails/attributes'
+require 'graphql_rails/errors/error'
 
 module GraphqlRails
   class Controller
     # stores all graphql_rails contoller specific config
     class ActionConfiguration
-      class MissingConfigurationError < Error; end
+      class MissingConfigurationError < GraphqlRails::Error; end
+      class DeprecatedDefaultModelError < GraphqlRails::Error; end
 
       attr_reader :attributes, :pagination_options
 
@@ -103,19 +105,16 @@ module GraphqlRails
         @return_type ||= build_return_type
       end
 
+      def type_parser
+        @type_parser ||= Attributes::TypeParser.new(custom_return_type, paginated: paginated?)
+      end
+
       private
 
       attr_reader :custom_return_type
 
-      def raise_missing_config_error
-        error_message = \
-          'Default model for controller is not defined. To do so add `model(YourModel)`'
-
-        raise MissingConfigurationError, error_message
-      end
-
       def build_return_type
-        return nil if custom_return_type.nil?
+        return raise_deprecation_error if custom_return_type.nil?
 
         if paginated?
           type_parser.graphql_model ? type_parser.graphql_model.graphql.connection_type : nil
@@ -124,8 +123,18 @@ module GraphqlRails
         end
       end
 
-      def type_parser
-        Attributes::TypeParser.new(custom_return_type)
+      def raise_deprecation_error
+        message = \
+          'Default return types are deprecated. ' \
+          "You need to manually set something like `action(:YOUR_ACTION).returns('MyModel')`"
+        raise DeprecatedDefaultModelError, message
+      end
+
+      def raise_missing_config_error
+        error_message = \
+          'Default model for controller is not defined. To do so add `model(YourModel)`'
+
+        raise MissingConfigurationError, error_message
       end
     end
   end

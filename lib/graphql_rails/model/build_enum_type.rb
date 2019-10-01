@@ -28,6 +28,10 @@ module GraphqlRails
             description(enum_description) if enum_description
             value(allowed_value.to_s.underscore.upcase, value: allowed_value)
           end
+
+          def self.inspect
+            "#{GraphQL::Schema::Enum}(#{enum_name})"
+          end
         end
       end
 

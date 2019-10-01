@@ -37,7 +37,9 @@ module GraphqlRails
         end
 
         context 'when custom type is not set' do
-          it { is_expected.to be_nil }
+          it 'raises deprecation error' do
+            expect { return_type }.to raise_error(ActionConfiguration::DeprecatedDefaultModelError)
+          end
         end
       end
 
@@ -70,8 +72,9 @@ module GraphqlRails
       end
 
       describe '#permit' do
-        subject(:permitted_attribute) { config.attributes['name'].graphql_field_type }
+        subject(:permitted_attribute_args) { config.attributes['name'].input_argument_args }
 
+        let(:permitted_attribute_options) { permitted_attribute_args[2] }
         let(:permit_params) { { attribute_name => attribute_type } }
         let(:attribute_name) { :name }
         let(:attribute_type) { 'string' }
@@ -84,7 +87,7 @@ module GraphqlRails
           let(:attribute_name) { :name! }
 
           it 'sets attribute as required' do
-            expect(permitted_attribute).to be_non_null
+            expect(permitted_attribute_options[:required]).to be true
           end
         end
 
@@ -92,13 +95,13 @@ module GraphqlRails
           let(:attribute_type) { 'string!' }
 
           it 'sets attribute as required' do
-            expect(permitted_attribute).to be_non_null
+            expect(permitted_attribute_options[:required]).to be true
           end
         end
 
         context 'when attribute name and type as no bang inside' do
           it 'sets attribute as optional' do
-            expect(permitted_attribute).not_to be_non_null
+            expect(permitted_attribute_options[:required]).to be false
           end
         end
       end

@@ -19,7 +19,7 @@ module GraphqlRails
         mutation_type = build_type('Mutation', mutations)
         raw = raw_actions
 
-        GraphQL::Schema.define do
+        Class.new(GraphQL::Schema) do
           cursor_encoder(Router::PlainCursorEncoder)
           raw.each { |action| send(action[:name], *action[:args], &action[:block]) }
 
@@ -31,11 +31,15 @@ module GraphqlRails
       private
 
       def build_type(type_name, routes)
-        GraphQL::ObjectType.define do
-          name type_name
+        Class.new(GraphQL::Schema::Object) do
+          graphql_name(type_name)
 
           routes.each do |route|
-            field route.name, function: route.function
+            field(*route.field_args)
+          end
+
+          def self.inspect
+            "#{GraphQL::Schema::Object}(#{graphql_name})"
           end
         end
       end

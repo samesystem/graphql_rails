@@ -60,12 +60,12 @@ module GraphqlRails
         end
 
         it 'returns correct name' do
-          expect(graphql_type.name).to eq 'ChangedName'
+          expect(graphql_type.graphql_name).to eq 'ChangedName'
         end
       end
 
-      it 'returns instance of graphql  type' do
-        expect(graphql_type).to be_a(GraphQL::ObjectType)
+      it 'returns child class of graphql Object type' do
+        expect(graphql_type < GraphQL::Schema::Object).to be true
       end
     end
 
@@ -74,7 +74,7 @@ module GraphqlRails
 
       context 'when model is simple ruby class' do
         it 'returns Conection' do
-          expect(connection_type.to_s).to eq('DummyModelConnection')
+          expect(connection_type.graphql_name).to eq('DummyModelConnection')
         end
       end
     end

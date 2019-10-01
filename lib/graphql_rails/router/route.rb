@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../controller/controller_function'
+require_relative '../controller/build_controller_action_resolver'
 
 module GraphqlRails
   class Router
@@ -26,8 +26,24 @@ module GraphqlRails
         on == :collection
       end
 
-      def function
-        @function ||= Controller::ControllerFunction.from_route(self)
+      def field_args
+        options = {}
+
+        if function
+          options[:function] = function
+        else
+          options[:resolver] = resolver
+        end
+
+        [name, options]
+      end
+
+      private
+
+      attr_reader :function
+
+      def resolver
+        @resolver ||= Controller::BuildControllerActionResolver.call(route: self)
       end
     end
   end

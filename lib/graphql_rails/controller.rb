@@ -4,7 +4,6 @@ require 'active_support/hash_with_indifferent_access'
 require 'active_support/core_ext/hash'
 require 'graphql_rails/controller/configuration'
 require 'graphql_rails/controller/request'
-require 'graphql_rails/output/format_results'
 require 'graphql_rails/controller/action_hooks_runner'
 require 'graphql_rails/controller/log_controller_action'
 
@@ -56,7 +55,7 @@ module GraphqlRails
       @action_name = method_name
       with_controller_action_logging do
         call_with_rendering
-        format_controller_results
+        graphql_request.object_to_return
       end
     ensure
       @action_name = nil
@@ -104,15 +103,6 @@ module GraphqlRails
         params: params,
         graphql_request: graphql_request,
         &block
-      )
-    end
-
-    def format_controller_results
-      Output::FormatResults.call(
-        graphql_request.object_to_return,
-        input_config: self.class.action(action_name),
-        params: params,
-        graphql_context: graphql_request.context
       )
     end
   end

@@ -29,12 +29,30 @@ module GraphqlRails
       end
 
       def params
-        inputs.to_h
+        deep_transform_values(inputs.to_h) do |val|
+          if val.is_a?(GraphQL::Dig)
+            val.to_h
+          else
+            val
+          end
+        end
       end
 
       private
 
       attr_reader :graphql_object, :inputs
+
+      def deep_transform_values(hash, &block)
+        return hash unless hash.is_a?(Hash)
+
+        hash.transform_values do |val|
+          if val.is_a?(Hash)
+            deep_transform_values(val, &block)
+          else
+            yield(val)
+          end
+        end
+      end
     end
   end
 end

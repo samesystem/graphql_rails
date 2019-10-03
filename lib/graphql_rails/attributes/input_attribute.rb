@@ -21,7 +21,7 @@ module GraphqlRails
       # rubocop:enable Metrics/ParameterLists
 
       def input_argument_args
-        type = raw_input_type || input_type_parser.nullable_type || nullable_type
+        type = raw_input_type || input_type_parser.nullable_type || type_parser.type_arg
 
         [field_name, type, { required: required?, description: description, camelize: false }]
       end

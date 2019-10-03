@@ -4,7 +4,6 @@ module GraphqlRails
   module Model
     # stores information about model specific config, like attributes and types
     class BuildGraphqlType
-      require 'graphql_rails/output/format_results'
       require 'graphql_rails/concerns/service'
 
       include ::GraphqlRails::Service
@@ -37,14 +36,12 @@ module GraphqlRails
 
             define_method attribute.property do |**kwargs|
               method_kwargs = attribute.paginated? ? kwargs.except(*PAGINATION_KEYS) : kwargs
-              result = object.send(attribute.property, **method_kwargs)
 
-              Output::FormatResults.call(
-                result,
-                input_config: attribute,
-                params: kwargs,
-                graphql_context: context
-              )
+              if method_kwargs.empty?
+                object.send(attribute.property)
+              else
+                object.send(attribute.property, **method_kwargs)
+              end
             end
           end
         end

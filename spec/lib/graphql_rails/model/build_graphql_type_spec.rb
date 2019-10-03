@@ -11,7 +11,6 @@ module GraphqlRails
             name: type_name,
             description: type_description,
             attributes: attributes,
-            input_config: input_config
           )
         end
 
@@ -23,11 +22,16 @@ module GraphqlRails
           }
         end
 
-        let(:attribute) { Attributes::Attribute.new('name', 'String') }
-        let(:input_config) { nil }
+        class DummyBuildGraphqlTypeName
+          include Model
+
+          graphql.attribute :name
+        end
+
+        let(:attribute) { Attributes::Attribute.new('name', DummyBuildGraphqlTypeName.name) }
 
         context 'when attribute does not have any arguments' do
-          it 'builds correct type', :aggregate_failures do
+          it 'builds correct type' do
             expect(call.to_type_signature).to eq 'DummyType'
           end
 

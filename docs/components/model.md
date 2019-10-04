@@ -23,7 +23,7 @@ This method must be called inside your model body. `grapqhl` is used for making 
 
 Most commonly you will use `attribute` to make your model methods and attributes visible via graphql endpoint.
 
-## attribute type
+## attribute.type
 
 Some types can be determined by attribute name, so you can skip this attribute:
 
@@ -54,7 +54,7 @@ class User
 end
 ```
 
-### attribute property
+### attribute.property
 
 By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `propery` option:
 
@@ -72,7 +72,7 @@ class User
 end
 ```
 
-### attribute description
+### attribute.description
 
 You can also describe each attribute and make graphql documentation even more readable. To do so, add `description` option:
 
@@ -82,6 +82,99 @@ class User
 
   graphql do |c|
     c.attribute :shop_id, description: 'references to shop'
+  end
+end
+```
+
+### attribute.permit
+
+To define attributes which are accepted by each model method, you need to call `permit` method, like this:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute(:avatar_url).permit(size: :int!)
+  end
+
+  def avatar_url(size:)
+    # some code here
+  end
+end
+```
+
+### attribute.permit_input
+
+Allows to permit single input field. It allows to set additional options for each field.
+
+#### attribute.permit_input.type
+
+#### attribute.permit_input: required type
+
+There are few ways how to mark field as required.
+
+1. Adding exclamation mark at the end of type name:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute(:avatar_url).permit_input(:size, type: :int!)
+end
+```
+
+2. Adding `required: true` options
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute(:avatar_url).permit_input(:size, type: :int, required: true)
+end
+```
+
+#### attribute.permit_input.description
+
+You can describe each input by adding `description` keyword argument:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute(:avatar_url).permit_input(:size, description: 'max size of avatar')
+end
+```
+
+#### *subtype*
+
+`subtype` allows to specify which named input should be used. Here is an example:
+
+```ruby
+class Image
+  graphql.input(:size_options) do |c|
+    c.attribute :width
+    c.attribute :height
+  end
+end
+
+class User
+  graphql.attribute(:avatar_url).permit_input(:size, type: Image, subtype: :size_options)
+end
+```
+
+### attribute.paginated
+
+You can mark collection method as `paginated`. In this case method will return relay connection type and it will be possible to return only partial results. No need to do anything on method side (you should always return full list of items)
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute :items, type: '[Item]', paginatted: true
+
+  def items
+    Item.all
   end
 end
 ```

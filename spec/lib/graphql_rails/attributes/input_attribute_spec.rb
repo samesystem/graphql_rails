@@ -81,8 +81,13 @@ module GraphqlRails
           context 'when type is not nullable array' do
             let(:type) { "[#{DummyModel.name}!]!" }
 
-            it 'returns non nullable graphql input type' do
-              expect(input_argument_type.to_type_signature).to eq '[DummyModelInput!]'
+            it 'retuns as an array' do
+              expect(input_argument_type).to be_an(Array)
+            end
+
+            it 'returns required input type', :aggregate_failures do
+              expect(input_argument_type.first.to_type_signature).to eq 'DummyModelInput'
+              expect(input_argument_type.second).to be_nil
             end
 
             it 'marks input as required' do
@@ -93,8 +98,9 @@ module GraphqlRails
           context 'when list type is not nullable' do
             let(:type) { '[Int!]!' }
 
-            it 'returns non nullable graphql input type' do
-              expect(input_argument_type.to_type_signature).to eq '[Int!]'
+            it 'returns required input type', :aggregate_failures do
+              expect(input_argument_type.first.to_type_signature).to eq 'Int'
+              expect(input_argument_type.second).to be_nil
             end
 
             it 'marks input as required' do
@@ -105,83 +111,14 @@ module GraphqlRails
           context 'when type is nullable array' do
             let(:type) { "[#{DummyModel.name}!]" }
 
-            it 'returns nullable array input type' do
-              expect(input_argument_type.to_type_signature).to eq '[DummyModelInput!]'
+            it 'contains required inner type', :aggregate_failures do
+              expect(input_argument_type.first.to_type_signature).to eq 'DummyModelInput'
+              expect(input_argument_type.second).to be_nil
             end
-          end
-        end
-      end
 
-      describe '#graphql_field_type' do
-        subject(:graphql_field_type) { attribute.graphql_field_type }
-
-        context 'when type is not set' do
-          let(:type) { nil }
-
-          context 'when attribute name ends without bang mark (!)' do
-            it { is_expected.not_to be_non_null }
-          end
-
-          context 'when attribute name ends with bang mark (!)' do
-            let(:name) { :full_name! }
-
-            it { is_expected.to be_non_null }
-          end
-
-          context 'when name ends with question mark (?)' do
-            let(:name) { :admin? }
-
-            it 'returns boolean type' do
-              expect(graphql_field_type).to eq GraphQL::BOOLEAN_TYPE
+            it 'marks list part as not required' do
+              expect(input_argument_options[:required]).to be false
             end
-          end
-
-          context 'when name ends with "id"' do
-            let(:name) { :id }
-
-            it 'returns id type' do
-              expect(graphql_field_type).to eq GraphQL::ID_TYPE
-            end
-          end
-        end
-
-        context 'when attribute is required' do
-          it { is_expected.to be_non_null }
-        end
-
-        context 'when attribute is optional' do
-          let(:type) { 'String' }
-
-          it { is_expected.not_to be_non_null }
-        end
-
-        context 'when attribute is array' do
-          let(:type) { '[Int!]!' }
-
-          context 'when array is required' do
-            let(:type) { '[Int]!' }
-
-            it { is_expected.to be_non_null }
-            it { is_expected.to be_list }
-          end
-
-          context 'when inner type of array is required' do
-            let(:type) { '[Int!]' }
-
-            it { is_expected.not_to be_non_null }
-            it { is_expected.to be_list }
-          end
-
-          context 'when array and its inner type is required' do
-            it { is_expected.to be_non_null }
-            it { is_expected.to be_list }
-          end
-
-          context 'when array and its inner type are optional' do
-            let(:type) { '[Int]' }
-
-            it { is_expected.not_to be_non_null }
-            it { is_expected.to be_list }
           end
         end
       end

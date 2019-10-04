@@ -11,6 +11,8 @@ module GraphqlRails
         graphql.name "IntegrationTestsDummyModelItem"
         graphql.attribute :name
 
+        graphql.input { |c| c.attribute(:name) }
+
         attr_reader :name
 
         def initialize(name)
@@ -24,7 +26,13 @@ module GraphqlRails
         graphql do |c|
           c.description 'Used for test purposes'
           c.attribute :paginated_list, type: "[#{DummyModelItem}!]!", paginated: true
-          c.attribute :field_with_args, permit: { name: :string! }
+          c.attribute :field_with_args, type: DummyModelItem, permit: { name: :string! }
+          c.attribute(:field_with_input_arg, type: DummyModelItem)
+           .permit(input: DummyModelItem)
+
+          c.attribute(:field_with_input_array_arg, type: "[#{DummyModelItem}!]!")
+           .permit(inputs: "[#{DummyModelItem}!]!")
+
           c.attribute(:paginated_list_with_args, type: "[#{DummyModelItem}!]!")
            .permit(name: :string!)
            .paginated
@@ -35,11 +43,19 @@ module GraphqlRails
         end
 
         def field_with_args(name:)
-          "hello #{name}!"
+          DummyModelItem.new(name)
         end
 
         def paginated_list_with_args(name:)
           Array.new(1000) { |i| DummyModelItem.new("Item #{name} ##{i + 1}") }
+        end
+
+        def field_with_input_arg(input:)
+          DummyModelItem.new(input[:name])
+        end
+
+        def field_with_input_array_arg(inputs:)
+          inputs.map { |input| DummyModelItem.new(input[:name]) }
         end
       end
 
@@ -96,18 +112,44 @@ module GraphqlRails
             <<~GRAPHQL
               query {
                 dummyModel {
-                  fieldWithArgs(name: "test")
+                  #{field_name}(#{inputs}) {
+                    name
+                  }
                 }
               }
             GRAPHQL
           end
 
+          let(:field_name) { 'fieldWithArgs' }
+          let(:inputs) { 'name: "test"' }
+
           let(:response) do
-            execute.to_h.dig('data', 'dummyModel', 'fieldWithArgs')
+            execute.to_h.dig('data', 'dummyModel', field_name)
           end
 
-          it 'passes arguments correctly' do
-            expect(response).to eq 'hello test!'
+          context 'when argument is simple scalary type' do
+            it 'passes arguments correctly' do
+              expect(response).to eq('name' => 'test')
+            end
+          end
+
+          context 'when argument is input type' do
+            let(:field_name) { 'fieldWithInputArg' }
+            let(:inputs) { 'input: { name: "test" }' }
+
+            it 'passes arguments correctly' do
+              expect(response).to eq('name' => 'test')
+            end
+          end
+
+          context 'when argument is input array type' do
+            let(:field_name) { 'fieldWithInputArrayArg' }
+            let(:inputs) { 'inputs: [{ name: "test" }, { name: "test2" }]' }
+
+            it 'passes arguments correctly' do
+              expect(response)
+                .to match_array([{ 'name' => 'test' }, { 'name' => 'test2' }])
+            end
           end
         end
 

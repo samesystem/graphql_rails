@@ -30,7 +30,7 @@ module GraphqlRails
           end
 
           def self.inspect
-            "#{GraphQL::Schema::Enum}(#{enum_name})"
+            "#{GraphQL::Schema::Enum}(#{graphql_name})"
           end
         end
       end

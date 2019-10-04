@@ -58,6 +58,16 @@ module GraphqlRails
 
       protected
 
+      def unwrap_type(type)
+        unwrappable = type
+        unwrappable = unwrappable.of_type while wrapped_type?(unwrappable)
+        unwrappable
+      end
+
+      def wrapped_type?(type)
+        type.is_a?(GraphQL::ListType) || type.is_a?(GraphQL::NonNullType) || type.is_a?(GraphQL::Schema::List)
+      end
+
       def nullable_inner_name
         type_name_info.nullable_inner_name
       end

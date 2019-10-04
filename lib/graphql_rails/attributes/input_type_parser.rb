@@ -21,10 +21,6 @@ module GraphqlRails
         partly_parsed_type || parsed_type
       end
 
-      def nullable_type
-        unwrapped_type
-      end
-
       def input_type_arg
         if list?
           list_type_arg
@@ -35,18 +31,16 @@ module GraphqlRails
 
       private
 
-      attr_reader :unparsed_type
+      attr_reader :unparsed_type, :subtype
 
       def unwrapped_type
         raw_unwrapped_type || unwrapped_scalar_type || unwrapped_model_input_type || raise_not_supported_type_error
       end
 
-      private
-
-      attr_reader :subtype
-
       def raw_unwrapped_type
-        unparsed_type if raw_graphql_type?
+        return nil unless raw_graphql_type?
+
+        unwrap_type(unparsed_type)
       end
 
       def list_type_arg

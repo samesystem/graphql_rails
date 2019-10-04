@@ -52,8 +52,24 @@ module GraphqlRails
             end
           end
 
-          it 'returns orginal type' do
-            expect(input_argument_type).to eq type
+          context 'when input is not list' do
+            it 'returns orginal type' do
+              expect(input_argument_type).to eq type
+            end
+          end
+
+          context 'when input is a list' do
+            let(:type) { non_list_type.to_list_type }
+
+            let(:non_list_type) do
+              GraphQL::InputObjectType.define do
+                name 'DummyAsListInput'
+              end
+            end
+
+            it 'returns orginal type' do
+              expect(input_argument_type).to eq [non_list_type, { null: true }]
+            end
           end
         end
 

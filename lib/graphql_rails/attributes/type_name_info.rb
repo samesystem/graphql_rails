@@ -11,9 +11,6 @@ module GraphqlRails
       end
 
       def nullable_inner_name
-        if inner_name.nil?
-          require 'pry'; binding.pry
-        end
         inner_name[/[^!]+/]
       end
 

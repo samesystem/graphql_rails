@@ -35,11 +35,6 @@ module GraphqlRails
 
       attr_reader :initial_name, :initial_type, :options, :subtype
 
-      def nullable_type
-        type = type_parser.graphql_type
-        type.non_null? ? type.of_type : type
-      end
-
       def attribute_name_parser
         @attribute_name_parser ||= AttributeNameParser.new(initial_name)
       end

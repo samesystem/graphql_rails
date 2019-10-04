@@ -69,15 +69,7 @@ module GraphqlRails
       end
 
       def raw_unwrapped_type
-        @raw_unwrapped_type ||= begin
-          type = parsed_type
-          type = type.of_type while wrapped_type?(type)
-          type
-        end
-      end
-
-      def wrapped_type?(type)
-        type.is_a?(GraphQL::ListType) || type.is_a?(GraphQL::NonNullType) || type.is_a?(GraphQL::Schema::List)
+        @raw_unwrapped_type ||= unwrap_type(parsed_type)
       end
 
       private

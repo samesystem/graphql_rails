@@ -8,7 +8,7 @@ module GraphqlRails
       class DummyModelItem
         include GraphqlRails::Model
 
-        graphql.name "IntegrationTestsDummyModelItem"
+        graphql.name 'IntegrationTestsDummyModelItem'
         graphql.attribute :name
 
         graphql.input { |c| c.attribute(:name) }

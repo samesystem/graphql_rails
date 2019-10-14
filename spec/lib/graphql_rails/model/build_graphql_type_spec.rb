@@ -6,29 +6,28 @@ module GraphqlRails
   module Model
     RSpec.describe BuildGraphqlType do
       describe '#call' do
-        subject(:call) do
-          described_class.call(
-            name: type_name,
-            description: type_description,
-            attributes: attributes,
-          )
-        end
-
-        let(:type_name) { 'DummyType' }
-        let(:type_description) { 'This is my type!' }
-        let(:attributes) do
-          {
-            attribute.name => attribute
-          }
-        end
-
         class DummyBuildGraphqlTypeName
           include Model
 
           graphql.attribute :name
         end
 
+        subject(:call) do
+          described_class.call(
+            name: type_name,
+            description: type_description,
+            attributes: attributes
+          )
+        end
+
+        let(:type_name) { 'DummyType' }
+        let(:type_description) { 'This is my type!' }
         let(:attribute) { Attributes::Attribute.new('name', DummyBuildGraphqlTypeName.name) }
+        let(:attributes) do
+          {
+            attribute.name => attribute
+          }
+        end
 
         context 'when attribute does not have any arguments' do
           it 'builds correct type' do

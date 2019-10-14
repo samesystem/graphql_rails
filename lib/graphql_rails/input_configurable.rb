@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GraphqlRails
   # contains configuration options related with inputs
   module InputConfigurable

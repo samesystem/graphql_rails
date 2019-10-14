@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GraphqlRails
   module Attributes
     # Contains shared parsing logic.

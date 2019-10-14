@@ -6,6 +6,16 @@ require 'active_record'
 
 module GraphqlRails
   RSpec.describe Model::Configuration do
+    class DummyModelConfigTestItem
+      include Model
+
+      graphql.attribute :name
+
+      def name
+        'item'
+      end
+    end
+
     subject(:config) { model.graphql }
 
     let(:model) do
@@ -21,6 +31,75 @@ module GraphqlRails
 
         def self.name
           'DummyModel'
+        end
+      end
+    end
+
+    describe '#attribute' do
+      let(:model) do
+        Class.new do
+          include GraphqlRails::Model
+
+          graphql do |c|
+            c.description 'Used for test purposes'
+            c.attribute :paginated_list, type: "[#{DummyModelConfigTestItem}!]!", paginated: true
+            c.attribute :field_with_args, permit: { name: :string! }
+            c.attribute(:paginated_list_with_args, type: "[#{DummyModelConfigTestItem}!]!")
+             .permit(name: :string!)
+             .paginated
+          end
+
+          def self.name
+            'DummyModel'
+          end
+
+          def paginated_list
+            ['a'] * 1000
+          end
+
+          def field_with_args(name:)
+            "hello #{name}!"
+          end
+
+          def paginated_list_with_args(name:)
+            ["hello #{name}!"] * 10
+          end
+        end
+      end
+
+      context 'when attribute is paginated' do
+        let(:field) { model.graphql.graphql_type.fields['paginatedList'] }
+
+        it 'returns connection type' do
+          expect(field.type.to_type_signature).to eq 'DummyModelConfigTestItemConnection!'
+        end
+
+        it 'contains connection arguments' do
+          expect(field.arguments.keys).to match_array(%w[after before first last])
+        end
+      end
+
+      context 'when attribute accepts arguments' do
+        let(:field) { model.graphql.graphql_type.fields['fieldWithArgs'] }
+
+        it 'returns correct type' do
+          expect(field.type.to_type_signature).to eq 'String'
+        end
+
+        it 'contains correct arguments' do
+          expect(field.arguments.keys).to match_array(%w[name])
+        end
+      end
+
+      context 'when attribute is paginated and accepts arguments' do
+        let(:field) { model.graphql.graphql_type.fields['paginatedListWithArgs'] }
+
+        it 'returns connection type' do
+          expect(field.type.to_type_signature).to eq 'DummyModelConfigTestItemConnection!'
+        end
+
+        it 'contains connection and specified arguments' do
+          expect(field.arguments.keys).to match_array(%w[after before first last name])
         end
       end
     end

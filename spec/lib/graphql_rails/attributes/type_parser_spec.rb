@@ -116,7 +116,7 @@ module GraphqlRails
           let(:type) { 'unknown' }
 
           it 'raises error' do
-            expect { graphql_type }.to raise_error(TypeParser::UnknownTypeError)
+            expect { graphql_type }.to raise_error(TypeParseable::UnknownTypeError)
           end
         end
 

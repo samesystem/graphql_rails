@@ -33,6 +33,9 @@ module GraphqlRails
       end
 
       describe '#attribute' do
+        let(:attribute_type) { input.attributes['fruit'].input_argument_args[1] }
+        let(:attribute_type_options) { input.attributes['fruit'].input_argument_args[2] }
+
         context 'when attribute has enum type' do
           context 'when enum is required' do
             before do
@@ -40,11 +43,11 @@ module GraphqlRails
             end
 
             it 'adds non null enum type' do
-              expect(input.attributes['fruit'].graphql_field_type).to be_non_null
+              expect(attribute_type_options).to include(required: true)
             end
 
             it 'adds attribute with enum type' do
-              expect(input.attributes['fruit'].graphql_field_type.of_type < GraphQL::Schema::Enum).to be true
+              expect(attribute_type < GraphQL::Schema::Enum).to be true
             end
           end
 
@@ -53,8 +56,12 @@ module GraphqlRails
               input.attribute(:fruit, enum: %i[apple orange])
             end
 
+            it 'adds not required enum type' do
+              expect(attribute_type_options).to include(required: false)
+            end
+
             it 'adds attribute with enum type' do
-              expect(input.attributes['fruit'].graphql_field_type < GraphQL::Schema::Enum).to be true
+              expect(attribute_type < GraphQL::Schema::Enum).to be true
             end
           end
         end

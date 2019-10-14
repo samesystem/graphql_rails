@@ -8,6 +8,8 @@ module GraphqlRails
 
       include ::GraphqlRails::Service
 
+      PAGINATION_KEYS = %i[before after first last].freeze
+
       def initialize(name:, description: nil, attributes:)
         @name = name
         @attributes = attributes
@@ -24,18 +26,30 @@ module GraphqlRails
           description(type_description)
 
           type_attributes.each_value do |attribute|
-            field(*attribute.field_args)
-          end
+            field(*attribute.field_args) do
+              attribute.attributes.values.each do |arg_attribute|
+                argument(*arg_attribute.input_argument_args)
+              end
+            end
 
-          def self.inspect
-            "#{GraphQL::Schema::Object}(#{graphql_name})"
+            next if attribute.attributes.empty?
+
+            define_method attribute.property do |**kwargs|
+              method_kwargs = attribute.paginated? ? kwargs.except(*PAGINATION_KEYS) : kwargs
+
+              if method_kwargs.empty?
+                object.send(attribute.property)
+              else
+                object.send(attribute.property, **method_kwargs)
+              end
+            end
           end
         end
       end
 
       private
 
-      attr_reader :model_configuration, :attributes, :name, :description
+      attr_reader :attributes, :name, :description
     end
   end
 end

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 *
+* Added: added argument to model.attribute
 * Removed: `action.can_return_nil` was removed, because it does no affect anymore
 * Removed: default `action` model was removed. Now each action must have `returns` part
 * Added: default router added. No need to assign value to constant on Router.draw

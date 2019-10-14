@@ -5,9 +5,13 @@ require 'graphql'
 module GraphqlRails
   module Attributes
     # converts string value in to GraphQL type
-    class InputTypeParser < TypeParser
+    class InputTypeParser
+      require_relative './type_parseable'
+
+      include TypeParseable
+
       def initialize(unparsed_type, subtype:)
-        super(unparsed_type)
+        @unparsed_type = unparsed_type
         @subtype = subtype
       end
 
@@ -17,68 +21,42 @@ module GraphqlRails
         partly_parsed_type || parsed_type
       end
 
-      def nullable_type
-        return nil if unparsed_type.nil?
-
-        partly_parsed_type || parsed_nullable_type
-      end
-
-      protected
-
-      def partly_parsed_type
-        return unparsed_type if raw_graphql_type?
-        return unparsed_type.graphql_input_type if unparsed_type.is_a?(GraphqlRails::Model::Input)
-      end
-
-      def parsed_nullable_type
+      def input_type_arg
         if list?
-          parsed_inner_type.to_list_type
+          list_type_arg
         else
-          type_by_name
-        end
-      end
-
-      def parsed_type
-        if list?
-          parsed_list_type
-        else
-          parsed_inner_type
-        end
-      end
-
-      def raw_graphql_type?
-        unparsed_type.is_a?(GraphQL::InputObjectType) || super
-      end
-
-      def dynamicly_defined_type
-        type_class = graphql_model
-        return unless type_class
-
-        type_class.graphql.input(*subtype).graphql_input_type
-      end
-
-      def parsed_list_type
-        list_type = parsed_inner_type.to_list_type
-
-        if required_list?
-          list_type = list_type.to_graphql if list_type.respond_to?(:to_graphql)
-          list_type.to_non_null_type
-        else
-          list_type
-        end
-      end
-
-      def parsed_inner_type
-        if required_inner_type?
-          type_by_name.to_non_null_type
-        else
-          type_by_name
+          unwrapped_type
         end
       end
 
       private
 
-      attr_reader :subtype
+      attr_reader :unparsed_type, :subtype
+
+      def unwrapped_type
+        raw_unwrapped_type || unwrapped_scalar_type || unwrapped_model_input_type || raise_not_supported_type_error
+      end
+
+      def raw_unwrapped_type
+        return nil unless raw_graphql_type?
+
+        unwrap_type(unparsed_type)
+      end
+
+      def list_type_arg
+        if required_inner_type?
+          [unwrapped_type]
+        else
+          [unwrapped_type, null: true]
+        end
+      end
+
+      def unwrapped_model_input_type
+        type_class = graphql_model
+        return unless type_class
+
+        type_class.graphql.input(subtype).graphql_input_type
+      end
     end
   end
 end

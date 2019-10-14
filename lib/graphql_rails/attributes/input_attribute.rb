@@ -5,6 +5,7 @@ module GraphqlRails
     # contains info about single graphql input attribute
     class InputAttribute
       require_relative './input_type_parser'
+      require_relative './attribute_name_parser'
       include Attributable
 
       attr_reader :description
@@ -21,35 +22,28 @@ module GraphqlRails
       # rubocop:enable Metrics/ParameterLists
 
       def input_argument_args
-        type = raw_input_type || input_type_parser.nullable_type || nullable_type
+        type = raw_input_type || input_type_parser.input_type_arg
 
         [field_name, type, { required: required?, description: description, camelize: false }]
       end
 
-      def graphql_input_type
-        raw_input_type || input_type_parser.graphql_type || graphql_field_type
-      end
-
-      def graphql_field_type
-        @graphql_field_type ||= \
-          if required?
-            nullable_type.to_non_null_type
-          else
-            nullable_type
-          end
+      def paginated?
+        false
       end
 
       private
 
       attr_reader :initial_name, :initial_type, :options, :subtype
 
-      def nullable_type
-        type = type_parser.graphql_type
-        type.non_null? ? type.of_type : type
+      def attribute_name_parser
+        @attribute_name_parser ||= AttributeNameParser.new(initial_name)
       end
 
       def input_type_parser
-        @input_type_parser ||= InputTypeParser.new(initial_type, subtype: subtype)
+        @input_type_parser ||= begin
+          initial_parseable_type = initial_type || attribute_name_parser.graphql_type
+          InputTypeParser.new(initial_parseable_type, subtype: subtype)
+        end
       end
 
       def raw_input_type

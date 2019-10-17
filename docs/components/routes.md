@@ -99,3 +99,18 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
   mutation :logIn, to: 'sessions#login' # this will trigger ::SessionsController
 end
 ```
+
+## creating multiple routers / schemas
+
+You can have named routers by prividing name attribute to draw method like this:
+```
+MyGraphqlSchema = GraphqlRails::Router.draw(:admin) do
+  # ...
+end
+
+MyGraphqlSchema = GraphqlRails::Router.draw(:public) do
+  # ...
+end
+```
+
+If you define call `draw` multiple times with same name or without name then same graphql router will be updated

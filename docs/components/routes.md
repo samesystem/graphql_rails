@@ -100,10 +100,11 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
 end
 ```
 
-## creating multiple routers / schemas
+## Creating multiple routers / schemas
 
-You can have named routers by prividing name attribute to draw method like this:
-```
+You can have named routers by providing name attribute to draw method like this:
+
+```ruby
 MyGraphqlSchema = GraphqlRails::Router.draw(:admin) do
   # ...
 end
@@ -113,4 +114,4 @@ MyGraphqlSchema = GraphqlRails::Router.draw(:public) do
 end
 ```
 
-If you call `draw` multiple times with same name or without name then same graphql router will be updated
+If you call `draw` multiple times with same name or without name then same graphql router will be updated.

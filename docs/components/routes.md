@@ -113,4 +113,4 @@ MyGraphqlSchema = GraphqlRails::Router.draw(:public) do
 end
 ```
 
-If you define call `draw` multiple times with same name or without name then same graphql router will be updated
+If you call `draw` multiple times with same name or without name then same graphql router will be updated

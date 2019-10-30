@@ -34,12 +34,19 @@ module GraphqlRails
         template('graphql_application_controller.erb', 'app/controllers/graphql/graphql_application_controller.rb')
         template('example_users_controller.erb', 'app/controllers/graphql/example_users_controller.rb')
 
-        empty_directory('config/graphql')
-        template('routes.erb', 'config/graphql/routes.rb')
+        application do
+          "config.autoload_paths << 'app/graphql'"
+        end
 
-        template('initializer.erb', 'config/initializers/graphql_rails.rb')
+        empty_directory('app/graphql')
+        template('graphql_schema.erb', 'config/graphql/graphql_schema.rb')
 
         route('post "/graphql", to: "graphql#execute"')
+
+        if File.directory?('spec') # rubocop:disable Style/GuardClause
+          empty_directory('spec/graphql')
+          template('graphql_schema_spec.erb', 'spec/app/graphql/graphql_schema_spec.rb')
+        end
       end
     end
   end

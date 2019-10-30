@@ -1,0 +1,18 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe GraphqlSchema do
+  describe '#execute' do
+    it 'returns correct structure' do
+      # if you need to update saved_schema, run rake task:
+      #   $ RAILS_ENV=test rake graphql:schema:dump
+
+      schema_path = Rails.root.join('spec', 'fixtures', 'graphql_schema.graphql')
+      saved_schema = File.read(schema_path).strip
+      real_schema = described_class.to_definition.strip
+
+      expect(real_schema).to eq(saved_schema)
+    end
+  end
+end

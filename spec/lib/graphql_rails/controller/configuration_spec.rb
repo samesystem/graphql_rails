@@ -6,7 +6,7 @@ module GraphqlRails
   RSpec.describe Controller::Configuration do
     subject(:configuration) { described_class.new }
 
-    let(:define_default_action) { nil }
+    let(:define_action_default) { nil }
 
     let(:define_actions) do
       configuration.action(:some_method).permit(:id)
@@ -14,7 +14,7 @@ module GraphqlRails
     end
 
     before do
-      define_default_action
+      define_action_default
       define_actions
     end
 
@@ -67,15 +67,15 @@ module GraphqlRails
         expect(configuration.action(:some_method).attributes.keys).to match_array(%w[id])
       end
 
-      context 'when default_action was defined' do
-        let(:define_default_action) { configuration.default_action.permit(default: :string!) }
+      context 'when action_default was defined' do
+        let(:define_action_default) { configuration.action_default.permit(default: :string!) }
 
-        it 'inherits attributes from default_action' do
+        it 'inherits attributes from action_default' do
           expect(configuration.action(:some_method).attributes.keys).to match_array(%w[default id])
         end
 
         it 'does not modify default action itself' do
-          expect(configuration.default_action.attributes.keys).to match_array(%w[default])
+          expect(configuration.action_default.attributes.keys).to match_array(%w[default])
         end
       end
 
@@ -107,7 +107,7 @@ module GraphqlRails
     describe '#model' do
       it 'sets model for default action' do
         configuration.model('String')
-        expect(configuration.default_action.model).to eq 'String'
+        expect(configuration.action_default.model).to eq 'String'
       end
     end
 

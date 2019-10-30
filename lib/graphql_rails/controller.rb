@@ -32,8 +32,8 @@ module GraphqlRails
         controller_configuration.action(action_name)
       end
 
-      def default_action
-        controller_configuration.default_action
+      def action_default
+        controller_configuration.action_default
       end
 
       def model(*args)

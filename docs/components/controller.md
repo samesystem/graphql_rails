@@ -187,11 +187,11 @@ end
 
 ### *model*
 
-If you want to define model dynamically, you can use combination of `model` and `returns_list` or `returns_single`. This is especially handy when model is used with `default_action`:
+If you want to define model dynamically, you can use combination of `model` and `returns_list` or `returns_single`. This is especially handy when model is used with `action_default`:
 
 ```ruby
 class OrdersController < GraphqlRails::Controller
-  default_action.model('Order')
+  model('Order')
   action(:show).returns_single # returns `Order!`
   action(:index).returns_list # returns `[Order!]!`
 
@@ -294,7 +294,7 @@ end
 
 ## *model*
 
-`model` is just a shorter version of `default_action.model`. See `action.model` and `default_action` for more information:
+`model` is just a shorter version of `action_default.model`. See `action.model` and `action_default` for more information:
 
 ```ruby
 class OrdersController < GraphqlRails::Controller
@@ -312,13 +312,13 @@ class OrdersController < GraphqlRails::Controller
 end
 ```
 
-## *default_action*
+## *action_default*
 
-Sometimes you want to have some shared attributes for all your actions. In order to make this possible you need to use `default_action`. It acts identical to `action` and is "inherited" by all actions defined after `default_action` part:
+Sometimes you want to have some shared attributes for all your actions. In order to make this possible you need to use `action_default`. It acts identical to `action` and is "inherited" by all actions defined after `action_default` part:
 
 ```ruby
 class UsersController < GraphqlRails::Controller
-  default_action.permit(token: :string!)
+  action_default.permit(token: :string!)
 
   action(:update).returns('User!') # action(:update) has `permit(token: :string!)
   action(:create).returns('User') # action(:create) has `permit(token: :string!)

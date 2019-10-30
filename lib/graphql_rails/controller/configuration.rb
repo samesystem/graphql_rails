@@ -18,7 +18,7 @@ module GraphqlRails
         }
 
         @action_by_name = {}
-        @default_action = nil
+        @action_default = nil
       end
 
       def initialize_copy(other)
@@ -44,20 +44,20 @@ module GraphqlRails
           ActionHook.new(name: hook_name, **options, &block)
       end
 
-      def default_action
-        @default_action ||= ActionConfiguration.new
-        yield(@default_action) if block_given?
-        @default_action
+      def action_default
+        @action_default ||= ActionConfiguration.new
+        yield(@action_default) if block_given?
+        @action_default
       end
 
       def action(method_name)
-        @action_by_name[method_name.to_s] ||= default_action.dup
+        @action_by_name[method_name.to_s] ||= action_default.dup
         yield(@action_by_name[method_name.to_s]) if block_given?
         @action_by_name[method_name.to_s]
       end
 
       def model(model = nil)
-        default_action.model(model)
+        action_default.model(model)
       end
 
       private

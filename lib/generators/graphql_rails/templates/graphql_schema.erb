@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-GraphqlRails::Router.draw do
+GraphqlSchema = GraphqlRails::Router.draw do
   scope module: :graphql do
     # this will create all CRUD actions for Graphql::UsersController:
     #   resources :users

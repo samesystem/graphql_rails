@@ -9,6 +9,7 @@ require 'graphql_rails/controller'
 require 'graphql_rails/attributes'
 require 'graphql_rails/decorator'
 require 'graphql_rails/query_runner'
+require 'graphql_rails/railtie' if defined?(Rails)
 
 # wonders starts here
 module GraphqlRails

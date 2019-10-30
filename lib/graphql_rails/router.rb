@@ -11,7 +11,7 @@ module GraphqlRails
   # graphql router that mimics Rails.application.routes
   class Router
     RAW_ACTION_NAMES = %i[
-      rescue_from query_analyzer instrument cursor_encoder default_max_page_size
+      use rescue_from query_analyzer instrument cursor_encoder default_max_page_size
     ].freeze
 
     def self.routers

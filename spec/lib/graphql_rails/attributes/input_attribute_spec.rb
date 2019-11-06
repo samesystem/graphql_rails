@@ -5,10 +5,11 @@ require 'spec_helper'
 module GraphqlRails
   module Attributes
     RSpec.describe InputAttribute do
-      subject(:attribute) { described_class.new(name, type) }
+      subject(:attribute) { described_class.new(name, type, options: options) }
 
       let(:type) { 'String!' }
       let(:name) { 'full_name' }
+      let(:options) { {} }
 
       class DummyModel
         include GraphqlRails::Model
@@ -134,6 +135,14 @@ module GraphqlRails
 
             it 'marks list part as not required' do
               expect(input_argument_options[:required]).to be false
+            end
+          end
+
+          context 'when input_format option is given' do
+            let(:options) { { input_format: :original } }
+
+            it 'takes in to account input format options' do
+              expect(input_argument_name).to eq 'full_name'
             end
           end
         end

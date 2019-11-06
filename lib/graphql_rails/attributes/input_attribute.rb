@@ -36,7 +36,13 @@ module GraphqlRails
       attr_reader :initial_name, :initial_type, :options, :subtype
 
       def attribute_name_parser
-        @attribute_name_parser ||= AttributeNameParser.new(initial_name)
+        @attribute_name_parser ||= AttributeNameParser.new(
+          initial_name, options: attribute_naming_options
+        )
+      end
+
+      def attribute_naming_options
+        options.slice(:input_format)
       end
 
       def input_type_parser

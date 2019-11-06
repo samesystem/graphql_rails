@@ -37,6 +37,13 @@ module GraphqlRails
         GraphQL::InputObjectType
       ].freeze
 
+      WRAPPER_TYPES = [
+        GraphQL::Schema::NonNull,
+        GraphQL::NonNullType,
+        GraphQL::ListType,
+        GraphQL::Schema::List
+      ].freeze
+
       def unwrapped_scalar_type
         TYPE_MAPPING[nullable_inner_name.downcase.downcase]
       end
@@ -67,7 +74,7 @@ module GraphqlRails
       end
 
       def wrapped_type?(type)
-        type.is_a?(GraphQL::ListType) || type.is_a?(GraphQL::NonNullType) || type.is_a?(GraphQL::Schema::List)
+        WRAPPER_TYPES.any? { |wrapper| type.is_a?(wrapper) }
       end
 
       def nullable_inner_name

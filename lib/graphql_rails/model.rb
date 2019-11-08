@@ -17,10 +17,6 @@ module GraphqlRails
   #
   # YourModel.new.graphql_type # => type with [:id, :title] attributes
   module Model
-    def self.included(base)
-      base.extend(ClassMethods)
-    end
-
     # static methods for GraphqlRails::Model
     module ClassMethods
       def inherited(subclass)
@@ -35,6 +31,25 @@ module GraphqlRails
         yield(@graphql) if block_given?
         @graphql
       end
+    end
+
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
+
+    def graphql_context
+      @graphql_context
+    end
+
+    def graphql_context=(value)
+      @graphql_context = value
+    end
+
+    def with_graphql_context(graphql_context)
+      self.graphql_context = graphql_context
+      yield(self)
+    ensure
+      self.graphql_context = nil
     end
   end
 end

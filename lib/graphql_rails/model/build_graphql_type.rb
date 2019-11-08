@@ -5,6 +5,7 @@ module GraphqlRails
     # stores information about model specific config, like attributes and types
     class BuildGraphqlType
       require 'graphql_rails/concerns/service'
+      require 'graphql_rails/model/call_graphql_model_method'
 
       include ::GraphqlRails::Service
 
@@ -32,16 +33,13 @@ module GraphqlRails
               end
             end
 
-            next if attribute.attributes.empty?
-
             define_method attribute.property do |**kwargs|
-              method_kwargs = attribute.paginated? ? kwargs.except(*PAGINATION_KEYS) : kwargs
-
-              if method_kwargs.empty?
-                object.send(attribute.property)
-              else
-                object.send(attribute.property, **method_kwargs)
-              end
+              CallGraphqlModelMethod.call(
+                model: object,
+                attribute_config: attribute,
+                method_keyword_arguments: kwargs,
+                graphql_context: context
+              )
             end
           end
         end

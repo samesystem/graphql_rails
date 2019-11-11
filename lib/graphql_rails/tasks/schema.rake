@@ -9,7 +9,7 @@ module GraphqlRails
       new(*args).call
     end
 
-    def initialize(name: '')
+    def initialize(name:)
       @name = name
     end
 
@@ -19,18 +19,21 @@ module GraphqlRails
 
     private
 
-    def schema_name
-      ['graphql', name.presence, 'schema'].compact.join('_')
-    end
-
     def schema
-      @schema ||= schema_name.camelize.safe_constantize
+      @schema ||= ::GraphqlRouter.graphql_schema(name.presence)
     end
 
     def schema_path
+      ENV['GRAPHQL_SCHEMA_DUMP_PATH'] || default_schema_path
+    end
+
+    def default_schema_path
       schema_folder_path = Rails.root.join('spec', 'fixtures')
+
       FileUtils.mkdir_p(schema_folder_path)
-      schema_folder_path.join("#{schema_name}.graphql")
+      file_name = name.present? ? "graphql_#{name}_schema.graphql" : 'graphql_schema.graphql'
+
+      schema_folder_path.join(file_name)
     end
   end
 end

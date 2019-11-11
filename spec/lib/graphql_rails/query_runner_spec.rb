@@ -12,7 +12,7 @@ module GraphqlRails
       end
     end
 
-    subject(:query_runner) { described_class.new(params: params) }
+    subject(:query_runner) { described_class.new(params: params, router: router) }
 
     let(:params) do
       {
@@ -24,14 +24,14 @@ module GraphqlRails
     let(:query) { 'query { doSomething }' }
     let(:variables) { {} }
 
+    let(:router) do
+      Router.draw do
+        query :do_something, to: 'graphql_rails/dummy_query_runner#do_something'
+      end
+    end
+
     describe '#call' do
       subject(:call) { query_runner.call }
-
-      before do
-        Router.draw do
-          query :do_something, to: 'graphql_rails/dummy_query_runner#do_something'
-        end
-      end
 
       context 'when variables are not used' do
         it 'returns correct json' do

@@ -78,7 +78,7 @@ module GraphqlRails
       end
 
       describe 'Model#attribute' do
-        subject(:execute) { DummySchema.execute(query) }
+        subject(:execute) { DummySchema.graphql_schema.execute(query) }
 
         let(:query) do
           <<~GRAPHQL

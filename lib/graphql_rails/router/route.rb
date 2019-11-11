@@ -8,10 +8,11 @@ module GraphqlRails
     class Route
       attr_reader :name, :module_name, :on, :relative_path
 
-      def initialize(name, to: '', on:, **options)
+      def initialize(name, to: '', on:, groups: nil, **options)
         @name = name.to_s.camelize(:lower)
         @module_name = options[:module].to_s
         @function = options[:function]
+        @groups = groups
         @relative_path = to
         @on = on.to_sym
       end
@@ -24,6 +25,12 @@ module GraphqlRails
 
       def collection?
         on == :collection
+      end
+
+      def show_in_group?(group_name)
+        return true if groups.nil? || groups.empty?
+
+        groups.include?(group_name&.to_sym)
       end
 
       def field_args
@@ -40,7 +47,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :function
+      attr_reader :function, :groups
 
       def resolver
         @resolver ||= Controller::BuildControllerActionResolver.call(route: self)

@@ -100,18 +100,30 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
 end
 ```
 
-## Creating multiple routers / schemas
+## _group_
 
-You can have named routers by providing name attribute to draw method like this:
+You can have multiple routers / schemas. In order to add resources or query only to specific schema, you need wrap it with `group` method, like this:
 
 ```ruby
-MyGraphqlSchema = GraphqlRails::Router.draw(:admin) do
-  # ...
-end
+GraphqlRouter = GraphqlRails::Router.draw do
+  resources :users # goes to all routers
 
-MyGraphqlSchema = GraphqlRails::Router.draw(:public) do
-  # ...
+  group :mobile, :internal do
+    resources :admin_users # goes to `mobile` and `internal` schemas
+  end
+
+  query :runTesting, to: 'testing#run', group: :testing # goes to `testing` schema
 end
 ```
 
-If you call `draw` multiple times with same name or without name then same graphql router will be updated.
+In order to call specific schema you can call it using `QueryRunner` in your RoR controller:
+
+```ruby
+class InternalController < ApplicationController
+  def execute
+    GraphqlRails::QueryRunner.new(group: :internal, params: params)
+  end
+end
+```
+
+If you want to access raw graphql schema, you can call `GraphqlRouter.graphql_schema(:mobile)`

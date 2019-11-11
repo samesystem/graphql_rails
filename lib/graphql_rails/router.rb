@@ -14,27 +14,33 @@ module GraphqlRails
       use rescue_from query_analyzer instrument cursor_encoder default_max_page_size
     ].freeze
 
-    def self.routers
-      @routers ||= {}
+    def self.draw(&block)
+      instance.tap do |router|
+        router.instance_eval(&block)
+      end
+    end
+
+    def self.instance
+      @instance ||= new
     end
 
     def self.reload
-      @routers = {}
-    end
-
-    def self.draw(name = :default, &block)
-      routers[name.to_sym] ||= new
-      router = routers[name.to_sym]
-      router.instance_eval(&block)
-      router.tap(&:reload_schema).graphql_schema
+      @instance = nil
     end
 
     attr_reader :routes, :namespace_name, :raw_graphql_actions
 
-    def initialize(module_name: '')
+    def initialize(module_name: '', group_names: nil)
       @module_name = module_name
+      @group_names = group_names
       @routes ||= Set.new
       @raw_graphql_actions ||= []
+    end
+
+    def group(*group_names, &block)
+      scoped_router = self.class.new(module_name: module_name, group_names: group_names)
+      scoped_router.instance_eval(&block)
+      routes.merge(scoped_router.routes)
     end
 
     def scope(**options, &block)
@@ -65,11 +71,13 @@ module GraphqlRails
       end
     end
 
-    def graphql_schema
-      @graphql_schema ||= SchemaBuilder.new(
+    def graphql_schema(group = nil)
+      @graphql_schema ||= {}
+      @graphql_schema[group&.to_sym] ||= SchemaBuilder.new(
         queries: routes.select(&:query?),
         mutations: routes.select(&:mutation?),
-        raw_actions: raw_graphql_actions
+        raw_actions: raw_graphql_actions,
+        group: group
       ).call
     end
 
@@ -79,7 +87,7 @@ module GraphqlRails
 
     private
 
-    attr_reader :module_name
+    attr_reader :module_name, :group_names
 
     def add_raw_action(name, *args, &block)
       raw_graphql_actions << { name: name, args: args, block: block }
@@ -91,7 +99,7 @@ module GraphqlRails
     end
 
     def default_route_options
-      { module: module_name, on: :member }
+      { module: module_name, on: :member, groups: group_names }
     end
   end
 end

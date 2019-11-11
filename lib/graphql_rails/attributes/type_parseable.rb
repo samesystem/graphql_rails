@@ -30,19 +30,20 @@ module GraphqlRails
         'decimal' => GraphQL::FLOAT_TYPE
       }.freeze
 
-      RAW_GRAPHQL_TYPES = [
+      WRAPPER_TYPES = [
         GraphQL::Schema::List,
+        GraphQL::Schema::NonNull,
+        GraphQL::NonNullType,
+        GraphQL::ListType
+      ].freeze
+
+      GRAPHQL_BASE_TYPES = [
         GraphQL::BaseType,
         GraphQL::ObjectType,
         GraphQL::InputObjectType
       ].freeze
 
-      WRAPPER_TYPES = [
-        GraphQL::Schema::NonNull,
-        GraphQL::NonNullType,
-        GraphQL::ListType,
-        GraphQL::Schema::List
-      ].freeze
+      RAW_GRAPHQL_TYPES = (WRAPPER_TYPES + GRAPHQL_BASE_TYPES).freeze
 
       def unwrapped_scalar_type
         TYPE_MAPPING[nullable_inner_name.downcase.downcase]

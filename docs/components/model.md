@@ -364,3 +364,34 @@ class User
   end
 end
 ```
+
+## graphql_context
+
+It's possible to access graphql_context in your model using method `graphql_context`:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  def method_with_context
+    graphql_context[:some_data]
+  end
+end
+```
+
+Keep in mind that this value will be set only during graphql execution, but in tests this value will be `nil`. To avoid this, you need to set `show_graphql_context` manually like this:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  def show_graphql_context
+    graphql_context[:data]
+  end
+end
+
+user = User.new(...)
+user.show_graphql_context #=> NoMethodError: undefined method `[]' for nil:NilClass
+user.graphql_context =  { data: 'goes to context' }
+user.show_graphql_context #=> { data: 'goes to context' }
+```

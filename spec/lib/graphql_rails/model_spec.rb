@@ -47,5 +47,19 @@ module GraphqlRails
         end
       end
     end
+
+    describe '#with_graphql_context' do
+      it 'sets context in block' do
+        model.new.with_graphql_context(data: 'context') do |with_context|
+          expect(with_context.graphql_context).to eq(data: 'context')
+        end
+      end
+
+      it 'removes context outside block' do
+        item = model.new
+        item.with_graphql_context(data: 'context') {}
+        expect(item.graphql_context).to be_nil
+      end
+    end
   end
 end

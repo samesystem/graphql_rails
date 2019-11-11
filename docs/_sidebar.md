@@ -9,3 +9,6 @@
   * [Decorator](components/decorator)
 * [Logging and monitoring](logging_and_monitoring/logging_and_monitoring)
 * [Testing](testing/testing)
+* Other tools
+  * [Schema Snapshot](other_tools/rake_tasks)
+  * [Query Runner](other_tools/query_runner)

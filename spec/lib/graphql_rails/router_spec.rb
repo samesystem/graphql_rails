@@ -25,12 +25,8 @@ module GraphqlRails
         end
       end
 
-      it 'returns child class of GraphQl::Schema' do
-        expect(drawn_routes < GraphQL::Schema).to be true
-      end
-
-      it 'remembers router' do
-        expect { drawn_routes }.to change(described_class.routers, :keys).to([:default])
+      it 'returns instance of router' do
+        expect(drawn_routes).to be_a(described_class)
       end
 
       context 'when building routes for the second time' do
@@ -45,8 +41,61 @@ module GraphqlRails
         end
 
         it 'updates existing router' do
-          router = described_class.routers[:default]
+          router = described_class.instance
           expect { draw_additional_queries }.to change(router.routes, :count).from(6).to(7)
+        end
+      end
+    end
+
+    describe '#graphql_schema' do
+      subject(:graphql_schema) { router.graphql_schema(group_name) }
+
+      let(:group_name) { nil }
+
+      let(:router) do
+        described_class.draw do
+          scope module: :graphql_rails do
+            query 'custom_query', to: 'custom_dummy#action'
+            resources :router_dummy_users
+
+            group :secret do
+              query 'single_secret_grouped_custom_query', to: 'custom_dummy#action'
+            end
+
+            group :secret, :top_secret do
+              query 'shared_secret_grouped_custom_query', to: 'custom_dummy#action'
+            end
+
+            group :top_secret do
+              query 'top_secret_query', to: 'custom_dummy#action'
+            end
+          end
+        end
+      end
+
+      it 'returns child class of GraphQl::Schema' do
+        expect(graphql_schema < GraphQL::Schema).to be true
+      end
+
+      context 'when calling schema without group name' do
+        it 'does not return grouped routes' do
+          expect(graphql_schema.to_definition).not_to include('singleSecretGroupedCustomQuery')
+        end
+      end
+
+      context 'when calling schema with group name' do
+        let(:group_name) { :secret }
+
+        it 'includes grouped routes' do
+          expect(graphql_schema.to_definition).to include('singleSecretGroupedCustomQuery')
+        end
+
+        it 'includes routes from shared groups' do
+          expect(graphql_schema.to_definition).to include('sharedSecretGroupedCustomQuery')
+        end
+
+        it 'does not include routes from other groups' do
+          expect(graphql_schema.to_definition).not_to include('topSecretQuery')
         end
       end
     end

@@ -8,15 +8,16 @@ module GraphqlRails
 
     include ::GraphqlRails::Service
 
-    def initialize(router: :default, params:, schema: nil, **schema_options)
-      @router_name = router
+    def initialize(group: nil, params:, schema: nil, router: nil, **schema_options)
+      @group = group
       @graphql_schema = schema
       @params = params
       @schema_options = schema_options
+      @router = router
     end
 
     def call
-      router.graphql_schema.execute(
+      graphql_schema.execute(
         params[:query],
         variables: variables,
         operation_name: params[:operationName],
@@ -26,18 +27,22 @@ module GraphqlRails
 
     private
 
-    attr_reader :schema_options, :params, :router_name
+    attr_reader :schema_options, :params, :group
 
     def variables
       ensure_hash(params[:variables])
     end
 
     def graphql_schema
-      @graphql_schema ||= router.graphql_schema
+      @graphql_schema ||= router_schema
     end
 
     def router
-      Router.routers[router_name]
+      @router ||= ::GraphqlRouter
+    end
+
+    def router_schema
+      router.graphql_schema(group)
     end
 
     def ensure_hash(ambiguous_param)

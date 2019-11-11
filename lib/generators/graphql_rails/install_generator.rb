@@ -15,11 +15,8 @@ module GraphqlRails
     #     - graphql_controller.rb
     #     - graphql
     #       - graphql_application_controller.rb
-    # - config
-    #   - initializers
-    #     - graphql.rb
     #   - graphql
-    #     - routes.rb
+    #     - graphql_router.rb
     # ```
     class InstallGenerator < Rails::Generators::Base
       desc 'Install GraphqlRails folder structure and boilerplate code'
@@ -39,7 +36,7 @@ module GraphqlRails
         end
 
         empty_directory('app/graphql')
-        template('graphql_schema.erb', 'config/graphql/graphql_schema.rb')
+        template('graphql_router.erb', 'config/graphql/graphql_router.rb')
 
         route('post "/graphql", to: "graphql#execute"')
 

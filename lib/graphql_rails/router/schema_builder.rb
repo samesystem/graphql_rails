@@ -8,10 +8,11 @@ module GraphqlRails
 
       attr_reader :queries, :mutations, :raw_actions
 
-      def initialize(queries:, mutations:, raw_actions:)
+      def initialize(queries:, mutations:, raw_actions:, group: nil)
         @queries = queries
         @mutations = mutations
         @raw_actions = raw_actions
+        @group = group
       end
 
       def call
@@ -30,11 +31,14 @@ module GraphqlRails
 
       private
 
+      attr_reader :group
+
       def build_type(type_name, routes)
+        group_name = group
         Class.new(GraphQL::Schema::Object) do
           graphql_name(type_name)
 
-          routes.each do |route|
+          routes.select { |route| route.show_in_group?(group_name) }.each do |route|
             field(*route.field_args)
           end
 

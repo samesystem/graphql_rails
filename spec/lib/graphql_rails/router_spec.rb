@@ -40,9 +40,8 @@ module GraphqlRails
           drawn_routes
         end
 
-        it 'updates existing router' do
-          router = described_class.instance
-          expect { draw_additional_queries }.to change(router.routes, :count).from(6).to(7)
+        it 'does not modify existing router' do
+          expect { draw_additional_queries }.not_to change(drawn_routes.routes, :count)
         end
       end
     end

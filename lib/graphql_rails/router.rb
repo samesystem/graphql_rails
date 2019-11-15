@@ -15,17 +15,9 @@ module GraphqlRails
     ].freeze
 
     def self.draw(&block)
-      instance.tap do |router|
+      new.tap do |router|
         router.instance_eval(&block)
       end
-    end
-
-    def self.instance
-      @instance ||= new
-    end
-
-    def self.reload
-      @instance = nil
     end
 
     attr_reader :routes, :namespace_name, :raw_graphql_actions

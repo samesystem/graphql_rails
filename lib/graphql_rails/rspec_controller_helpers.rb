@@ -82,11 +82,13 @@ module GraphqlRails
         action_by_name = config.action_by_name
         controller_path = controller.name.underscore.sub(/_controller\Z/, '')
 
-        Router.draw do
+        router = Router.draw do
           action_by_name.keys.each do |action_name|
-            query("#{action_name}_test", to: "#{controller_path}##{action_name}")
+            query("#{action_name}_test", to: "#{controller_path}##{action_name}", group: :graphql_rspec_helpers)
           end
         end
+
+        router.graphql_schema(:graphql_rspec_helpers)
       end
     end
 

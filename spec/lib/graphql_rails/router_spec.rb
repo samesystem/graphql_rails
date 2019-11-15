@@ -55,9 +55,11 @@ module GraphqlRails
         described_class.draw do
           scope module: :graphql_rails do
             query 'custom_query', to: 'custom_dummy#action'
-            resources :router_dummy_users
+            resources :router_dummy_users, only: %i[index show]
 
             group :secret do
+              resources :router_dummy_users, only: %i[create]
+
               query 'single_secret_grouped_custom_query', to: 'custom_dummy#action'
             end
 
@@ -65,15 +67,19 @@ module GraphqlRails
               query 'shared_secret_grouped_custom_query', to: 'custom_dummy#action'
             end
 
-            group :top_secret do
-              query 'top_secret_query', to: 'custom_dummy#action'
-            end
+            query 'top_secret_query', to: 'custom_dummy#action', group: :top_secret
           end
         end
       end
 
       it 'returns child class of GraphQl::Schema' do
         expect(graphql_schema < GraphQL::Schema).to be true
+      end
+
+      context 'when some resource action are defined under group scope' do
+        it 'does not include resouce routes defined in groups' do
+          expect(graphql_schema.to_definition).not_to include('createRouterDummyUser')
+        end
       end
 
       context 'when calling schema without group name' do
@@ -95,6 +101,10 @@ module GraphqlRails
 
         it 'does not include routes from other groups' do
           expect(graphql_schema.to_definition).not_to include('topSecretQuery')
+        end
+
+        it 'includes resouce actions defined under given group' do
+          expect(graphql_schema.to_definition).to include('createRouterDummyUser')
         end
       end
     end

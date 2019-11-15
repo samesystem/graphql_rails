@@ -30,7 +30,7 @@ module GraphqlRails
 
     attr_reader :routes, :namespace_name, :raw_graphql_actions
 
-    def initialize(module_name: '', group_names: nil)
+    def initialize(module_name: '', group_names: [])
       @module_name = module_name
       @group_names = group_names
       @routes ||= Set.new
@@ -94,12 +94,19 @@ module GraphqlRails
     end
 
     def build_route(route_builder, name, **options)
-      route_options = default_route_options.merge(options)
-      route_builder.new(name, route_options)
+      route_builder.new(name, full_route_options(options))
+    end
+
+    def full_route_options(extra_options)
+      extra_groups = Array(extra_options[:group]) + Array(extra_options[:groups])
+      extra_options = extra_options.except(:group, :groups)
+      groups = (group_names + extra_groups).uniq
+
+      default_route_options.merge(extra_options).merge(groups: groups)
     end
 
     def default_route_options
-      { module: module_name, on: :member, groups: group_names }
+      { module: module_name, on: :member }
     end
   end
 end

@@ -66,9 +66,7 @@ module GraphqlRails
               query 'shared_secret_grouped_custom_query', to: 'custom_dummy#action'
             end
 
-            group :top_secret do
-              query 'top_secret_query', to: 'custom_dummy#action'
-            end
+            query 'top_secret_query', to: 'custom_dummy#action', group: :top_secret
           end
         end
       end

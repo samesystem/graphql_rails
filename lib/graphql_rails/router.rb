@@ -51,7 +51,7 @@ module GraphqlRails
     end
 
     def resources(name, **options, &block)
-      builder_options = default_route_options.merge(options)
+      builder_options = full_route_options(options)
       routes_builder = ResourceRoutesBuilder.new(name, **builder_options)
       routes_builder.instance_eval(&block) if block
       routes.merge(routes_builder.routes)

@@ -15,10 +15,6 @@ module GraphqlRails
       'validation_error'
     end
 
-    def http_status_code
-      422
-    end
-
     def to_h
       super.merge('field' => field, 'short_message' => short_message)
     end

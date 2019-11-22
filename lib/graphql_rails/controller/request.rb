@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'graphql_rails/errors/execution_error'
-
 module GraphqlRails
   class Controller
     # Contains all info related with single request to controller
     class Request
+      require 'graphql_rails/controller/request/format_errors'
+
       attr_accessor :object_to_return
       attr_reader :errors, :context
 
@@ -16,12 +16,9 @@ module GraphqlRails
       end
 
       def errors=(new_errors)
-        @errors = new_errors
+        @errors = FormatErrors.call(new_errors)
 
-        new_errors.each do |error|
-          error_message = error.is_a?(String) ? error : error.message
-          context.add_error(ExecutionError.new(error_message))
-        end
+        @errors.each { |error| context.add_error(error) }
       end
 
       def no_object_to_return?

@@ -6,6 +6,7 @@ require 'graphql_rails/controller/configuration'
 require 'graphql_rails/controller/request'
 require 'graphql_rails/controller/action_hooks_runner'
 require 'graphql_rails/controller/log_controller_action'
+require 'graphql_rails/errors/system_error'
 
 module GraphqlRails
   # base class for all graphql_rails controllers
@@ -85,7 +86,9 @@ module GraphqlRails
 
       render response if graphql_request.no_object_to_return?
     rescue StandardError => error
-      render error: error
+      raise if error.is_a?(GraphQL::ExecutionError)
+
+      render error: SystemError.new(error.message)
     end
 
     def graphql_errors_from_render_params(rendering_params)
@@ -93,7 +96,7 @@ module GraphqlRails
       return [] if rendering_params.keys.count != 1
 
       errors = rendering_params[:error] || rendering_params[:errors]
-      Array(errors)
+      errors.is_a?(Enumerable) ? errors : Array(errors)
     end
 
     def with_controller_action_logging(&block)

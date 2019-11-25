@@ -439,3 +439,96 @@ end
 ## decorating objects
 
 See ['Decorating controller responses']('components/decorator') for various options how you can decorate paginated responses
+
+## Rendering errors
+
+### Rendering strings as errors
+
+The simples way to render error is to provide list of error messages, like this:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:update).permit(:id, input: 'UserInput!').returns('User!')
+
+  def update
+    user = User.find(params[:id])
+
+    if user.update(params[:input])
+      user
+    else
+      render(errors: ['Something went wrong'])
+    end
+  end
+end
+```
+
+### Rendering validation errors
+
+GraphqlRails controller has `#render` method which you can use to render errors:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:update).permit(:id, input: 'UserInput!').returns('User!')
+
+  def update
+    user = User.find(params[:id])
+
+    if user.update(params[:input])
+      user
+    else
+      render(errors: user.errors)
+    end
+  end
+end
+```
+
+### Rendering errors with custom data
+
+When you want to return errors with custom data, you can provide hash like this:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:update).permit(:id, input: 'UserInput!').returns('User!')
+
+  def update
+    user = User.find(params[:id])
+
+    if user.update(params[:input])
+      user
+    else
+      render(
+        errors: [
+          { message: 'Something went wrong', code: 500, type: 'fatal' },
+          { message: 'Something went wrong', custom_param: true, ... },
+        ]
+      )
+    end
+  end
+end
+```
+
+### Raising custom error classes
+
+If you want to have customized error classes you need to create errors which inherits from `GraphqlRails::ExecutionError`
+
+```ruby
+class MyCustomError < GraphqlRails::ExecutionError
+  def to_h
+    # this part will be rendered in graphl
+    { something_custom: 'yes' }
+  end
+end
+
+class UsersController < GraphqlRails::Controller
+  action(:update).permit(:id, input: 'UserInput!').returns('User!')
+
+  def update
+    user = User.find(params[:id])
+
+    if user.update(params[:input])
+      user
+    else
+      raise MyCustomError, 'ups!'
+    end
+  end
+end

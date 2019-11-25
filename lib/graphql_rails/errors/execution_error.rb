@@ -6,15 +6,14 @@ module GraphqlRails
   # base class which is returned in case something bad happens. Contains all error rendering tructure
   class ExecutionError < GraphQL::ExecutionError
     def to_h
-      super.except('locations').merge('type' => type, 'http_status_code' => http_status_code)
+      super.merge(extra_graphql_data)
     end
 
-    def type
-      'system_error'
-    end
-
-    def http_status_code
-      500
+    def extra_graphql_data
+      {}.tap do |data|
+        data['type'] = type if respond_to?(:type) && type
+        data['code'] = type if respond_to?(:code) && code
+      end
     end
   end
 end

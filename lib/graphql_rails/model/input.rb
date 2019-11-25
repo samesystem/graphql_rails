@@ -21,12 +21,11 @@ module GraphqlRails
       end
 
       def attribute(attribute_name, type: nil, enum: nil, **attribute_options)
-        attributes[attribute_name.to_s] = \
-          GraphqlRails::Attributes::InputAttribute.new(
-            attribute_name,
-            attribute_type(attribute_name, type: type, enum: enum, **attribute_options),
-            attribute_options
-          )
+        input_type = attribute_type(attribute_name, type: type, enum: enum, **attribute_options)
+
+        attributes[attribute_name.to_s] = Attributes::InputAttribute.new(
+          attribute_name, type: input_type, **attribute_options
+        )
       end
 
       private

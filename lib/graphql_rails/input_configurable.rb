@@ -9,14 +9,10 @@ module GraphqlRails
       self
     end
 
-    def permit_input(name, type: nil, options: {}, **input_options)
+    def permit_input(name, **input_options)
       field_name = name.to_s.remove(/!\Z/)
 
-      attributes[field_name] = Attributes::InputAttribute.new(
-        name.to_s, type,
-        options: input_attribute_options.merge(options),
-        **input_options
-      )
+      attributes[field_name] = build_input_attribute(name.to_s, **input_options)
       self
     end
 
@@ -40,12 +36,11 @@ module GraphqlRails
       @input_attribute_options || {}
     end
 
-    def build_input_attribute(name, type: nil, description: nil, subtype: nil)
+    def build_input_attribute(name, options: {}, **other_options)
       Attributes::InputAttribute.new(
-        name.to_s, type,
-        description: description,
-        subtype: subtype,
-        options: input_attribute_options
+        name.to_s,
+        options: input_attribute_options.merge(options),
+        **other_options
       )
     end
   end

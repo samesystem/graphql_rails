@@ -5,7 +5,7 @@ require 'spec_helper'
 module GraphqlRails
   module Attributes
     RSpec.describe InputAttribute do
-      subject(:attribute) { described_class.new(name, type, options: options) }
+      subject(:attribute) { described_class.new(name, type: type, options: options) }
 
       let(:type) { 'String!' }
       let(:name) { 'full_name' }

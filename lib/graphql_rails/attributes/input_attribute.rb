@@ -11,7 +11,7 @@ module GraphqlRails
       attr_reader :description
 
       # rubocop:disable Metrics/ParameterLists
-      def initialize(name, type = nil, description: nil, subtype: nil, required: nil, options: {})
+      def initialize(name, type: nil, description: nil, subtype: nil, required: nil, options: {})
         @initial_name = name
         @initial_type = type
         @description = description

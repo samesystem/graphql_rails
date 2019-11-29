@@ -532,3 +532,4 @@ class UsersController < GraphqlRails::Controller
     end
   end
 end
+```

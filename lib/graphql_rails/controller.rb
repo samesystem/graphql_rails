@@ -86,9 +86,11 @@ module GraphqlRails
 
       render response if graphql_request.no_object_to_return?
     rescue StandardError => error
-      raise if error.is_a?(GraphQL::ExecutionError)
-
-      render error: SystemError.new(error.message)
+      if error.is_a?(GraphQL::ExecutionError)
+        render error: error
+      else
+        render error: SystemError.new(error.message)
+      end
     end
 
     def graphql_errors_from_render_params(rendering_params)

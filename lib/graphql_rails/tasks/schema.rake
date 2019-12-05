@@ -3,6 +3,10 @@
 module GraphqlRails
   # Generates graphql schema dump files
   class DumpGraphqlSchema
+    require 'graphql_rails/errors/error'
+
+    class MissingGraphqlRouterError < GraphqlRails::Error; end
+
     attr_reader :name
 
     def self.call(*args)
@@ -14,10 +18,20 @@ module GraphqlRails
     end
 
     def call
+      validate
       File.write(schema_path, schema.to_definition)
     end
 
     private
+
+    def validate
+      return if defined?(::GraphqlRouter)
+
+      error_message = \
+        'GraphqlRouter is missing. ' \
+        'Run `rails g graphql_rails:install` to build it'
+      raise MissingGraphqlRouterError, error_message
+    end
 
     def schema
       @schema ||= ::GraphqlRouter.graphql_schema(name.presence)

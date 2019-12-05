@@ -36,13 +36,13 @@ module GraphqlRails
         end
 
         empty_directory('app/graphql')
-        template('graphql_router.erb', 'config/graphql/graphql_router.rb')
+        template('graphql_router.erb', 'app/graphql/graphql_router.rb')
 
         route('post "/graphql", to: "graphql#execute"')
 
         if File.directory?('spec') # rubocop:disable Style/GuardClause
           empty_directory('spec/graphql')
-          template('graphql_schema_spec.erb', 'spec/app/graphql/graphql_schema_spec.rb')
+          template('graphql_router_spec.erb', 'spec/app/graphql/graphql_router_spec.rb')
         end
       end
     end

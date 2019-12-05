@@ -30,6 +30,22 @@ module GraphqlRails
         it 'sets correct description' do
           expect(call.description).to eq description
         end
+
+        context 'when allowed values are empty' do
+          let(:allowed_values) { [] }
+
+          it 'raises error' do
+            expect { call }.to raise_error('At lest one enum option must be given')
+          end
+        end
+
+        context 'when allowed values has wrong type' do
+          let(:allowed_values) { 'Hey' }
+
+          it 'raises error' do
+            expect { call }.to raise_error('Enum must be instance of Array, but instance of String was given')
+          end
+        end
       end
     end
   end

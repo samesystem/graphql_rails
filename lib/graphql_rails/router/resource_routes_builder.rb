@@ -70,8 +70,9 @@ module GraphqlRails
         end
 
         action_options = options.merge(custom_options).merge(on: on)
+        controller_method_name = action.to_s.underscore
         action_name = [prefix, resource_name(on), suffix_name].map(&:to_s).reject(&:empty?).join('_')
-        builder.new(action_name, to: "#{name}##{action}", **action_options)
+        builder.new(action_name, to: "#{name}##{controller_method_name}", **action_options)
       end
       # rubocop:enable Metrics/ParameterLists
 

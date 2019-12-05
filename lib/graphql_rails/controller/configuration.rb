@@ -51,9 +51,11 @@ module GraphqlRails
       end
 
       def action(method_name)
-        @action_by_name[method_name.to_s] ||= action_default.dup
-        yield(@action_by_name[method_name.to_s]) if block_given?
-        @action_by_name[method_name.to_s]
+        action_name = method_name.to_s.underscore
+
+        @action_by_name[action_name] ||= action_default.dup
+        yield(@action_by_name[action_name]) if block_given?
+        @action_by_name[action_name]
       end
 
       def model(model = nil)

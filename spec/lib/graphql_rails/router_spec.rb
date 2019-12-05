@@ -150,6 +150,26 @@ module GraphqlRails
           expect(action_paths).to match_array(%w[foo/users#index foo/users#find])
         end
       end
+
+      context 'when scope is in a group' do
+        before do
+          router.group :scope_group do
+            scope module: 'foo' do
+              query :find_foo_user, to: 'users#find'
+            end
+          end
+        end
+
+        it 'makes scope routes visible in specified group' do
+          route = router.routes.first
+          expect(route).to be_show_in_group(:scope_group)
+        end
+
+        it 'makes scope routes hidden in not specified groups' do
+          route = router.routes.first
+          expect(route).not_to be_show_in_group(:other_group)
+        end
+      end
     end
 
     describe '#query' do

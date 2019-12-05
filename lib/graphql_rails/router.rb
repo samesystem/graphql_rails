@@ -30,14 +30,14 @@ module GraphqlRails
     end
 
     def group(*group_names, &block)
-      scoped_router = self.class.new(module_name: module_name, group_names: group_names)
+      scoped_router = router_with(group_names: group_names)
       scoped_router.instance_eval(&block)
       routes.merge(scoped_router.routes)
     end
 
     def scope(**options, &block)
       full_module_name = [module_name, options[:module]].reject(&:empty?).join('/')
-      scoped_router = self.class.new(module_name: full_module_name)
+      scoped_router = router_with(module_name: full_module_name)
       scoped_router.instance_eval(&block)
       routes.merge(scoped_router.routes)
     end
@@ -80,6 +80,13 @@ module GraphqlRails
     private
 
     attr_reader :module_name, :group_names
+
+    def router_with(new_router_options = {})
+      default_options = { module_name: module_name, group_names: group_names }
+      full_options = default_options.merge(new_router_options)
+
+      self.class.new(full_options)
+    end
 
     def add_raw_action(name, *args, &block)
       raw_graphql_actions << { name: name, args: args, block: block }

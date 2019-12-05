@@ -212,16 +212,38 @@ module GraphqlRails
       end
 
       context 'with extra actions' do
-        before do
-          router.resources :users, only: [] do
-            query :custom, on: :member
-            query :custom, on: :collection
-            mutation :change_some
+        context 'when extra action is written in underscore format' do
+          before do
+            router.resources :users, only: [] do
+              query :custom, on: :member
+              query :custom, on: :collection
+              mutation :change_some
+            end
+          end
+
+          it 'adds extra actions' do
+            expect(router.routes.map(&:name)).to match_array %w[customUser customUsers changeSomeUser]
+          end
+
+          it 'generates correct paths' do
+            expect(router.routes.map(&:path)).to match_array %w[users#change_some users#custom users#custom]
           end
         end
 
-        it 'adds extra actions' do
-          expect(router.routes.map(&:name)).to match_array %w[customUser customUsers changeSomeUser]
+        context 'when extra action is in camelcase' do
+          before do
+            router.resources :users, only: [] do
+              query :customAction, on: :member
+            end
+          end
+
+          it 'adds extra actions' do
+            expect(router.routes.map(&:name)).to match_array %w[customActionUser]
+          end
+
+          it 'generates correct paths' do
+            expect(router.routes.map(&:path)).to match_array %w[users#custom_action]
+          end
         end
       end
 

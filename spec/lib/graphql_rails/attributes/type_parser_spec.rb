@@ -27,6 +27,19 @@ module GraphqlRails
           it { is_expected.to be_nil }
         end
 
+        context 'when graphql_rails model is provided' do
+          let(:type) do
+            Class.new do
+              include GraphqlRails::Model
+              graphql.attribute(:name)
+            end
+          end
+
+          it 'returns original type' do
+            expect(graphql_model).to be(type)
+          end
+        end
+
         context 'when standard type is provided' do
           it { is_expected.to be_nil }
         end

@@ -58,7 +58,12 @@ module GraphqlRails
       end
 
       def graphql_model
-        type_class = nullable_inner_name.safe_constantize
+        type_class = \
+          if unparsed_type.is_a?(Class) && unparsed_type < GraphqlRails::Model
+            unparsed_type
+          else
+            nullable_inner_name.safe_constantize
+          end
 
         return if type_class.nil?
         return unless type_class < GraphqlRails::Model

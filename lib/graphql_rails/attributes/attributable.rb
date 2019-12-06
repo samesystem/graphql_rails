@@ -28,6 +28,16 @@ module GraphqlRails
         end
       end
 
+      def required
+        @required = true
+        self
+      end
+
+      def optional
+        @required = false
+        self
+      end
+
       def graphql_model
         type_parser.graphql_model
       end

@@ -179,6 +179,30 @@ class User
 end
 ```
 
+### attribute.required
+
+You can mark attribute as required using `required` method:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute(:item).type('Item').required
+end
+```
+
+### attribute.optional
+
+You can mark attribute as optional using `optional` method:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute(:item).type('Item').optional
+end
+```
+
 ### "attribute" configuration with chainable methods
 
 If your attribute definition is complex, you can define attribute in more eye-friendly chainable way with:

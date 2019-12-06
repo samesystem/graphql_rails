@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 *
+* Added: "required" and "optional" flags for attribute
 * Added: grouped routes
 * Added: added argument to model.attribute
 * Added: added graphql_context to model

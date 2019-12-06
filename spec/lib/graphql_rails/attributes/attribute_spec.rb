@@ -16,6 +16,20 @@ module GraphqlRails
         end
       end
 
+      describe '#required' do
+        let(:type) { 'String' }
+
+        it 'marks attribute as required' do
+          expect { attribute.required }.to change(attribute, :required?).to(true)
+        end
+      end
+
+      describe '#optiona' do
+        it 'marks attribute as not required' do
+          expect { attribute.optional }.to change(attribute, :required?).to(false)
+        end
+      end
+
       describe '#description' do
         it 'sets description correctly' do
           expect { attribute.description('new') }.to change(attribute, :description).to('new')

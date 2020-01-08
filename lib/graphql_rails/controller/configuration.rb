@@ -11,7 +11,7 @@ module GraphqlRails
     class Configuration
       class InvalidActionConfiguration < GraphqlRails::Error; end
 
-      LIB_REGEXP = %r{/graphql_rails/lib/}.freeze
+      LIB_REGEXP = %r{/graphql_rails/lib/}
 
       attr_reader :action_by_name
 

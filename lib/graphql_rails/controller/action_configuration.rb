@@ -24,6 +24,8 @@ module GraphqlRails
       end
 
       def initialize(name:, controller:)
+        @name = name
+        @controller = controller
         @attributes = {}
         @action_options = {}
       end

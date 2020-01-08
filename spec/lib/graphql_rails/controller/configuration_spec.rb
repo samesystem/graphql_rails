@@ -109,7 +109,6 @@ module GraphqlRails
 
       let(:action_name) { :some_method }
 
-
       context 'when action was defined before' do
         it 'returns action config' do
           expect(action_config).to be_a(Controller::ActionConfiguration)

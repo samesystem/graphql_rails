@@ -3,14 +3,20 @@
 require 'active_support/core_ext/string/inflections'
 require 'graphql_rails/controller/action_configuration'
 require 'graphql_rails/controller/action_hook'
+require 'graphql_rails/errors/error'
 
 module GraphqlRails
   class Controller
     # stores all graphql_rails contoller specific config
     class Configuration
+      class InvalidActionConfiguration < GraphqlRails::Error; end
+
+      LIB_REGEXP = %r{/graphql_rails/lib/}
+
       attr_reader :action_by_name
 
-      def initialize
+      def initialize(controller)
+        @controller = controller
         @hooks = {
           before: {},
           after: {},
@@ -32,6 +38,12 @@ module GraphqlRails
         end
       end
 
+      def dup_with(controller:)
+        dup.tap do |new_config|
+          new_config.instance_variable_set(:@controller, controller)
+        end
+      end
+
       def action_hooks_for(hook_type, action_name)
         hooks[hook_type].values.select { |hook| hook.applicable_for?(action_name) }
       end
@@ -45,17 +57,25 @@ module GraphqlRails
       end
 
       def action_default
-        @action_default ||= ActionConfiguration.new
+        @action_default ||= ActionConfiguration.new(name: :default, controller: nil)
         yield(@action_default) if block_given?
         @action_default
       end
 
       def action(method_name)
         action_name = method_name.to_s.underscore
-
-        @action_by_name[action_name] ||= action_default.dup
+        @action_by_name[action_name] ||= action_default.dup_with(
+          name: action_name,
+          controller: controller,
+          defined_at: dynamic_source_location
+        )
         yield(@action_by_name[action_name]) if block_given?
         @action_by_name[action_name]
+      end
+
+      def action_config(method_name)
+        action_name = method_name.to_s.underscore
+        @action_by_name.fetch(action_name) { raise_invalid_config_error(action_name) }
       end
 
       def model(model = nil)
@@ -64,7 +84,25 @@ module GraphqlRails
 
       private
 
-      attr_reader :hooks
+      attr_reader :hooks, :controller
+
+      def dynamic_source_location
+        project_trace = \
+          caller
+          .dup
+          .drop_while { |path| !path.match?(LIB_REGEXP) }
+          .drop_while { |path| path.match?(LIB_REGEXP) }
+
+        project_trace.first
+      end
+
+      def raise_invalid_config_error(action_name)
+        error_message = \
+          "Missing action configuration for #{controller}##{action_name}. " \
+          "Please define it with `action(:#{action_name})`."
+
+        raise InvalidActionConfiguration, error_message
+      end
     end
   end
 end

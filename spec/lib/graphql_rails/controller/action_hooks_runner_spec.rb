@@ -28,7 +28,7 @@ module GraphqlRails
       let(:action_name) { :some_action }
       let(:controller) { double('Controller') } # rubocop:disable RSpec/VerifiedDoubles
       let(:controller_class) { class_double(Controller) }
-      let(:controller_configuration) { Controller::Configuration.new }
+      let(:controller_configuration) { Controller::Configuration.new(controller) }
 
       before do
         allow(controller).to receive(:class).and_return(controller_class)

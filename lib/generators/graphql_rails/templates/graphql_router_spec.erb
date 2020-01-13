@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe GraphqlSchema do
+RSpec.describe GraphqlRouter do
   describe '#execute' do
     it 'returns correct structure' do
       # if you need to update saved_schema, run rake task:
-      #   $ RAILS_ENV=test rake graphql:schema:dump
+      #   $ RAILS_ENV=test rake graphql_rails:schema:dump
 
       schema_path = Rails.root.join('spec', 'fixtures', 'graphql_schema.graphql')
       saved_schema = File.read(schema_path).strip

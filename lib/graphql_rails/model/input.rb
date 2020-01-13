@@ -14,6 +14,11 @@ module GraphqlRails
         @input_name_suffix = input_name_suffix
       end
 
+      def initialize_copy(other)
+        super
+        @attributes = other.instance_variable_get(:@attributes)&.transform_values(&:dup)
+      end
+
       def graphql_input_type
         @graphql_input_type ||= BuildGraphqlInputType.call(
           name: name, description: description, attributes: attributes

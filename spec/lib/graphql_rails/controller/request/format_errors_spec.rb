@@ -51,7 +51,7 @@ module GraphqlRails
 
         it 'all the information', :aggregate_failures do
           error = call.first
-          expect(error.message).to eq('test boom!')
+          expect(error.message).to eq('Test boom!')
           expect(error.type).to eq('validation_error')
           expect(error.short_message).to eq('boom!')
           expect(error.field).to eq(:test)

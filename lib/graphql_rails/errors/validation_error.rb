@@ -6,7 +6,7 @@ module GraphqlRails
     attr_reader :short_message, :field
 
     def initialize(short_message, field)
-      super([field.presence, short_message].compact.join(' '))
+      super([field.presence&.to_s&.humanize, short_message].compact.join(' '))
       @short_message = short_message
       @field = field
     end

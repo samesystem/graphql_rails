@@ -16,6 +16,10 @@ module GraphqlRails
           c.attribute :is_plain, type: :bool!
         end
 
+        graphql.input do |c|
+          c.attribute :parent_input_attribute
+        end
+
         def self.name
           'DummyModel'
         end
@@ -33,17 +37,35 @@ module GraphqlRails
             graphql do |c|
               c.attribute :is_child, type: :bool!
             end
+
+            graphql.input do |c|
+              c.attribute :child_input_attribute
+            end
           end
         end
 
-        it 'does not modify parent class config' do
+        before do
+          model
+        end
+
+        it 'does not modify parent class attributes' do
           parent_fields = plain_model.graphql.graphql_type.fields.keys
           expect(parent_fields).to match_array(%w[isPlain])
         end
 
-        it 'inherits parent class graphql configuration' do
+        it 'inherits parent class graphql attributes' do
           child_fields = model.graphql.graphql_type.fields.keys
           expect(child_fields).to match_array(%w[isPlain isChild])
+        end
+
+        it 'does not modify parent class input attributes' do
+          parent_fields = plain_model.graphql.input.graphql_input_type.arguments.keys
+          expect(parent_fields).to match_array(%w[parentInputAttribute])
+        end
+
+        it 'inherits parent class graphql input attributes' do
+          child_fields = model.graphql.input.graphql_input_type.arguments.keys
+          expect(child_fields).to match_array(%w[childInputAttribute parentInputAttribute])
         end
       end
     end

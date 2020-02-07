@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module GraphqlRails
   RSpec.describe Controller::Configuration do
-    subject(:configuration) { described_class.new }
+    subject(:configuration) { described_class.new(nil) }
 
     let(:define_action_default) { nil }
 
@@ -100,6 +100,26 @@ module GraphqlRails
         it 'sets options only for given action', :aggregate_failures do
           expect(configuration.action(:some_method).pagination_options).to eq(max_page_size: 200)
           expect(configuration.action(:some_other_method).pagination_options).to be_nil
+        end
+      end
+    end
+
+    describe '#action_config' do
+      subject(:action_config) { configuration.action_config(action_name) }
+
+      let(:action_name) { :some_method }
+
+      context 'when action was defined before' do
+        it 'returns action config' do
+          expect(action_config).to be_a(Controller::ActionConfiguration)
+        end
+      end
+
+      context 'when action was not defined before' do
+        let(:action_name) { :some_non_existing_method }
+
+        it 'raises error' do
+          expect { action_config }.to raise_error(Controller::Configuration::InvalidActionConfiguration)
         end
       end
     end

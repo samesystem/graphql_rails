@@ -2,6 +2,7 @@
 
 require 'graphql_rails/controller/action'
 require 'graphql_rails/concerns/service'
+require 'graphql_rails/controller/action_configuration'
 require 'graphql_rails/controller/build_controller_action_resolver/controller_action_resolver'
 
 module GraphqlRails
@@ -38,7 +39,13 @@ module GraphqlRails
       attr_reader :route
 
       def build_action
-        Action.new(route)
+        Action.new(route).tap do |action|
+          assert_action(action)
+        end
+      end
+
+      def assert_action(action)
+        action.return_type
       end
     end
   end

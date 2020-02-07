@@ -9,7 +9,7 @@ module GraphqlRails
         include GraphqlRails::Model
       end
 
-      subject(:config) { described_class.new }
+      subject(:config) { described_class.new(name: 'show', controller: class_double(Controller)) }
 
       describe '#return_type' do
         subject(:return_type) { config.return_type }

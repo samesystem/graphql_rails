@@ -12,9 +12,10 @@ module GraphqlRails
   # base class for all graphql_rails controllers
   class Controller
     class << self
-      def inherited(sublass)
+      def inherited(subclass)
         super
-        sublass.instance_variable_set(:@controller_configuration, controller_configuration.dup)
+        new_config = controller_configuration.dup_with(controller: subclass)
+        subclass.instance_variable_set(:@controller_configuration, new_config)
       end
 
       def before_action(*args, &block)
@@ -42,7 +43,7 @@ module GraphqlRails
       end
 
       def controller_configuration
-        @controller_configuration ||= Controller::Configuration.new
+        @controller_configuration ||= Controller::Configuration.new(self)
       end
     end
 

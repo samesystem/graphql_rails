@@ -9,6 +9,8 @@ module GraphqlRails
   class Controller
     # analyzes route and extracts controller action related data
     class Action
+      delegate :relative_path, to: :route
+
       def initialize(route)
         @route = route
       end
@@ -26,7 +28,7 @@ module GraphqlRails
       end
 
       def name
-        @name ||= action_relative_path.split('#').last
+        @name ||= relative_path.split('#').last
       end
 
       def description
@@ -43,12 +45,8 @@ module GraphqlRails
 
       delegate :type_parser, to: :action_config
 
-      def action_relative_path
-        route.relative_path
-      end
-
       def action_config
-        controller.controller_configuration.action(name)
+        controller.controller_configuration.action_config(name)
       end
 
       def namespaced_controller_name
@@ -56,7 +54,7 @@ module GraphqlRails
       end
 
       def controller_name
-        @controller_name ||= action_relative_path.split('#').first
+        @controller_name ||= relative_path.split('#').first
       end
 
       def namespaced_model_name

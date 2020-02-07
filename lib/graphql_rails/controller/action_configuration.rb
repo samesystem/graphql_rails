@@ -14,7 +14,7 @@ module GraphqlRails
 
       include InputConfigurable
 
-      attr_reader :attributes, :pagination_options
+      attr_reader :attributes, :pagination_options, :name, :controller, :defined_at
 
       def initialize_copy(other)
         super
@@ -23,9 +23,19 @@ module GraphqlRails
         @pagination_options = other.instance_variable_get(:@pagination_options)&.dup&.transform_values(&:dup)
       end
 
-      def initialize
+      def initialize(name:, controller:)
+        @name = name
+        @controller = controller
         @attributes = {}
         @action_options = {}
+      end
+
+      def dup_with(name:, controller:, defined_at:)
+        dup.tap do |new_action|
+          new_action.instance_variable_set(:@defined_at, defined_at)
+          new_action.instance_variable_set(:@name, name)
+          new_action.instance_variable_set(:@controller, controller)
+        end
       end
 
       def options(action_options = nil)
@@ -107,8 +117,14 @@ module GraphqlRails
       def raise_deprecation_error
         message = \
           'Default return types are deprecated. ' \
-          "You need to manually set something like `action(:YOUR_ACTION).returns('MyModel')`"
-        raise DeprecatedDefaultModelError, message
+          "You need to manually set something like `action(:#{name}).returns('#{suggested_model_name}')`"
+
+        full_backtrace = ([defined_at] + caller).compact
+        raise DeprecatedDefaultModelError, message, full_backtrace
+      end
+
+      def suggested_model_name
+        controller&.name.to_s.demodulize.sub(/Controller$/, '').singularize
       end
 
       def raise_missing_config_error

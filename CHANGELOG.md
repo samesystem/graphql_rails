@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
-*
+
+## [1.0.0](2020-02-07)
+
 * Added: "required" and "optional" flags for attribute
 * Added: grouped routes
 * Added: added argument to model.attribute

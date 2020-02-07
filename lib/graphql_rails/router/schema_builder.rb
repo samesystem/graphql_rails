@@ -16,16 +16,16 @@ module GraphqlRails
       end
 
       def call
-        query_type = build_type('Query', queries)
-        mutation_type = build_type('Mutation', mutations)
+        query_type = build_group_type('Query', queries)
+        mutation_type = build_group_type('Mutation', mutations)
         raw = raw_actions
 
         Class.new(GraphQL::Schema) do
           cursor_encoder(Router::PlainCursorEncoder)
           raw.each { |action| send(action[:name], *action[:args], &action[:block]) }
 
-          query(query_type)
-          mutation(mutation_type)
+          query(query_type) if query_type
+          mutation(mutation_type) if mutation_type
         end
       end
 
@@ -33,12 +33,19 @@ module GraphqlRails
 
       attr_reader :group
 
-      def build_type(type_name, routes)
+      def build_group_type(type_name, routes)
         group_name = group
+        group_routes = routes.select { |route| route.show_in_group?(group_name) }
+        return if group_routes.empty?
+
+        build_type(type_name, group_routes)
+      end
+
+      def build_type(type_name, group_routes)
         Class.new(GraphQL::Schema::Object) do
           graphql_name(type_name)
 
-          routes.select { |route| route.show_in_group?(group_name) }.each do |route|
+          group_routes.each do |route|
             field(*route.field_args)
           end
 

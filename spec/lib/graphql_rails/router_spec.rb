@@ -88,6 +88,46 @@ module GraphqlRails
         end
       end
 
+      context 'when mutation actions are not defined' do
+        let(:router) do
+          described_class.draw do
+            scope module: :graphql_rails do
+              query 'custom_query', to: 'custom_dummy#action'
+            end
+          end
+        end
+
+        it 'returns schema without mutation type' do # rubocop:disable RSpec/ExampleLength
+          expect(graphql_schema.to_definition).to eq(
+            <<~GRAPHQL.strip
+              type Query {
+                customQuery: String!
+              }
+            GRAPHQL
+          )
+        end
+      end
+
+      context 'when query actions are not defined' do
+        let(:router) do
+          described_class.draw do
+            scope module: :graphql_rails do
+              mutation 'custom_query', to: 'custom_dummy#action'
+            end
+          end
+        end
+
+        it 'returns schema without mutation type' do # rubocop:disable RSpec/ExampleLength
+          expect(graphql_schema.to_definition).to eq(
+            <<~GRAPHQL.strip
+              type Mutation {
+                customQuery: String!
+              }
+            GRAPHQL
+          )
+        end
+      end
+
       context 'when calling schema with group name' do
         let(:group_name) { :secret }
 

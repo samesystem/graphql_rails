@@ -23,7 +23,7 @@ This method must be called inside your model body. `grapqhl` is used for making 
 
 Most commonly you will use `attribute` to make your model methods and attributes visible via graphql endpoint.
 
-## attribute.type
+### attribute.type
 
 Some types can be determined by attribute name, so you can skip this attribute:
 
@@ -53,6 +53,30 @@ class User
   end
 end
 ```
+
+#### attribute.type: using graphql-ruby objects
+
+You can also use raw graphql-ruby objects as attribute types. Here is an example:
+
+```ruby
+# raw graphql-ruby type:
+class AddressType < GraphQL::Schema::Object
+  graphql_name 'Address'
+
+  field :city, String, null: false
+  field :street_name, String, null: false
+  field :street_number, Integer
+end
+
+# GraphqlRails model:
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute :address, type: AddressType, required: true
+end
+```
+
+Check [graphql-ruby documentation](https://graphql-ruby.org) for more details about graphql-ruby types.
 
 ### attribute.property
 

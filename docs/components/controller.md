@@ -219,6 +219,22 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+You can also return raw graphql-ruby types:
+
+```ruby
+# raw graphql-ruby type:
+class OrderType < GraphQL::Schema::Object
+  graphql_name 'Order'
+  field :id, ID
+end
+
+class UsersController < GraphqlRails::Controller
+  action(:last_order).permit(:id).returns(OrderType)
+end
+```
+
+Check [graphql-ruby documentation](https://graphql-ruby.org) for more details about graphql-ruby types.
+
 ### *returns_list*
 
 When you have defined `model` dynamically, you can use `returns_list` to indicate that action must return list without specifying model type for each action. By default list and inner types are required but you can change that with `required_list: false` and `required_inner: false`

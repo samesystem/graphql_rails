@@ -109,10 +109,10 @@ GraphqlRails::Router.draw do
 
   # you can use namespaced controllers too:
   scope module: 'admin' do
-    # `updateTranslations` route will be handeled by `Admin::TranslationsController`
+    # `updateTranslations` route will be handled by `Admin::TranslationsController`
     mutation :updateTranslations, to: 'translations#update'
 
-    # all :groups routes will be handeled by `Admin::GroupsController`
+    # all :groups routes will be handled by `Admin::GroupsController`
     resources :groups
   end
 end

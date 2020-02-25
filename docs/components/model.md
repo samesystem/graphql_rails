@@ -17,7 +17,7 @@ end
 
 ## graphql
 
-This method must be called inside your model body. `grapqhl` is used for making your model convertible to graphql type.
+This method must be called inside your model body. `graphql` is used for making your model convertible to graphql type.
 
 ## attribute
 
@@ -80,7 +80,7 @@ Check [graphql-ruby documentation](https://graphql-ruby.org) for more details ab
 
 ### attribute.property
 
-By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `propery` option:
+By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `property` option:
 
 ```ruby
 class User

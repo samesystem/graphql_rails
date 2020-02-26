@@ -454,7 +454,7 @@ end
 
 ## decorating objects
 
-See ['Decorating controller responses']('components/decorator')(broken url) for various options how you can decorate paginated responses
+See ['Decorating controller responses'](components/decorator) for various options how you can decorate paginated responses
 
 ## Rendering errors
 

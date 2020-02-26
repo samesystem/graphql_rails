@@ -85,6 +85,8 @@ module GraphqlRails
 
       attr_reader :initial_type, :initial_name
 
+      private
+
       def camelize?
         @camelize == true
       end

@@ -92,6 +92,23 @@ module GraphqlRails
           end
         end
 
+        context 'when atribute name format options are passed' do
+          let(:options) { { attribute_name_format: :original } }
+
+          it 'forwards disables camelize' do
+            expect(field_args.last).to include(camelize: false)
+          end
+        end
+
+        context 'when atribute name format options are not passed' do
+          it 'ignores keeps camelize active' do
+            expect(field_args.last).to include(camelize: true)
+          end
+        end
+
+        context 'when camelize options are not passed' do
+        end
+
         context 'when attribute is optional' do
           let(:type) { 'String' }
 

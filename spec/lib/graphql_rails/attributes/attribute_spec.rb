@@ -58,7 +58,7 @@ module GraphqlRails
 
         context 'when camelize is false' do
           let(:camelize) { false }
-  
+
           it 'specifies :original input formatter' do
             expect(attribute.options[:input_format]).to eq :original
           end

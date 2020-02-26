@@ -110,6 +110,21 @@ class User
 end
 ```
 
+### attribute.camelize
+
+Allows disabling or enabling `camelCase` convertions. Defaults to `true`, meaning all of your attributes will be converted into `camelCase`.
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute :first_name # will be accessible as firstName from client side
+    c.attribute :first_name, camelize: true # will be accessible as firstName from client side
+    c.attribute :first_name, camelize: false # will be accessible as first_name from client side
+  end
+end
+
 ### attribute.permit
 
 To define attributes which are accepted by each model method, you need to call `permit` method, like this:

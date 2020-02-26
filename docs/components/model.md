@@ -110,9 +110,11 @@ class User
 end
 ```
 
-### attribute.camelize
+### attribute.options
 
-Allows disabling or enabling `camelCase` convertions. Defaults to `true`, meaning all of your attributes will be converted into `camelCase`.
+Allows passing options to attribute definition. Available options:
+
+* `attribute_name_format` - if `:original` value is passed, it will not camelCase attribute name.
 
 ```ruby
 class User
@@ -120,8 +122,7 @@ class User
 
   graphql do |c|
     c.attribute :first_name # will be accessible as firstName from client side
-    c.attribute :first_name, camelize: true # will be accessible as firstName from client side
-    c.attribute :first_name, camelize: false # will be accessible as first_name from client side
+    c.attribute :first_name, options: { attribute_name_format: :original } # will be accessible as first_name from client side
   end
 end
 

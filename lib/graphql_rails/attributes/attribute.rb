@@ -13,10 +13,10 @@ module GraphqlRails
 
       attr_reader :attributes
 
-      def initialize(name, type = nil, description: nil, property: name, required: nil, camelize: true)
+      def initialize(name, type = nil, description: nil, property: name, required: nil, options: {})
         @initial_type = type
         @initial_name = name
-        @camelize = camelize
+        @options = options
         @description = description
         @property = property.to_s
         @required = required
@@ -44,10 +44,10 @@ module GraphqlRails
         self
       end
 
-      def camelize(new_camelize = nil)
-        return @camelize if new_camelize.nil?
+      def options(new_options = {})
+        return @options if new_options.blank?
 
-        @camelize = new_camelize
+        @options = new_options
         self
       end
 
@@ -58,8 +58,7 @@ module GraphqlRails
           *description,
           {
             method: property.to_sym,
-            null: optional?,
-            camelize: camelize?
+            null: optional?
           }
         ]
       end
@@ -75,21 +74,9 @@ module GraphqlRails
         ]
       end
 
-      def options
-        {}.tap do |it|
-          it[:input_format] = :original unless @camelize
-        end
-      end
-
       protected
 
       attr_reader :initial_type, :initial_name
-
-      private
-
-      def camelize?
-        @camelize == true
-      end
     end
   end
 end

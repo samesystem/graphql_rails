@@ -5,11 +5,11 @@ require 'spec_helper'
 module GraphqlRails
   module Attributes
     RSpec.describe Attribute do
-      subject(:attribute) { described_class.new(name, type, camelize: camelize) }
+      subject(:attribute) { described_class.new(name, type, options: options) }
 
       let(:type) { 'String!' }
       let(:name) { 'full_name' }
-      let(:camelize) { true }
+      let(:options) { {} }
 
       describe '#property' do
         it 'sets property correctly' do
@@ -17,9 +17,9 @@ module GraphqlRails
         end
       end
 
-      describe '#camelize' do
-        it 'sets camelize flag correctly' do
-          expect { attribute.camelize(false) }.to change(attribute, :camelize).to(false)
+      describe '#options' do
+        it 'sets options correctly' do
+          expect { attribute.options({ new_option: true }) }.to change(attribute, :options).to({ new_option: true })
         end
       end
 
@@ -46,22 +46,6 @@ module GraphqlRails
       describe '#type' do
         it 'sets type correctly' do
           expect { attribute.type(:int!) }.to change(attribute, :type).to(:int!)
-        end
-      end
-
-      describe '#options' do
-        context 'when camelize is true' do
-          it 'does not specify input format' do
-            expect(attribute.options[:input_format]).to be_nil
-          end
-        end
-
-        context 'when camelize is false' do
-          let(:camelize) { false }
-
-          it 'specifies :original input formatter' do
-            expect(attribute.options[:input_format]).to eq :original
-          end
         end
       end
 
@@ -105,20 +89,6 @@ module GraphqlRails
         context 'when attribute is required' do
           it 'builds required field' do
             expect(field_args.last).to include(null: false)
-          end
-        end
-
-        context 'when attribute is set to camelize' do
-          it 'builds required field' do
-            expect(field_args.last).to include(camelize: true)
-          end
-        end
-
-        context 'when attribute is set not to camelize' do
-          let(:camelize) { false }
-
-          it 'builds required field' do
-            expect(field_args.last).to include(camelize: false)
           end
         end
 

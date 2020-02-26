@@ -60,7 +60,8 @@ module GraphqlRails
           *description,
           {
             method: property.to_sym,
-            null: optional?
+            null: optional?,
+            camelize: camelize?
           }
         ]
       end
@@ -79,6 +80,12 @@ module GraphqlRails
       protected
 
       attr_reader :initial_type, :initial_name
+
+      private
+
+      def camelize?
+        options[:input_format] != :original && options[:attribute_name_format] != :original
+      end
     end
   end
 end

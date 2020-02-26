@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
+* Added: `options` argument to model level attribute. Allows disabling automatic camelCase
+
 ## [1.0.0](2020-02-07)
 
 * Added: "required" and "optional" flags for attribute

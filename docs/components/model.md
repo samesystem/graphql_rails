@@ -110,6 +110,22 @@ class User
 end
 ```
 
+### attribute.options
+
+Allows passing options to attribute definition. Available options:
+
+* `attribute_name_format` - if `:original` value is passed, it will not camelCase attribute name.
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute :first_name # will be accessible as firstName from client side
+    c.attribute :first_name, options: { attribute_name_format: :original } # will be accessible as first_name from client side
+  end
+end
+
 ### attribute.permit
 
 To define attributes which are accepted by each model method, you need to call `permit` method, like this:

@@ -22,8 +22,16 @@ module GraphqlRails
             end
           end
 
-          context 'with original format option' do
+          context 'with original input format option' do
             let(:options) { { input_format: :original } }
+
+            it 'keeps original format' do
+              expect(field_name).to eq(name)
+            end
+          end
+
+          context 'with original attribute name format option' do
+            let(:options) { { attribute_name_format: :original } }
 
             it 'keeps original format' do
               expect(field_name).to eq(name)

@@ -5,14 +5,21 @@ require 'spec_helper'
 module GraphqlRails
   module Attributes
     RSpec.describe Attribute do
-      subject(:attribute) { described_class.new(name, type) }
+      subject(:attribute) { described_class.new(name, type, options: options) }
 
       let(:type) { 'String!' }
       let(:name) { 'full_name' }
+      let(:options) { {} }
 
       describe '#property' do
         it 'sets property correctly' do
           expect { attribute.property(:new_property) }.to change(attribute, :property).to('new_property')
+        end
+      end
+
+      describe '#options' do
+        it 'sets options correctly' do
+          expect { attribute.options(new_option: true) }.to change(attribute, :options).to(new_option: true)
         end
       end
 
@@ -24,7 +31,7 @@ module GraphqlRails
         end
       end
 
-      describe '#optiona' do
+      describe '#optional' do
         it 'marks attribute as not required' do
           expect { attribute.optional }.to change(attribute, :required?).to(false)
         end

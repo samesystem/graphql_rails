@@ -46,12 +46,6 @@ module GraphqlRails
         !required?
       end
 
-      protected
-
-      def options
-        {}
-      end
-
       private
 
       def type_parser

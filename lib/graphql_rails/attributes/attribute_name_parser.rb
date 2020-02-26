@@ -44,7 +44,7 @@ module GraphqlRails
       attr_reader :options
 
       def original_format?
-        options[:input_format] == :original
+        options[:input_format] == :original || options[:attribute_name_format] == :original
       end
 
       def preprocesed_name

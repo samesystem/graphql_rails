@@ -19,7 +19,7 @@ module GraphqlRails
 
       describe '#options' do
         it 'sets options correctly' do
-          expect { attribute.options({ new_option: true }) }.to change(attribute, :options).to({ new_option: true })
+          expect { attribute.options(new_option: true) }.to change(attribute, :options).to({ new_option: true })
         end
       end
 

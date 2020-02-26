@@ -61,7 +61,7 @@ module GraphqlRails
           {
             method: property.to_sym,
             null: optional?,
-            camelize: !camelize?
+            camelize: camelize?
           }
         ]
       end
@@ -84,7 +84,7 @@ module GraphqlRails
       private
 
       def camelize?
-        options[:input_format] == :original || options[:attribute_name_format] == :original
+        options[:input_format] != :original && options[:attribute_name_format] != :original
       end
     end
   end

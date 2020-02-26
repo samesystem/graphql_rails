@@ -17,13 +17,13 @@ end
 
 ## graphql
 
-This method must be called inside your model body. `grapqhl` is used for making your model convertible to graphql type.
+This method must be called inside your model body. `graphql` is used for making your model convertible to graphql type.
 
 ## attribute
 
 Most commonly you will use `attribute` to make your model methods and attributes visible via graphql endpoint.
 
-## attribute.type
+### attribute.type
 
 Some types can be determined by attribute name, so you can skip this attribute:
 
@@ -54,9 +54,33 @@ class User
 end
 ```
 
+#### attribute.type: using graphql-ruby objects
+
+You can also use raw graphql-ruby objects as attribute types. Here is an example:
+
+```ruby
+# raw graphql-ruby type:
+class AddressType < GraphQL::Schema::Object
+  graphql_name 'Address'
+
+  field :city, String, null: false
+  field :street_name, String, null: false
+  field :street_number, Integer
+end
+
+# GraphqlRails model:
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute :address, type: AddressType, required: true
+end
+```
+
+Check [graphql-ruby documentation](https://graphql-ruby.org) for more details about graphql-ruby types.
+
 ### attribute.property
 
-By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `propery` option:
+By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `property` option:
 
 ```ruby
 class User

@@ -219,6 +219,22 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
+You can also return raw graphql-ruby types:
+
+```ruby
+# raw graphql-ruby type:
+class OrderType < GraphQL::Schema::Object
+  graphql_name 'Order'
+  field :id, ID
+end
+
+class UsersController < GraphqlRails::Controller
+  action(:last_order).permit(:id).returns(OrderType)
+end
+```
+
+Check [graphql-ruby documentation](https://graphql-ruby.org) for more details about graphql-ruby types.
+
 ### *returns_list*
 
 When you have defined `model` dynamically, you can use `returns_list` to indicate that action must return list without specifying model type for each action. By default list and inner types are required but you can change that with `required_list: false` and `required_inner: false`
@@ -444,7 +460,7 @@ See ['Decorating controller responses'](components/decorator) for various option
 
 ### Rendering strings as errors
 
-The simples way to render error is to provide list of error messages, like this:
+The simplest way to render an error is to provide a list of error messages, like this:
 
 ```ruby
 class UsersController < GraphqlRails::Controller
@@ -509,12 +525,12 @@ end
 
 ### Raising custom error classes
 
-If you want to have customized error classes you need to create errors which inherits from `GraphqlRails::ExecutionError`
+If you want to have customized error classes you need to create errors which inherit from `GraphqlRails::ExecutionError`
 
 ```ruby
 class MyCustomError < GraphqlRails::ExecutionError
   def to_h
-    # this part will be rendered in graphl
+    # this part will be rendered in graphql
     { something_custom: 'yes' }
   end
 end

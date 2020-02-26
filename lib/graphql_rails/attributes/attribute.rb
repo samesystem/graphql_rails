@@ -13,6 +13,7 @@ module GraphqlRails
 
       attr_reader :attributes
 
+      # rubocop:disable Metrics/ParameterLists
       def initialize(name, type = nil, description: nil, property: name, required: nil, options: {})
         @initial_type = type
         @initial_name = name
@@ -22,6 +23,7 @@ module GraphqlRails
         @required = required
         @attributes ||= {}
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def type(new_type = nil)
         return @initial_type if new_type.nil?

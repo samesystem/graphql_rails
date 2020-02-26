@@ -169,7 +169,7 @@ class UsersController < GraphqlRails::Controller
 end
 ```
 
-Also check ['decorating controller responses']('components/decorator') for more details about working with active record and decorators.
+Also check ['decorating controller responses'](components/decorator) for more details about working with active record and decorators.
 
 #### *max_page_size*
 

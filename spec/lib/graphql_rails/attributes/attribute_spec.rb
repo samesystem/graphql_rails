@@ -106,9 +106,6 @@ module GraphqlRails
           end
         end
 
-        context 'when camelize options are not passed' do
-        end
-
         context 'when attribute is optional' do
           let(:type) { 'String' }
 

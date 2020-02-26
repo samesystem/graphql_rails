@@ -454,13 +454,13 @@ end
 
 ## decorating objects
 
-See ['Decorating controller responses']('components/decorator') for various options how you can decorate paginated responses
+See ['Decorating controller responses'](components/decorator) for various options how you can decorate paginated responses
 
 ## Rendering errors
 
 ### Rendering strings as errors
 
-The simples way to render error is to provide list of error messages, like this:
+The simplest way to render an error is to provide a list of error messages, like this:
 
 ```ruby
 class UsersController < GraphqlRails::Controller
@@ -525,12 +525,12 @@ end
 
 ### Raising custom error classes
 
-If you want to have customized error classes you need to create errors which inherits from `GraphqlRails::ExecutionError`
+If you want to have customized error classes you need to create errors which inherit from `GraphqlRails::ExecutionError`
 
 ```ruby
 class MyCustomError < GraphqlRails::ExecutionError
   def to_h
-    # this part will be rendered in graphl
+    # this part will be rendered in graphql
     { something_custom: 'yes' }
   end
 end

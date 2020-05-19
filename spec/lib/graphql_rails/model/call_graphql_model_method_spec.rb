@@ -16,7 +16,23 @@ module GraphqlRails
 
       let(:model_instance) { model.new }
 
+      let(:input_model) do
+        Class.new do
+          include GraphqlRails::Model
+
+          graphql.input do |c|
+            c.name 'TestingInput'
+            c.attribute :input_attr1, type: :string
+          end
+        end
+      end
+
+      let(:input_object) do
+        instance_double(input_model.graphql.input.graphql_input_type)
+      end
+
       let(:model) do
+        input_arg = input_model
         Class.new do
           include GraphqlRails::Model
 
@@ -25,6 +41,7 @@ module GraphqlRails
             c.attribute :trigger_context
             c.attribute :trigger_kwargs, permit: { arg1: :string }
             c.attribute :trigger_paginated_kwargs, paginated: true, permit: { arg1: :string }
+            c.attribute :trigger_object_kwargs, permit: { arg1: input_arg }
           end
 
           def self.name
@@ -36,6 +53,10 @@ module GraphqlRails
           end
 
           def trigger_kwargs(arg1: 'default value')
+            arg1
+          end
+
+          def trigger_object_kwargs(arg1:)
             arg1
           end
 
@@ -88,6 +109,25 @@ module GraphqlRails
             context 'when method result is not paginated' do
               it 'receives all given arguments' do
                 expect(call).to eq 'this is arg1'
+              end
+            end
+
+            context 'when method argument is input object' do
+              let(:attribute_config) { model.graphql.attributes['trigger_object_kwargs'] }
+              let(:method_keyword_arguments) { { arg1: input_object } }
+
+              before do
+                allow(input_object).to receive(:is_a?)
+                  .with(GraphQL::Schema::InputObject)
+                  .and_return(true)
+
+                allow(input_object).to receive(:to_h)
+                  .and_return(input_attr1: 'testing')
+              end
+
+              it 'converts input object to hash', :aggregate_failures do
+                expect(call).to eq(input_attr1: 'testing')
+                expect(input_object).to have_received(:to_h)
               end
             end
 

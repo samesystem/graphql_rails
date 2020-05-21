@@ -9,6 +9,7 @@ SimpleCov.start do
 end
 
 require 'graphql_rails'
+require 'pry'
 
 if ENV['CODECOV_TOKEN']
   require 'codecov'

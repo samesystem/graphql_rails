@@ -31,8 +31,21 @@ module GraphqlRails
         if custom_keyword_arguments.empty?
           model.send(method_name)
         else
-          model.send(method_name, **custom_keyword_arguments)
+          formatted_arguments = formatted_method_input(custom_keyword_arguments)
+          model.send(method_name, **formatted_arguments)
         end
+      end
+
+      def formatted_method_input(keyword_arguments)
+        keyword_arguments.transform_values do |input_argument|
+          formatted_method_input_argument(input_argument)
+        end
+      end
+
+      def formatted_method_input_argument(argument)
+        return argument.to_h if argument.is_a?(GraphQL::Schema::InputObject)
+
+        argument
       end
 
       def method_name

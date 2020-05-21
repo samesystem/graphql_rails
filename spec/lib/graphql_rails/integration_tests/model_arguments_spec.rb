@@ -127,7 +127,7 @@ module GraphqlRails
             execute.to_h.dig('data', 'dummyModel', field_name)
           end
 
-          context 'when argument is simple scalary type' do
+          context 'when argument is simple scalar type' do
             it 'passes arguments correctly' do
               expect(response).to eq('name' => 'test')
             end

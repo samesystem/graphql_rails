@@ -3,7 +3,7 @@ require: rubocop-rspec
 RSpec/NestedGroups:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: true
   Max: 120
 
@@ -21,7 +21,7 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - spec/**/*.rb
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   AllowedNames:
     - 'to'
     - 'at'

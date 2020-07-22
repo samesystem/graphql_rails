@@ -32,7 +32,10 @@ module GraphqlRails
 
         attributes[key].tap do |attribute|
           attribute_options.each do |method_name, args|
-            attribute.public_send(method_name, args)
+            send_args = [method_name]
+            send_args << args if attribute.method(method_name).parameters.present?
+
+            attribute.public_send(*send_args)
           end
 
           yield(attribute) if block_given?

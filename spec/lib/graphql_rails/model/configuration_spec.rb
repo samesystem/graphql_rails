@@ -102,6 +102,29 @@ module GraphqlRails
           expect(field.arguments.keys).to match_array(%w[after before first last name])
         end
       end
+
+      context 'when attribute definition contains required flag' do
+        let(:model) do
+          Class.new do
+            include GraphqlRails::Model
+
+            graphql do |c|
+              c.description 'Used for test purposes'
+              c.attribute :required_field, required: true
+            end
+
+            def self.name
+              'DummyModel'
+            end
+          end
+        end
+
+        let(:field) { model.graphql.graphql_type.fields['requiredField'] }
+
+        it 'is registered as required' do
+          expect(field.type).to be_a_kind_of(GraphQL::NonNullType)
+        end
+      end
     end
 
     describe '#graphql_type' do

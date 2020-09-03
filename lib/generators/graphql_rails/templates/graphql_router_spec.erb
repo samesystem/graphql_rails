@@ -3,16 +3,19 @@
 require 'rails_helper'
 
 RSpec.describe GraphqlRouter do
-  describe '#execute' do
+  subject(:schema) { described_class.graphql_schema }
+
+  describe '#to_definition' do
+    subject(:to_definition) { schema.to_definition.strip }
+
+    let(:schema_dump_path) { Rails.root.join('spec', 'fixtures', 'graphql_schema.graphql') }
+    let(:previous_definition) { File.read(schema_dump_path).strip }
+
     it 'returns correct structure' do
       # if you need to update saved_schema, run rake task:
-      #   $ RAILS_ENV=test rake graphql_rails:schema:dump
+      #   $ RAILS_ENV=test bin/rake graphql_rails:schema:dump
 
-      schema_path = Rails.root.join('spec', 'fixtures', 'graphql_schema.graphql')
-      saved_schema = File.read(schema_path).strip
-      real_schema = described_class.to_definition.strip
-
-      expect(real_schema).to eq(saved_schema)
+      expect(to_definition).to eq(previous_definition)
     end
   end
 end

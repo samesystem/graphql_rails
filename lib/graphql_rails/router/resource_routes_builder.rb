@@ -20,12 +20,12 @@ module GraphqlRails
         @routes ||= initial_routes
       end
 
-      def query(*args)
-        routes << build_query(*args)
+      def query(*args, **kwargs)
+        routes << build_query(*args, **kwargs)
       end
 
-      def mutation(*args)
-        routes << build_mutation(*args)
+      def mutation(*args, **kwargs)
+        routes << build_mutation(*args, **kwargs)
       end
 
       private
@@ -54,12 +54,12 @@ module GraphqlRails
         routes
       end
 
-      def build_mutation(*args)
-        build_route(MutationRoute, *args)
+      def build_mutation(*args, **kwargs)
+        build_route(MutationRoute, *args, **kwargs)
       end
 
-      def build_query(*args)
-        build_route(QueryRoute, *args)
+      def build_query(*args, **kwargs)
+        build_route(QueryRoute, *args, **kwargs)
       end
 
       # rubocop:disable Metrics/ParameterLists

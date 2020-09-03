@@ -46,7 +46,7 @@ module GraphqlRails
           graphql_name(type_name)
 
           group_routes.each do |route|
-            field(*route.field_args)
+            field(*route.name, **route.field_options)
           end
 
           def self.inspect

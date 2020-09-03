@@ -109,8 +109,8 @@ module GraphqlRails
       @response
     end
 
-    def mutation(*args)
-      query(*args)
+    def mutation(*args, **kwargs)
+      query(*args, **kwargs)
     end
 
     def response

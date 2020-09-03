@@ -19,13 +19,13 @@ module GraphqlRails
         action = build_action
 
         Class.new(ControllerActionResolver) do
-          type(*action.type_args)
+          type(*action.type_args, **action.type_options)
           description(action.description)
           controller(action.controller)
           controller_action_name(action.name)
 
           action.arguments.each do |attribute|
-            argument(*attribute.input_argument_args)
+            argument(*attribute.input_argument_args, **attribute.input_argument_options)
           end
 
           def self.inspect

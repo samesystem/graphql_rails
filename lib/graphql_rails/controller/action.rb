@@ -36,7 +36,11 @@ module GraphqlRails
       end
 
       def type_args
-        [type_parser.type_arg, null: !type_parser.required?]
+        [type_parser.type_arg]
+      end
+
+      def type_options
+        { null: !type_parser.required? }
       end
 
       private

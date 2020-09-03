@@ -33,16 +33,12 @@ module GraphqlRails
         groups.include?(group_name&.to_sym)
       end
 
-      def field_args
-        options = {}
-
+      def field_options
         if function
-          options[:function] = function
+          { function: function }
         else
-          options[:resolver] = resolver
+          { resolver: resolver }
         end
-
-        [name, options]
       end
 
       private

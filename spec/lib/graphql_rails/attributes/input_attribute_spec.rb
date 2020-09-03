@@ -22,7 +22,7 @@ module GraphqlRails
       describe '#input_argument_args' do
         subject(:input_argument_args) { attribute.input_argument_args }
 
-        let(:input_argument_options) { input_argument_args[2] }
+        let(:input_argument_options) { attribute.input_argument_options }
         let(:input_argument_name) { input_argument_args[0] }
         let(:input_argument_type) { input_argument_args[1] }
 

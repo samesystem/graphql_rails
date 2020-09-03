@@ -57,13 +57,16 @@ module GraphqlRails
         [
           field_name,
           type_parser.type_arg,
-          *description,
-          {
-            method: property.to_sym,
-            null: optional?,
-            camelize: camelize?
-          }
+          *description
         ]
+      end
+
+      def field_options
+        {
+          method: property.to_sym,
+          null: optional?,
+          camelize: camelize?
+        }
       end
 
       def argument_args

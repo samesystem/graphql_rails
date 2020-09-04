@@ -74,13 +74,13 @@ module GraphqlRails
       describe '#permit' do
         subject(:permitted_attribute_args) { config.attributes['name'].input_argument_args }
 
-        let(:permitted_attribute_options) { permitted_attribute_args[2] }
+        let(:permitted_attribute_options) { config.attributes['name'].input_argument_options }
         let(:permit_params) { { attribute_name => attribute_type } }
         let(:attribute_name) { :name }
         let(:attribute_type) { 'string' }
 
         before do
-          config.permit(permit_params)
+          config.permit(**permit_params)
         end
 
         context 'when attribute name has bang at the end' do

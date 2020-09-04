@@ -18,16 +18,16 @@ module GraphqlRails
         subclass.instance_variable_set(:@controller_configuration, new_config)
       end
 
-      def before_action(*args, &block)
-        controller_configuration.add_action_hook(:before, *args, &block)
+      def before_action(*args, **kwargs, &block)
+        controller_configuration.add_action_hook(:before, *args, **kwargs, &block)
       end
 
-      def around_action(*args, &block)
-        controller_configuration.add_action_hook(:around, *args, &block)
+      def around_action(*args, **kwargs, &block)
+        controller_configuration.add_action_hook(:around, *args, **kwargs, &block)
       end
 
-      def after_action(*args, &block)
-        controller_configuration.add_action_hook(:after, *args, &block)
+      def after_action(*args, **kwargs, &block)
+        controller_configuration.add_action_hook(:after, *args, **kwargs, &block)
       end
 
       def action(action_name)

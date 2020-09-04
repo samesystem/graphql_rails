@@ -34,7 +34,7 @@ module GraphqlRails
 
       describe '#attribute' do
         let(:attribute_type) { input.attributes['fruit'].input_argument_args[1] }
-        let(:attribute_type_options) { input.attributes['fruit'].input_argument_args[2] }
+        let(:attribute_type_options) { input.attributes['fruit'].input_argument_options }
 
         context 'when attribute has enum type' do
           context 'when enum is required' do

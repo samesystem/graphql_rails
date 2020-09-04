@@ -23,10 +23,10 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'graphql', '>= 1.9.12'
   spec.add_dependency 'activesupport', '>= 4'
 
-  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'bundler', '~> 2'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'activerecord'
   spec.add_development_dependency 'pry-byebug'
-  spec.add_development_dependency 'rails', '~> 5'
+  spec.add_development_dependency 'rails', '~> 6'
 end

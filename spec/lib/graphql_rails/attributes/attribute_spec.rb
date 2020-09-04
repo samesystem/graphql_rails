@@ -55,20 +55,6 @@ module GraphqlRails
         context 'when type is not set' do
           let(:type) { nil }
 
-          context 'when attribute name ends without bang mark (!)' do
-            it 'builds optional field' do
-              expect(field_args.last).to include(null: true)
-            end
-          end
-
-          context 'when attribute name ends with bang mark (!)' do
-            let(:name) { :full_name! }
-
-            it 'builds required field' do
-              expect(field_args.last).to include(null: false)
-            end
-          end
-
           context 'when name ends with question mark (?)' do
             let(:name) { :admin? }
 
@@ -86,43 +72,11 @@ module GraphqlRails
           end
         end
 
-        context 'when attribute is required' do
-          it 'builds required field' do
-            expect(field_args.last).to include(null: false)
-          end
-        end
-
-        context 'when atribute name format options are passed' do
-          let(:options) { { attribute_name_format: :original } }
-
-          it 'forwards disables camelize' do
-            expect(field_args.last).to include(camelize: false)
-          end
-        end
-
-        context 'when atribute name format options are not passed' do
-          it 'ignores keeps camelize active' do
-            expect(field_args.last).to include(camelize: true)
-          end
-        end
-
-        context 'when attribute is optional' do
-          let(:type) { 'String' }
-
-          it 'builds optional field' do
-            expect(field_args.last).to include(null: true)
-          end
-        end
-
         context 'when attribute is array' do
           let(:type) { '[Int!]!' }
 
           context 'when array is required' do
             let(:type) { '[Int]!' }
-
-            it 'builds required outher field' do
-              expect(field_args.last).to include(null: false)
-            end
 
             it 'builds optional list type field' do
               expect(field_args[1]).to eq([GraphQL::INT_TYPE, null: true])
@@ -132,20 +86,12 @@ module GraphqlRails
           context 'when inner type of array is required' do
             let(:type) { '[Int!]' }
 
-            it 'builds optional outher field' do
-              expect(field_args.last).to include(null: true)
-            end
-
             it 'builds required inner array type' do
               expect(field_args[1]).to eq([GraphQL::INT_TYPE])
             end
           end
 
           context 'when array and its inner type is required' do
-            it 'builds required outher field' do
-              expect(field_args.last).to include(null: false)
-            end
-
             it 'builds required inner array type' do
               expect(field_args[1]).to eq([GraphQL::INT_TYPE])
             end
@@ -154,12 +100,92 @@ module GraphqlRails
           context 'when array and its inner type are optional' do
             let(:type) { '[Int]' }
 
-            it 'builds optional outher field' do
-              expect(field_args.last).to include(null: true)
-            end
-
             it 'builds optional list type field' do
               expect(field_args[1]).to eq([GraphQL::INT_TYPE, null: true])
+            end
+          end
+        end
+      end
+
+      describe '#field_options' do
+        subject(:field_options) { attribute.field_options }
+
+        context 'when type is not set' do
+          let(:type) { nil }
+
+          context 'when attribute name ends without bang mark (!)' do
+            it 'builds optional field' do
+              expect(field_options).to include(null: true)
+            end
+          end
+
+          context 'when attribute name ends with bang mark (!)' do
+            let(:name) { :full_name! }
+
+            it 'builds required field' do
+              expect(field_options).to include(null: false)
+            end
+          end
+        end
+
+        context 'when attribute is required' do
+          it 'builds required field' do
+            expect(field_options).to include(null: false)
+          end
+        end
+
+        context 'when attribute name format options are passed' do
+          let(:options) { { attribute_name_format: :original } }
+
+          it 'forwards disables camelize' do
+            expect(field_options).to include(camelize: false)
+          end
+        end
+
+        context 'when attribute name format options are not passed' do
+          it 'ignores keeps camelize active' do
+            expect(field_options).to include(camelize: true)
+          end
+        end
+
+        context 'when attribute is optional' do
+          let(:type) { 'String' }
+
+          it 'builds optional field' do
+            expect(field_options).to include(null: true)
+          end
+        end
+
+        context 'when attribute is array' do
+          let(:type) { '[Int!]!' }
+
+          context 'when array is required' do
+            let(:type) { '[Int]!' }
+
+            it 'builds required outer field' do
+              expect(field_options).to include(null: false)
+            end
+          end
+
+          context 'when inner type of array is required' do
+            let(:type) { '[Int!]' }
+
+            it 'builds optional outer field' do
+              expect(field_options).to include(null: true)
+            end
+          end
+
+          context 'when array and its inner type is required' do
+            it 'builds required outer field' do
+              expect(field_options).to include(null: false)
+            end
+          end
+
+          context 'when array and its inner type are optional' do
+            let(:type) { '[Int]' }
+
+            it 'builds optional outer field' do
+              expect(field_options).to include(null: true)
             end
           end
         end

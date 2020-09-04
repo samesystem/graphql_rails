@@ -24,7 +24,11 @@ module GraphqlRails
       def input_argument_args
         type = raw_input_type || input_type_parser.input_type_arg
 
-        [field_name, type, { required: required?, description: description, camelize: false }]
+        [field_name, type]
+      end
+
+      def input_argument_options
+        { required: required?, description: description, camelize: false }
       end
 
       def paginated?

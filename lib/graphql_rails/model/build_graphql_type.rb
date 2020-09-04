@@ -27,9 +27,9 @@ module GraphqlRails
           description(type_description)
 
           type_attributes.each_value do |attribute|
-            field(*attribute.field_args) do
+            field(*attribute.field_args, **attribute.field_options) do
               attribute.attributes.values.each do |arg_attribute|
-                argument(*arg_attribute.input_argument_args)
+                argument(*arg_attribute.input_argument_args, **arg_attribute.input_argument_options)
               end
             end
 

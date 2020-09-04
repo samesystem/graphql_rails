@@ -24,7 +24,7 @@ module GraphqlRails
           description(type_description)
 
           type_attributes.each_value do |type_attribute|
-            argument(*type_attribute.input_argument_args)
+            argument(*type_attribute.input_argument_args, **type_attribute.input_argument_options)
           end
 
           def self.inspect

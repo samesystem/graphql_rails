@@ -46,6 +46,10 @@ module GraphqlRails
         !required?
       end
 
+      def scalar_type?
+        type_parser.raw_graphql_type? || type_parser.unwrapped_scalar_type.class == GraphQL::ScalarType
+      end
+
       private
 
       def type_parser

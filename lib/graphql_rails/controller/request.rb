@@ -16,7 +16,7 @@ module GraphqlRails
       end
 
       def errors=(new_errors)
-        @errors = FormatErrors.call(new_errors)
+        @errors = FormatErrors.call(not_formatted_errors: new_errors)
 
         @errors.each { |error| context.add_error(error) }
       end

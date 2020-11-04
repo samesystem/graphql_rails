@@ -12,7 +12,7 @@ module GraphqlRails
       class FormatErrors
         include Service
 
-        def initialize(not_formatted_errors)
+        def initialize(not_formatted_errors:)
           @not_formatted_errors = not_formatted_errors
         end
 

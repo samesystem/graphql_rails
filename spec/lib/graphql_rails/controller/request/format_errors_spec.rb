@@ -5,7 +5,7 @@ require 'active_model'
 
 module GraphqlRails
   RSpec.describe Controller::Request::FormatErrors do
-    subject(:format_errors) { described_class.new(errors) }
+    subject(:format_errors) { described_class.new(not_formatted_errors: errors) }
 
     let(:errors) { ['boom!'] }
 

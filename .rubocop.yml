@@ -35,7 +35,7 @@ Style/ClassAndModuleChildren:
     - spec/**/*_spec.rb
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.7
   Exclude:
     - bin/*
     - graphql_rails.gemspec

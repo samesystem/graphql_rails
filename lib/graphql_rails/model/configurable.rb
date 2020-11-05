@@ -15,7 +15,7 @@ module GraphqlRails
       end
 
       def type_name
-        "#{name.camelize}Type#{SecureRandom.hex}"
+        @type_name ||= "#{name.camelize}Type#{SecureRandom.hex}"
       end
 
       def description(new_description = nil)

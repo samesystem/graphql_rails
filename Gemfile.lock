@@ -3,7 +3,7 @@ PATH
   specs:
     graphql_rails (1.0.0)
       activesupport (>= 4)
-      graphql (>= 1.9.12)
+      graphql (~> 1.11, >= 1.11.6)
 
 GEM
   remote: https://rubygems.org/

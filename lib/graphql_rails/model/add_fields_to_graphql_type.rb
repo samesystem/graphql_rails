@@ -22,20 +22,22 @@ module GraphqlRails
 
       attr_reader :attributes, :klass
 
-      def define_graphql_field(attribute) # rubocop:disable Metrics/MethodLength
-        klass.send(:field, *attribute.field_args, **attribute.field_options) do
-          attribute.attributes.values.each do |arg_attribute|
-            argument(*arg_attribute.input_argument_args, **arg_attribute.input_argument_options)
+      def define_graphql_field(attribute) # rubocop:disable Metrics/MethodLength)
+        klass.class_eval do
+          field(*attribute.field_args, **attribute.field_options) do
+            attribute.attributes.values.each do |arg_attribute|
+              argument(*arg_attribute.input_argument_args, **arg_attribute.input_argument_options)
+            end
           end
-        end
 
-        klass.send(:define_method, attribute.property) do |**kwargs|
-          CallGraphqlModelMethod.call(
-            model: object,
-            attribute_config: attribute,
-            method_keyword_arguments: kwargs,
-            graphql_context: context
-          )
+          define_method(attribute.field_name) do |**kwargs|
+            CallGraphqlModelMethod.call(
+              model: object,
+              attribute_config: attribute,
+              method_keyword_arguments: kwargs,
+              graphql_context: context
+            )
+          end
         end
       end
     end

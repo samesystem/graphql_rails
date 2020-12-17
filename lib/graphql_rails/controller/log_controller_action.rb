@@ -51,7 +51,7 @@ module GraphqlRails
             params
           else
             filter_options = Rails.configuration.filter_parameters
-            parametter_filter = ActionDispatch::Http::ParameterFilter.new(filter_options)
+            parametter_filter = (Object.const_defined?('ActiveSupport::ParameterFilter') ? ActiveSupport::ParameterFilter : ActionDispatch::Http::ParameterFilter).new(filter_options)
             parametter_filter.filter(params)
           end
       end

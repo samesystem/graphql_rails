@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'active_support/core_ext/string/inflections'
 
 require 'graphql_rails/router/schema_builder'
@@ -27,6 +26,7 @@ module GraphqlRails
       @group_names = group_names
       @routes ||= Set.new
       @raw_graphql_actions ||= []
+      @schema_build_lock = Mutex.new
     end
 
     def group(*group_names, &block)
@@ -65,12 +65,14 @@ module GraphqlRails
 
     def graphql_schema(group = nil)
       @graphql_schema ||= {}
-      @graphql_schema[group&.to_sym] ||= SchemaBuilder.new(
-        queries: routes.select(&:query?),
-        mutations: routes.select(&:mutation?),
-        raw_actions: raw_graphql_actions,
-        group: group
-      ).call
+      @graphql_schema[group&.to_sym] ||= schema_build_lock.synchronize do
+        SchemaBuilder.new(
+          queries: routes.select(&:query?),
+          mutations: routes.select(&:mutation?),
+          raw_actions: raw_graphql_actions,
+          group: group
+        ).call
+      end
     end
 
     def reload_schema
@@ -79,7 +81,7 @@ module GraphqlRails
 
     private
 
-    attr_reader :module_name, :group_names
+    attr_reader :module_name, :group_names, :schema_build_lock
 
     def router_with(new_router_options = {})
       default_options = { module_name: module_name, group_names: group_names }

@@ -5,12 +5,12 @@ require 'active_record'
 
 class GraphqlRails::Model::BuildConnectionType
   RSpec.describe CountItems do
-    subject(:count_items) { described_class.new(graphql_object, nil, nil) }
+    subject(:count_items) { described_class.new(graphql_object) }
 
     let(:graphql_object) { double('GraphqlObject', nodes: items) } # rubocop:disable RSpec/VerifiedDoubles
 
     describe '.call' do
-      subject(:call) { described_class.call(graphql_object, nil, nil) }
+      subject(:call) { described_class.call(graphql_object) }
 
       context 'when items are instance of ActiveRecord::Relation' do
         let(:items) { instance_double(ActiveRecord::Relation, size: 5) }

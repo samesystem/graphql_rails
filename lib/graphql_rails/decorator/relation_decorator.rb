@@ -71,9 +71,5 @@ module GraphqlRails
         self.class.new(decorator: decorator, relation: new_relation, decorator_args: decorator_args)
       end
     end
-
-    GraphQL::Relay::BaseConnection.register_connection_implementation(
-      RelationDecorator, GraphQL::Relay::RelationConnection
-    )
   end
 end

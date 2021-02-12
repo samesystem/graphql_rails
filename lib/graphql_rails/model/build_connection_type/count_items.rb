@@ -10,7 +10,7 @@ module GraphqlRails
 
         include ::GraphqlRails::Service
 
-        def initialize(graphql_object, _args, _ctx)
+        def initialize(graphql_object)
           @graphql_object = graphql_object
         end
 

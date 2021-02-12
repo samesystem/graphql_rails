@@ -21,6 +21,10 @@ module GraphqlRails
         raw = raw_actions
 
         Class.new(GraphQL::Schema) do
+          connections.add(
+            GraphqlRails::Decorator::RelationDecorator,
+            GraphQL::Pagination::ActiveRecordRelationConnection
+          )
           cursor_encoder(Router::PlainCursorEncoder)
           raw.each { |action| send(action[:name], *action[:args], &action[:block]) }
 

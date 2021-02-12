@@ -26,6 +26,12 @@ module GraphqlRails
 
           query(query_type) if query_type
           mutation(mutation_type) if mutation_type
+
+          def self.type_from_ast(*args)
+            type = super
+
+            type.respond_to?(:to_graphql) ? type.to_graphql : type
+          end
         end
       end
 

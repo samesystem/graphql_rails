@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added: `options` argument to model level attribute. Allows disabling automatic camelCase
 * Fixed: methods with complex input arguments receives `Hash` instances instead of `GraphQL::Schema::InputObject`
+* Fixed: Using `ActiveSupport::ParameterFilter` (Rails 6.1), if it is defined, instead of `ActionDispatch::Http::ParameterFilter`
 
 ## [1.0.0](2020-02-07)
 

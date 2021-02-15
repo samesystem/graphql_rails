@@ -30,7 +30,11 @@ module GraphqlRails
           graphql_name("#{type.graphql_name}Connection")
           edge_type(edge_type)
 
-          field :total, Integer, null: false, resolve: CountItems
+          field :total, Integer, null: false
+
+          def total
+            CountItems.call(self)
+          end
         end
       end
 

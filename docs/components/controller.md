@@ -78,7 +78,7 @@ Specifies input type:
 class OrderController < GraphqlRails::Controller
   action(:create)
     .permit_input(:price, type: :integer!)
-    # Same as `.permit(amount: :integer!)`
+    # Same as `.permit(price: :integer!)`
 end
 ```
 

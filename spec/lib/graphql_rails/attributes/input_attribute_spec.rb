@@ -28,7 +28,7 @@ module GraphqlRails
 
         context 'when type is basic scalar type' do
           it 'returns graphql scalar type' do
-            expect(input_argument_type).to eq(GraphQL::STRING_TYPE)
+            expect(input_argument_type).to eq(GraphQL::Types::String)
           end
 
           it 'returns required type' do

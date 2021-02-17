@@ -11,23 +11,23 @@ module GraphqlRails
       class UnknownTypeError < ArgumentError; end
 
       TYPE_MAPPING = {
-        'id' => GraphQL::ID_TYPE,
+        'id' => GraphQL::Types::ID,
 
-        'int' => GraphQL::INT_TYPE,
-        'integer' => GraphQL::INT_TYPE,
+        'int' => GraphQL::Types::Int,
+        'integer' => GraphQL::Types::Int,
 
-        'string' => GraphQL::STRING_TYPE,
-        'str' => GraphQL::STRING_TYPE,
-        'text' => GraphQL::STRING_TYPE,
-        'time' => GraphQL::STRING_TYPE,
-        'date' => GraphQL::STRING_TYPE,
+        'string' => GraphQL::Types::String,
+        'str' => GraphQL::Types::String,
+        'text' => GraphQL::Types::String,
+        'time' => GraphQL::Types::String,
+        'date' => GraphQL::Types::String,
 
-        'bool' => GraphQL::BOOLEAN_TYPE,
-        'boolean' => GraphQL::BOOLEAN_TYPE,
+        'bool' => GraphQL::Types::Boolean,
+        'boolean' => GraphQL::Types::Boolean,
 
-        'float' => GraphQL::FLOAT_TYPE,
-        'double' => GraphQL::FLOAT_TYPE,
-        'decimal' => GraphQL::FLOAT_TYPE
+        'float' => GraphQL::Types::Float,
+        'double' => GraphQL::Types::Float,
+        'decimal' => GraphQL::Types::Float
       }.freeze
 
       WRAPPER_TYPES = [
@@ -55,6 +55,10 @@ module GraphqlRails
         defined?(GraphQL::Schema::Member) &&
           unparsed_type.is_a?(Class) &&
           unparsed_type < GraphQL::Schema::Member
+      end
+
+      def core_scalar_type?
+        unwrapped_scalar_type.in?(TYPE_MAPPING.values)
       end
 
       def graphql_model

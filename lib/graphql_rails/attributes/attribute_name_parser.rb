@@ -27,11 +27,11 @@ module GraphqlRails
         @graphql_type ||= \
           case name
           when 'id', /_id\Z/
-            GraphQL::ID_TYPE
+            GraphQL::Types::ID
           when /\?\Z/
-            GraphQL::BOOLEAN_TYPE
+            GraphQL::Types::Boolean
           else
-            GraphQL::STRING_TYPE
+            GraphQL::Types::String
           end
       end
 

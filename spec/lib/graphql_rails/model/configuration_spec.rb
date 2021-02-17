@@ -122,7 +122,7 @@ module GraphqlRails
         let(:field) { model.graphql.graphql_type.fields['requiredField'] }
 
         it 'is registered as required' do
-          expect(field.type).to be_a_kind_of(GraphQL::NonNullType)
+          expect(field.type).to be_a_kind_of(GraphQL::Schema::NonNull)
         end
       end
     end

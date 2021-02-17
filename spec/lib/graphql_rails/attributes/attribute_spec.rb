@@ -59,7 +59,7 @@ module GraphqlRails
             let(:name) { :admin? }
 
             it 'returns boolean type' do
-              expect(field_args[1]).to eq GraphQL::BOOLEAN_TYPE
+              expect(field_args[1]).to eq GraphQL::Types::Boolean
             end
           end
 
@@ -67,7 +67,7 @@ module GraphqlRails
             let(:name) { :id }
 
             it 'returns id type' do
-              expect(field_args[1]).to eq GraphQL::ID_TYPE
+              expect(field_args[1]).to eq GraphQL::Types::ID
             end
           end
         end
@@ -79,7 +79,7 @@ module GraphqlRails
             let(:type) { '[Int]!' }
 
             it 'builds optional list type field' do
-              expect(field_args[1]).to eq([GraphQL::INT_TYPE, null: true])
+              expect(field_args[1]).to eq([GraphQL::Types::Int, null: true])
             end
           end
 
@@ -87,13 +87,13 @@ module GraphqlRails
             let(:type) { '[Int!]' }
 
             it 'builds required inner array type' do
-              expect(field_args[1]).to eq([GraphQL::INT_TYPE])
+              expect(field_args[1]).to eq([GraphQL::Types::Int])
             end
           end
 
           context 'when array and its inner type is required' do
             it 'builds required inner array type' do
-              expect(field_args[1]).to eq([GraphQL::INT_TYPE])
+              expect(field_args[1]).to eq([GraphQL::Types::Int])
             end
           end
 
@@ -101,7 +101,7 @@ module GraphqlRails
             let(:type) { '[Int]' }
 
             it 'builds optional list type field' do
-              expect(field_args[1]).to eq([GraphQL::INT_TYPE, null: true])
+              expect(field_args[1]).to eq([GraphQL::Types::Int, null: true])
             end
           end
         end

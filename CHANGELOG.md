@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
-## [1.2.0](2021-02-15)
+## [1.2.1](2021-02-17)
 
-* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
+* Fixed: Incorrect scalar types resolution is fixed. No more `type mismatch between ID / ID`
+
+## [1.2.0](2021-02-15)
 
 * Added: `options` argument to model level attribute. Allows disabling automatic camelCase
 * Fixed: methods with complex input arguments receives `Hash` instances instead of `GraphQL::Schema::InputObject`

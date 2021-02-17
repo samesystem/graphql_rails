@@ -10,7 +10,7 @@ module GraphqlRails
     RSpec.describe Action do
       class CustomDummyUsersController < GraphqlRails::Controller; end
       class DummyUsersController < GraphqlRails::Controller
-        action(:show).returns(GraphQL::STRING_TYPE.to_non_null_type)
+        action(:show).returns(GraphQL::Types::String.to_non_null_type)
         action(:paginated_index).paginated
       end
 
@@ -44,7 +44,7 @@ module GraphqlRails
           let(:action_name) { 'show' }
 
           it 'uses specified type' do
-            expect(return_type).to eq(GraphQL::STRING_TYPE.to_non_null_type)
+            expect(return_type).to eq(GraphQL::Types::String.to_non_null_type)
           end
         end
       end

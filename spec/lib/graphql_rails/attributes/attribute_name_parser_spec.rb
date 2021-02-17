@@ -63,7 +63,7 @@ module GraphqlRails
           let(:name) { :admin? }
 
           it 'returns boolean type' do
-            expect(graphql_type).to eq GraphQL::BOOLEAN_TYPE
+            expect(graphql_type).to eq GraphQL::Types::Boolean
           end
         end
 
@@ -71,13 +71,13 @@ module GraphqlRails
           let(:name) { :id }
 
           it 'returns id type' do
-            expect(graphql_type).to eq GraphQL::ID_TYPE
+            expect(graphql_type).to eq GraphQL::Types::ID
           end
         end
 
         context 'when name does not end with special suffix' do
           it 'returns String type' do
-            expect(graphql_type).to eq GraphQL::STRING_TYPE
+            expect(graphql_type).to eq GraphQL::Types::String
           end
         end
       end

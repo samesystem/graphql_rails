@@ -22,7 +22,7 @@ module GraphqlRails
         end
 
         context 'when graphql type is provided' do
-          let(:type) { GraphQL::INT_TYPE }
+          let(:type) { GraphQL::Types::Int }
 
           it { is_expected.to be_nil }
         end
@@ -56,7 +56,7 @@ module GraphqlRails
               let(:type) { '[String]!' }
 
               it 'returns correct structore' do
-                expect(type_arg).to eq([GraphQL::STRING_TYPE, { null: true }])
+                expect(type_arg).to eq([GraphQL::Types::String, { null: true }])
               end
             end
 
@@ -64,7 +64,7 @@ module GraphqlRails
               let(:type) { '[String]' }
 
               it 'returns correct structore' do
-                expect(type_arg).to eq([GraphQL::STRING_TYPE, { null: true }])
+                expect(type_arg).to eq([GraphQL::Types::String, { null: true }])
               end
             end
           end
@@ -104,25 +104,25 @@ module GraphqlRails
         context 'when attribute is integer' do
           let(:type) { 'Int' }
 
-          it { is_expected.to be GraphQL::INT_TYPE }
+          it { is_expected.to be GraphQL::Types::Int }
         end
 
         context 'when attribute is ID' do
           let(:type) { 'ID' }
 
-          it { is_expected.to be GraphQL::ID_TYPE }
+          it { is_expected.to be GraphQL::Types::ID }
         end
 
         context 'when attribute is boolean' do
           let(:type) { 'bool' }
 
-          it { is_expected.to be GraphQL::BOOLEAN_TYPE }
+          it { is_expected.to be GraphQL::Types::Boolean }
         end
 
         context 'when attribute is float type' do
           let(:type) { 'float' }
 
-          it { is_expected.to be GraphQL::FLOAT_TYPE }
+          it { is_expected.to be GraphQL::Types::Float }
         end
 
         context 'when attribute is not supported' do

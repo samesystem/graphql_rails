@@ -149,9 +149,10 @@ module GraphqlRails
             config.model('String')
           end
 
-          it 'sets required model return type' do
+          it 'sets required model return type', :aggregate_failures do
             config.returns_single
-            expect(config.return_type).to eq(!GraphQL::STRING_TYPE)
+            expect(config.return_type).to be_instance_of(GraphQL::Schema::NonNull)
+            expect(config.return_type.of_type).to eq(GraphQL::Types::String)
           end
         end
 
@@ -162,7 +163,7 @@ module GraphqlRails
 
           it 'sets nullable model return type' do
             config.returns_single(required: false)
-            expect(config.return_type).to eq(GraphQL::STRING_TYPE)
+            expect(config.return_type).to eq(GraphQL::Types::String)
           end
         end
       end
@@ -180,9 +181,12 @@ module GraphqlRails
             config.model('String')
           end
 
-          it 'sets required list model return type' do
+          it 'sets required list model return type', :aggregate_failures do
             config.returns_list
-            expect(config.return_type).to eq(!(!GraphQL::STRING_TYPE).to_list_type)
+            expect(config.return_type).to be_instance_of(GraphQL::Schema::NonNull)
+            expect(config.return_type.of_type).to be_instance_of(GraphQL::Schema::List)
+            expect(config.return_type.of_type.of_type).to be_instance_of(GraphQL::Schema::NonNull)
+            expect(config.return_type.of_type.of_type.of_type).to eq(GraphQL::Types::String)
           end
         end
 
@@ -191,9 +195,11 @@ module GraphqlRails
             config.model('String')
           end
 
-          it 'sets nullable model return type' do
+          it 'sets nullable model return type', :aggregate_failures do
             config.returns_list(required_inner: false)
-            expect(config.return_type).to eq(!GraphQL::STRING_TYPE.to_list_type)
+            expect(config.return_type).to be_instance_of(GraphQL::Schema::NonNull)
+            expect(config.return_type.of_type).to be_instance_of(GraphQL::Schema::List)
+            expect(config.return_type.of_type.of_type).to eq(GraphQL::Types::String)
           end
         end
 
@@ -202,9 +208,11 @@ module GraphqlRails
             config.model('String')
           end
 
-          it 'sets nullable model return type' do
+          it 'sets nullable model return type', :aggregate_failures do
             config.returns_list(required_list: false)
-            expect(config.return_type).to eq((!GraphQL::STRING_TYPE).to_list_type)
+            expect(config.return_type).to be_instance_of(GraphQL::Schema::List)
+            expect(config.return_type.of_type).to be_instance_of(GraphQL::Schema::NonNull)
+            expect(config.return_type.of_type.of_type).to eq(GraphQL::Types::String)
           end
         end
       end

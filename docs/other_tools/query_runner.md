@@ -16,7 +16,7 @@ end
 
 ## Executing grouped schema
 
-If you have multiple schemas (read [routes section]((components/routes) on how to do that) and you want to render group specific schema, you need to provide group name, like this:
+If you have multiple schemas (read [routes section](components/routes) on how to do that) and you want to render group specific schema, you need to provide group name, like this:
 
 ```ruby
 class MyRailsClass < ApplicationController

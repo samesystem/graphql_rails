@@ -78,7 +78,7 @@ Specifies input type:
 class OrderController < GraphqlRails::Controller
   action(:create)
     .permit_input(:price, type: :integer!)
-    # Same as `.permit(amount: :integer!)`
+    # Same as `.permit(price: :integer!)`
 end
 ```
 
@@ -446,7 +446,7 @@ class UsersController < GraphqlRails::Controller
     raise 'Not authenticated' unless User.where(token: params[:token]).exist?
   end
 
-  def require_auth_token
+  def require_admin_token
     raise 'Admin not authenticated' unless Admin.where(token: params[:admin_token]).exist?
   end
 end

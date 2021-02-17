@@ -11,7 +11,7 @@ bundle exec rails g graphql_rails:install
 ```ruby
 # config/graphql/routes.rb
 GraphqlRails::Router.draw do
-  # will create createUser, updateUser, deleteUser mutations and user, users queries.
+  # will create createUser, updateUser, destroyUser mutations and user, users queries.
   # expects that UsersController class exist
   resources :users
 

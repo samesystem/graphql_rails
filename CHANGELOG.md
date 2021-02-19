@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
+## [1.2.2](2021-02-19)
+
+* Fixed: Incorrect type resolution for required list type fields in model declaration. 
+
 ## [1.2.1](2021-02-17)
 
 * Fixed: Incorrect scalar types resolution is fixed. No more `type mismatch between ID / ID`

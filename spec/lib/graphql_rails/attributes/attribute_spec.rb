@@ -72,6 +72,14 @@ module GraphqlRails
           end
         end
 
+        context 'when attribute is GraphQL::Schema::NonNull instance' do
+          let(:type) { GraphQL::Schema::NonNull.new(GraphQL::Types::String) }
+
+          it 'builds required type' do
+            expect(field_args[1]).to eq(GraphQL::Types::String)
+          end
+        end
+
         context 'when attribute is array' do
           let(:type) { '[Int!]!' }
 
@@ -109,6 +117,14 @@ module GraphqlRails
 
       describe '#field_options' do
         subject(:field_options) { attribute.field_options }
+
+        context 'when attribute is GraphQL::Schema::NonNull instance' do
+          let(:type) { GraphQL::Schema::NonNull.new(GraphQL::Types::String) }
+
+          it 'builds required field' do
+            expect(field_options).to include(null: false)
+          end
+        end
 
         context 'when type is not set' do
           let(:type) { nil }

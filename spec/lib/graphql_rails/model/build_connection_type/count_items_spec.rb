@@ -7,7 +7,7 @@ class GraphqlRails::Model::BuildConnectionType
   RSpec.describe CountItems do
     subject(:count_items) { described_class.new(graphql_object) }
 
-    let(:graphql_object) { double('GraphqlObject', nodes: items) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:graphql_object) { double('GraphqlObject', items: items) } # rubocop:disable RSpec/VerifiedDoubles
 
     describe '.call' do
       subject(:call) { described_class.call(graphql_object) }

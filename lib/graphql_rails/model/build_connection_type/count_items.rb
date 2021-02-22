@@ -27,7 +27,7 @@ module GraphqlRails
         attr_reader :graphql_object
 
         def list
-          graphql_object.nodes
+          graphql_object.items
         end
 
         def active_record?

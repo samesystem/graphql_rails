@@ -33,7 +33,7 @@ module GraphqlRails
           field :total, Integer, null: false
 
           def total
-            CountItems.call(self)
+            CountItems.call(object)
           end
         end
       end

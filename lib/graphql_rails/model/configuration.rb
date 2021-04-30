@@ -69,7 +69,7 @@ module GraphqlRails
       end
 
       def with_ensured_fields!
-        return self unless @graphql_type.present?
+        return self if @graphql_type.blank?
 
         reset_graphql_type if attributes.any? && graphql_type.fields.length != attributes.length
 

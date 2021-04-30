@@ -181,6 +181,41 @@ module GraphqlRails
       end
     end
 
+    describe '#with_ensured_fields!' do
+      before { config.graphql_type } # sets instance variable
+
+      context 'when graphql_type is already defined' do
+        context 'when fields defined on type equals to defined fields on config' do
+          it 'does not invoke forced graphql type reset' do
+            allow(config).to receive(:reset_graphql_type).and_call_original
+            config.with_ensured_fields!
+            expect(config).not_to have_received(:reset_graphql_type)
+          end
+        end
+
+        context 'when fields defined on type is different to defined fields on config' do
+          it 'does invoke forced graphql type reset' do
+            config.attribute(:another_id, type: 'ID')
+            allow(config).to receive(:reset_graphql_type).and_call_original
+            config.with_ensured_fields!
+            expect(config).to have_received(:reset_graphql_type)
+          end
+        end
+      end
+
+      context 'when graphql_type is not yet defined' do
+        before do
+          config.instance_variable_set(:@graphql_type, nil)
+        end
+
+        it 'does not invoke forced graphql type reset' do
+          allow(config).to receive(:reset_graphql_type).and_call_original
+          config.with_ensured_fields!
+          expect(config).not_to have_received(:reset_graphql_type)
+        end
+      end
+    end
+
     describe '#input' do
       subject(:input) { config.input(:new_input) }
 

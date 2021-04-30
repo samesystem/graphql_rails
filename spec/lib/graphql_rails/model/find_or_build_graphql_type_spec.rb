@@ -83,6 +83,7 @@ module GraphqlRails
         end
 
         context 'when force redefine is required' do
+          let(:force_define_attributes) { true }
           let(:dummy_model_class) do
             graphql_name = name
             graphql_description = description
@@ -108,8 +109,6 @@ module GraphqlRails
               force_define_attributes: false
             ) # Sets the type with zero fields
           end
-
-          let(:force_define_attributes) { true }
 
           it 'builds type with correct fields count' do
             expect(call.fields.count).to eq(1)

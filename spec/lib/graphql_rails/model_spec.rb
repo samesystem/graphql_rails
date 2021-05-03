@@ -68,6 +68,40 @@ module GraphqlRails
           expect(child_fields).to match_array(%w[childInputAttribute parentInputAttribute])
         end
       end
+
+      context 'when defining configuration' do
+        let(:plain_model) do
+          Class.new do
+            include GraphqlRails::Model
+
+            def self.name
+              'DummyModel'
+            end
+          end
+        end
+
+        let(:graphql_stub) do
+          instance_double(GraphqlRails::Model::Configuration, 'with_ensured_fields!' => true, attribute: nil)
+        end
+
+        context 'when configuration block is given' do
+          it 'ensures correct fields' do
+            plain_model.instance_variable_set(:@graphql, graphql_stub)
+            plain_model.graphql do |g|
+              g.attribute :id
+            end
+            expect(graphql_stub).to have_received(:with_ensured_fields!)
+          end
+        end
+
+        context 'when configuration block is not given' do
+          it 'does not ensure fields' do
+            plain_model.instance_variable_set(:@graphql, graphql_stub)
+            plain_model.graphql
+            expect(graphql_stub).not_to have_received(:with_ensured_fields!)
+          end
+        end
+      end
     end
 
     describe '#with_graphql_context' do

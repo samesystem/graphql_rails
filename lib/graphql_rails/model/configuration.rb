@@ -68,12 +68,30 @@ module GraphqlRails
         @connection_type ||= BuildConnectionType.call(graphql_type)
       end
 
+      def with_ensured_fields!
+        return self if @graphql_type.blank?
+
+        reset_graphql_type if attributes.any? && graphql_type.fields.length != attributes.length
+
+        self
+      end
+
       private
 
       attr_reader :model_class
 
       def default_name
         @default_name ||= model_class.name.split('::').last
+      end
+
+      def reset_graphql_type
+        @graphql_type = FindOrBuildGraphqlType.call(
+          name: name,
+          description: description,
+          attributes: attributes,
+          type_name: type_name,
+          force_define_attributes: true
+        )
       end
     end
   end

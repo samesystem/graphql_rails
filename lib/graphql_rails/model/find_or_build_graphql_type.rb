@@ -10,20 +10,21 @@ module GraphqlRails
 
       include ::GraphqlRails::Service
 
-      def initialize(name:, description:, attributes:, type_name:)
+      def initialize(name:, description:, attributes:, type_name:, force_define_attributes: false)
         @name = name
         @description = description
         @attributes = attributes
         @type_name = type_name
+        @force_define_attributes = force_define_attributes
       end
 
       def call
-        klass.tap { add_fields_to_graphql_type if new_class? }
+        klass.tap { add_fields_to_graphql_type if new_class? || force_define_attributes }
       end
 
       private
 
-      attr_reader :name, :description, :attributes, :type_name
+      attr_reader :name, :description, :attributes, :type_name, :force_define_attributes
 
       delegate :klass, :new_class?, to: :type_class_finder
 

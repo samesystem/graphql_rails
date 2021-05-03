@@ -28,7 +28,7 @@ module GraphqlRails
 
       def graphql
         @graphql ||= Model::Configuration.new(self)
-        yield(@graphql) if block_given?
+        @graphql.tap { |it| yield(it) }.with_ensured_fields! if block_given?
         @graphql
       end
     end

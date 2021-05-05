@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
+## [1.2.4](2021-05-05)
+
+* Fixed: Dynamic types definition where type A references type B referencing type A.
+
 ## [1.2.3](2021-04-12)
 
 * Fixed: Total count on paginated resources

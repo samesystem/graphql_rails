@@ -150,10 +150,12 @@ module GraphqlRails
     end
 
     describe '#rescue_from' do
-      xit 'allows rescuing from errors', :aggregate_failures do
-        expect(router.tap(&:reload_schema).graphql_schema.rescues).to be_empty
-        router.rescue_from(StandardError) { 'ups!' }
-        expect(router.tap(&:reload_schema).graphql_schema.rescues).to include(StandardError)
+      it 'allows rescuing from errors' do
+        expect { router.rescue_from(StandardError) { 'ups!' } }.to(
+          change { router.tap(&:reload_schema).graphql_schema.error_handler.find_handler_for(StandardError) }
+            .from(nil)
+            .to(hash_including(class: StandardError))
+        )
       end
     end
 

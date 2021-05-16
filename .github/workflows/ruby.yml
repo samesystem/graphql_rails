@@ -1,0 +1,22 @@
+name: Ruby
+
+on: push
+
+jobs:
+  specs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: ['2.6', '2.7'] # TODO: 3.0 support
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@master
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+    - name: Codecov
+      uses: codecov/codecov-action@v1.5.0
+    - name: Run tests
+      run: bundle exec rake

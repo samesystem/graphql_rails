@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-
-require 'simplecov'
-SimpleCov.start do
-  enable_coverage :branch
-  add_filter(/_spec.rb\Z/)
-end
-
 require 'graphql_rails'
 require 'pry'
 
-if ENV['CODECOV_TOKEN']
+if ENV['CODECOV_TOKEN'] && RUBY_VERSION.start_with?(File.read('.ruby-version')[/^\d\.\d/])
+  require 'simplecov'
   require 'codecov'
+
+  SimpleCov.start do
+    enable_coverage :branch
+    add_filter(/_spec.rb\Z/)
+  end
+
   SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 

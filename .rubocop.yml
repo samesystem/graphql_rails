@@ -35,6 +35,7 @@ Style/ClassAndModuleChildren:
     - spec/**/*_spec.rb
 
 AllCops:
+  NewCops: disable # TODO: enable
   TargetRubyVersion: 2.7
   Exclude:
     - bin/*

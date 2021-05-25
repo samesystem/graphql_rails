@@ -1,5 +1,5 @@
 name: Ruby
-on: [push, pull_request]
+on: push
 jobs:
   specs:
     strategy:

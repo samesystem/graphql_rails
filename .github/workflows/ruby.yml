@@ -12,10 +12,6 @@ jobs:
 
     name: RSpec on ruby ${{ matrix.ruby-version }}
     steps:
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJSON(matrix) }}
-        run: echo "$MATRIX_CONTEXT"
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:

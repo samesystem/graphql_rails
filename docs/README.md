@@ -1,6 +1,6 @@
 # GraphqlRails
 
-[![Build Status](https://travis-ci.org/samesystem/graphql_rails.svg?branch=master)](https://travis-ci.org/samesystem/graphql_rails)
+![Build Status](https://github.com/samesystem/graphql_rails/workflows/Ruby/badge.svg?branch=master)
 [![codecov](https://codecov.io/gh/samesystem/graphql_rails/branch/master/graph/badge.svg)](https://codecov.io/gh/samesystem/graphql_rails)
 [![Documentation](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://samesystem.github.io/graphql_rails)
 

@@ -1,4 +1,4 @@
 rubocop:
   config_file: .rubocop.yml
-  version: 0.91.0
+  version: 1.5.2
 fail_on_violations: true

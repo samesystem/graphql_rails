@@ -9,8 +9,8 @@ module GraphqlRails
 
     attr_reader :name
 
-    def self.call(*args)
-      new(*args).call
+    def self.call(**args)
+      new(**args).call
     end
 
     def initialize(name:)

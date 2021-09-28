@@ -5,6 +5,14 @@ module GraphqlRails
     # contains methods which are shared between various configurations
     # expects `default_name` to be defined
     module Configurable
+      def initialize_copy(other)
+        super
+        @name = nil
+        @type_name = nil
+        @description = nil
+        @attributes = other.attributes.transform_values(&:dup)
+      end
+
       def attributes
         @attributes ||= {}
       end

@@ -45,6 +45,7 @@ module GraphqlRails
         end
 
         before do
+          plain_model.graphql.graphql_type # force to set some configuration on parent class
           model
         end
 
@@ -56,6 +57,10 @@ module GraphqlRails
         it 'inherits parent class graphql attributes' do
           child_fields = model.graphql.graphql_type.fields.keys
           expect(child_fields).to match_array(%w[isPlain isChild])
+        end
+
+        it 'does not inherit parent class graphql_type' do
+          expect(model.graphql.graphql_type).not_to eq(plain_model.graphql.graphql_type)
         end
 
         it 'does not modify parent class input attributes' do

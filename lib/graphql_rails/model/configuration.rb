@@ -22,7 +22,6 @@ module GraphqlRails
         @connection_type = nil
         @graphql_type = nil
         @input = other.instance_variable_get(:@input)&.transform_values(&:dup)
-        @attributes = other.instance_variable_get(:@attributes)&.transform_values(&:dup)
       end
 
       def attribute(attribute_name, **attribute_options)

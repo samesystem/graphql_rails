@@ -10,7 +10,7 @@ module GraphqlRails
         @name = nil
         @type_name = nil
         @description = nil
-        @attributes = other.instance_variable_get(:@attributes)&.transform_values(&:dup)
+        @attributes = other.attributes.transform_values(&:dup)
       end
 
       def attributes

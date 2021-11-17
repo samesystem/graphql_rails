@@ -8,16 +8,34 @@ rake graphql_rails:schema:dump
 
 ## Dumping non default schema
 
-You can have multiple graphql schemas. Read more about this in [routes section](components/routes). In order to generate schema for one of groups, provide optional `name` argument:
+You can have multiple graphql schemas. Read more about this in [routes section](components/routes).
+
+### Dumping single schema
+
+In order to generate schema for one of groups, provide optional `name` argument:
 
 ```bash
 rake graphql_rails:schema:dump['your_group_name']
 ```
 
-or using env variable `SCHEMA_GROUP_NAME`:
+or using ENV variable `SCHEMA_GROUP_NAME`:
 
 ```bash
-SCHEMA_GROUP_NAME=your_group_name rake graphql_rails:schema:dump
+SCHEMA_GROUP_NAME="your_group_name" rake graphql_rails:schema:dump
+```
+
+### Dumping multiple schemas
+
+In order to generate multiple schemas at once, separate group names by comma:
+
+```bash
+rake graphql_rails:schema:dump['your_group_name, your_group_name2']
+```
+
+or using ENV variable `SCHEMA_GROUP_NAME`:
+
+```bash
+SCHEMA_GROUP_NAME="your_group_name, your_group_name2" rake graphql_rails:schema:dump
 ```
 
 ## Dumping schema in to non default path

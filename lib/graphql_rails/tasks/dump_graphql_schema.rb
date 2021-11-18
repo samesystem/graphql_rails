@@ -7,38 +7,25 @@ module GraphqlRails
 
     class MissingGraphqlRouterError < GraphqlRails::Error; end
 
-    attr_reader :name
-
     def self.call(**args)
       new(**args).call
     end
 
-    def initialize(name:)
-      @name = name
+    def initialize(group:, router:)
+      @group = group
+      @router = router
     end
 
     def call
-      validate
       File.write(schema_path, schema.to_definition)
     end
 
     private
 
-    def validate
-      return if router
-
-      error_message = \
-        'GraphqlRouter is missing. ' \
-        'Run `rails g graphql_rails:install` to build it'
-      raise MissingGraphqlRouterError, error_message
-    end
-
-    def router
-      @router ||= '::GraphqlRouter'.safe_constantize
-    end
+    attr_reader :router, :group
 
     def schema
-      @schema ||= ::GraphqlRouter.graphql_schema(name.presence)
+      @schema ||= router.graphql_schema(group.presence)
     end
 
     def schema_path
@@ -46,12 +33,16 @@ module GraphqlRails
     end
 
     def default_schema_path
-      schema_folder_path = Rails.root.join('spec', 'fixtures')
+      schema_folder_path = "#{root_path}/spec/fixtures"
 
       FileUtils.mkdir_p(schema_folder_path)
-      file_name = name.present? ? "graphql_#{name}_schema.graphql" : 'graphql_schema.graphql'
+      file_name = group.present? ? "graphql_#{group}_schema.graphql" : 'graphql_schema.graphql'
 
-      schema_folder_path.join(file_name)
+      "#{schema_folder_path}/#{file_name}"
+    end
+
+    def root_path
+      Rails.root
     end
   end
 end

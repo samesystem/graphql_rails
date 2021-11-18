@@ -13,7 +13,7 @@ module GraphqlRails
       new(**args).call
     end
 
-    def initialize(groups: [], dump_dir:)
+    def initialize(dump_dir:, groups: nil)
       @groups = groups.presence
       @dump_dir = dump_dir
     end

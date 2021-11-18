@@ -26,7 +26,7 @@ module GraphqlRails
         it 'dumps default schema', :aggregate_failures do
           call
           expect(DumpGraphqlSchema).to have_received(:call).once
-          expect(DumpGraphqlSchema).to have_received(:call).with(group: '', dump_dir: 'app/graphql')
+          expect(DumpGraphqlSchema).to have_received(:call).with(hash_including(group: ''))
         end
       end
 
@@ -36,8 +36,8 @@ module GraphqlRails
         it 'dumps default schema', :aggregate_failures do
           call
           expect(DumpGraphqlSchema).to have_received(:call).twice
-          expect(DumpGraphqlSchema).to have_received(:call).with(group: 'group1', dump_dir: 'app/graphql')
-          expect(DumpGraphqlSchema).to have_received(:call).with(group: 'group2', dump_dir: 'app/graphql')
+          expect(DumpGraphqlSchema).to have_received(:call).with(hash_including(group: 'group1'))
+          expect(DumpGraphqlSchema).to have_received(:call).with(hash_including(group: 'group2'))
         end
       end
 

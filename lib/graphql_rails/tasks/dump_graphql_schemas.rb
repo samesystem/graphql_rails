@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'graphql_rails/tasks/dump_graphql_schema'
+
 module GraphqlRails
   # Generates graphql schema dump files
   class DumpGraphqlSchemas
@@ -7,29 +9,32 @@ module GraphqlRails
 
     class MissingGraphqlRouterError < GraphqlRails::Error; end
 
-    attr_reader :name
-
     def self.call(**args)
       new(**args).call
     end
 
-    def initialize(groups: [])
+    def initialize(groups: [], dump_dir:)
       @groups = groups.presence
+      @dump_dir = dump_dir
     end
 
     def call
       validate
       return dump_default_schema if groups.empty?
 
-      groups.each do |group|
-        DumpGraphqlSchema.call(group: group)
-      end
+      groups.each { |group| dump_graphql_schema(group) }
     end
 
     private
 
+    attr_reader :dump_dir
+
     def dump_default_schema
-      DumpGraphqlSchema.call(group: '')
+      dump_graphql_schema('')
+    end
+
+    def dump_graphql_schema(group)
+      DumpGraphqlSchema.call(group: group, router: router, dump_dir: dump_dir)
     end
 
     def validate

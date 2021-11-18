@@ -11,9 +11,10 @@ module GraphqlRails
       new(**args).call
     end
 
-    def initialize(group:, router:)
+    def initialize(group:, router:, dump_dir: nil)
       @group = group
       @router = router
+      @dump_dir = dump_dir
     end
 
     def call
@@ -29,20 +30,14 @@ module GraphqlRails
     end
 
     def schema_path
-      ENV['GRAPHQL_SCHEMA_DUMP_PATH'] || default_schema_path
-    end
-
-    def default_schema_path
-      schema_folder_path = "#{root_path}/spec/fixtures"
-
-      FileUtils.mkdir_p(schema_folder_path)
+      FileUtils.mkdir_p(dump_dir)
       file_name = group.present? ? "graphql_#{group}_schema.graphql" : 'graphql_schema.graphql'
 
-      "#{schema_folder_path}/#{file_name}"
+      "#{dump_dir}/#{file_name}"
     end
 
-    def root_path
-      Rails.root
+    def dump_dir
+      @dump_dir ||= Rails.root.join('spec/fixtures').to_s
     end
   end
 end

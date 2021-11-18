@@ -6,7 +6,7 @@ require 'graphql_rails/tasks/dump_graphql_schemas'
 
 module GraphqlRails
   RSpec.describe DumpGraphqlSchemas do
-    subject(:dump_graphql_schema) { described_class.new(groups: groups) }
+    subject(:dump_graphql_schema) { described_class.new(groups: groups, dump_dir: 'app/graphql') }
 
     let(:groups) { nil }
 
@@ -23,10 +23,21 @@ module GraphqlRails
       end
 
       context 'when groups are not given' do
-
-        it 'dumps default schema' do
+        it 'dumps default schema', :aggregate_failures do
           call
-          expect(DumpGraphqlSchema).to have_received(:call).with(group: '')
+          expect(DumpGraphqlSchema).to have_received(:call).once
+          expect(DumpGraphqlSchema).to have_received(:call).with(group: '', dump_dir: 'app/graphql')
+        end
+      end
+
+      context 'when groups are given' do
+        let(:groups) { %w[group1 group2] }
+
+        it 'dumps default schema', :aggregate_failures do
+          call
+          expect(DumpGraphqlSchema).to have_received(:call).twice
+          expect(DumpGraphqlSchema).to have_received(:call).with(group: 'group1', dump_dir: 'app/graphql')
+          expect(DumpGraphqlSchema).to have_received(:call).with(group: 'group2', dump_dir: 'app/graphql')
         end
       end
 

@@ -6,7 +6,7 @@ module GraphqlRails
   class Router
     # Generic class for any type graphql action. Should not be used directly
     class Route
-      attr_reader :name, :module_name, :on, :relative_path, :routes
+      attr_reader :name, :module_name, :on, :relative_path, :groups
 
       def initialize(name, to: '', on:, groups: nil, **options)
         @name = name.to_s.camelize(:lower)

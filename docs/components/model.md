@@ -361,6 +361,22 @@ class User
 end
 ```
 
+### "input.attribute" configuration with chainable methods
+
+If your input attribute definition is complex, you can define attribute in more eye-friendly chainable way with:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute(:friends_count)
+      .type(:integer!)
+      .description('Can not be zero or less')
+  end
+end
+```
+
 #### required type
 
 There are few ways how to mark field as required.

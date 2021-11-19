@@ -6,14 +6,14 @@ require 'graphql_rails/attributes/attribute_name_parser'
 module GraphqlRails
   module Attributes
     # contains methods which are shared between various attribute-like classes
-    # expects `initial_name` and `initial_type` to be defined
+    # expects `initial_name` and `type` to be defined
     module Attributable
       def field_name
         attribute_name_parser.field_name
       end
 
       def type_name
-        @type_name ||= initial_type.to_s
+        type.to_s
       end
 
       def name
@@ -23,19 +23,9 @@ module GraphqlRails
       def required?
         return @required unless @required.nil?
 
-        (initial_type.nil? && attribute_name_parser.required?) ||
-          initial_type.to_s[/!$/].present? ||
-          initial_type.is_a?(GraphQL::Schema::NonNull)
-      end
-
-      def required
-        @required = true
-        self
-      end
-
-      def optional
-        @required = false
-        self
+        (type.nil? && attribute_name_parser.required?) ||
+          type.to_s[/!$/].present? ||
+          type.is_a?(GraphQL::Schema::NonNull)
       end
 
       def graphql_model
@@ -54,7 +44,7 @@ module GraphqlRails
 
       def type_parser
         @type_parser ||= begin
-          type_for_parser = initial_type || attribute_name_parser.graphql_type
+          type_for_parser = type || attribute_name_parser.graphql_type
           TypeParser.new(type_for_parser, paginated: paginated?)
         end
       end

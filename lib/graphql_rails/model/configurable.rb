@@ -30,6 +30,21 @@ module GraphqlRails
         @description = new_description if new_description
         @description
       end
+
+      def attribute(attribute_name, **attribute_options)
+        key = attribute_name.to_s
+
+        attributes[key] ||= build_attribute(attribute_name).tap do |new_attribute|
+          new_attribute.with(attribute_options)
+          yield(new_attribute) if block_given?
+        end
+      end
+
+      private
+
+      def build_attribute(_name)
+        raise NotImplementedError
+      end
     end
   end
 end

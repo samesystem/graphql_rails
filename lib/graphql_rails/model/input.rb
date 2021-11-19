@@ -23,14 +23,28 @@ module GraphqlRails
       def attribute(attribute_name, type: nil, enum: nil, **attribute_options)
         input_type = attribute_type(attribute_name, type: type, enum: enum, **attribute_options)
 
-        attributes[attribute_name.to_s] = Attributes::InputAttribute.new(
-          attribute_name, type: input_type, **attribute_options
+        attributes[attribute_name.to_s] = \
+          Attributes::InputAttribute.new(attribute_name).with(type: input_type, **attribute_options)
+      end
+
+      def enum(*enum_values)
+        values = enum_values.flatten
+
+        enum_type = BuildEnumType.call(
+          "#{name}_#{attribute_name}_enum",
+          allowed_values: values,
+          description: description
         )
+        type(enum_type)
       end
 
       private
 
       attr_reader :input_name_suffix, :model_class
+
+      def build_attribute(attribute_name)
+        Attributes::InputAttribute.new(attribute_name)
+      end
 
       def default_name
         @default_name ||= begin

@@ -5,17 +5,54 @@ require 'spec_helper'
 module GraphqlRails
   module Attributes
     RSpec.describe InputAttribute do
-      subject(:attribute) { described_class.new(name, type: type, options: options) }
+      subject(:attribute) { described_class.new(name).with(type: type, options: options) }
 
       let(:type) { 'String!' }
       let(:name) { 'full_name' }
       let(:options) { {} }
 
-      class DummyModel
-        include GraphqlRails::Model
+      let(:dummy_model) do
+        Class.new do
+          include GraphqlRails::Model
 
-        graphql.input do |c|
-          c.attribute :name
+          graphql.input do |c|
+            c.attribute :name
+          end
+
+          def self.name
+            'DummyModel'
+          end
+        end
+      end
+
+      before do
+        stub_const('DummyModel', dummy_model)
+      end
+
+      describe '#type' do
+        it 'changes input type' do
+          expect { attribute.type(:int!) }.to change(attribute, :type).to(:int!)
+        end
+      end
+
+      describe '#description' do
+        it 'changes input type' do
+          expect { attribute.description('this is my input') }
+            .to change(attribute, :description).to('this is my input')
+        end
+      end
+
+      describe '#enum' do
+        it 'changes input type' do
+          expect { attribute.enum('this', 'is', 'enum') }
+            .to change(attribute, :enum).to(%w[this is enum])
+        end
+      end
+
+      describe '#subtype' do
+        it 'changes subtype' do
+          expect { attribute.subtype('update') }
+            .to change(attribute, :subtype).to('update')
         end
       end
 
@@ -38,7 +75,7 @@ module GraphqlRails
 
         context 'when type is instance of GrapqhlRails::Input' do
           let(:type) do
-            DummyModel.graphql.input(:dummy_input) {}
+            dummy_model.graphql.input(:dummy_input) {}
           end
 
           it 'returns graphql input type' do
@@ -75,16 +112,16 @@ module GraphqlRails
         end
 
         context 'when type refers to Graphql::Model' do
-          let(:type) { DummyModel.name }
+          let(:type) { dummy_model.name }
 
           context 'when type is nullable' do
             it 'returns graphql input type' do
-              expect(input_argument_type).to eq DummyModel.graphql.input.graphql_input_type
+              expect(input_argument_type).to eq dummy_model.graphql.input.graphql_input_type
             end
           end
 
           context 'when type is not nullable' do
-            let(:type) { "#{DummyModel.name}!" }
+            let(:type) { "#{dummy_model.name}!" }
 
             it 'returns non nullable graphql input type' do
               expect(input_argument_type.to_type_signature).to eq 'DummyModelInput'
@@ -96,7 +133,7 @@ module GraphqlRails
           end
 
           context 'when type is not nullable array' do
-            let(:type) { "[#{DummyModel.name}!]!" }
+            let(:type) { "[#{dummy_model.name}!]!" }
 
             it 'retuns as an array' do
               expect(input_argument_type).to be_an(Array)
@@ -126,7 +163,7 @@ module GraphqlRails
           end
 
           context 'when type is nullable array' do
-            let(:type) { "[#{DummyModel.name}!]" }
+            let(:type) { "[#{dummy_model.name}!]" }
 
             it 'contains required inner type', :aggregate_failures do
               expect(input_argument_type.first.to_type_signature).to eq 'DummyModelInput'

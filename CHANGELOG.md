@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-* Added: support for generating multiple schema dumps with `rake graphql_rails:schema:dump`
+* Added: support for generating multiple schema dumps with `rake graphql_rails:schema:dump`.
+* Added: support for using chainable syntax for input attributes.
 * Changed: changed default `predicate method type from `Boolean` to `Boolean!`
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 

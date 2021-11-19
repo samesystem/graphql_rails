@@ -27,16 +27,9 @@ module GraphqlRails
       def attribute(attribute_name, **attribute_options)
         key = attribute_name.to_s
 
-        attributes[key] ||= Attributes::Attribute.new(attribute_name)
-
-        attributes[key].tap do |attribute|
-          attribute_options.each do |method_name, args|
-            send_args = [method_name]
-            send_args << args if attribute.method(method_name).parameters.present?
-            attribute.public_send(*send_args)
-          end
-
-          yield(attribute) if block_given?
+        attributes[key] ||= build_attribute(attribute_name).tap do |new_attribute|
+          new_attribute.with(**attribute_options)
+          yield(new_attribute) if block_given?
         end
       end
 
@@ -78,6 +71,10 @@ module GraphqlRails
       private
 
       attr_reader :model_class
+
+      def build_attribute(attribute_name)
+        Attributes::Attribute.new(attribute_name)
+      end
 
       def default_name
         @default_name ||= model_class.name.split('::').last

@@ -5,12 +5,8 @@ module GraphqlRails
     # Parses attribute name and can generates graphql scalar type,
     # grapqhl name and etc. based on that
     class AttributeNameParser
-      attr_reader :name
-
       def initialize(original_name, options: {})
-        name = original_name.to_s
-        @required = !name['!'].nil?
-        @name = name.tr('!', '')
+        @original_name = original_name.to_s
         @options = options
       end
 
@@ -36,12 +32,16 @@ module GraphqlRails
       end
 
       def required?
-        @required
+        original_name['!'].present? || original_name.ends_with?('?')
+      end
+
+      def name
+        @name ||= original_name.tr('!', '')
       end
 
       private
 
-      attr_reader :options
+      attr_reader :options, :original_name
 
       def original_format?
         options[:input_format] == :original || options[:attribute_name_format] == :original

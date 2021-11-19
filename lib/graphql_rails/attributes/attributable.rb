@@ -23,7 +23,7 @@ module GraphqlRails
       def required?
         return @required unless @required.nil?
 
-        attribute_name_parser.required? || !initial_type.to_s[/!$/].nil? || initial_type.is_a?(GraphQL::Schema::NonNull)
+        (initial_type.nil? && attribute_name_parser.required?) || !initial_type.to_s[/!$/].nil? || initial_type.is_a?(GraphQL::Schema::NonNull)
       end
 
       def required

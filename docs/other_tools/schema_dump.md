@@ -6,24 +6,24 @@ GraphqlRails includes rake task to allow creating schema snapshots easier:
 rake graphql_rails:schema:dump
 ```
 
-## Dumping non default schema
+## Dumping only selected schema groups
 
-You can have multiple graphql schemas. Read more about this in [routes section](components/routes). In order to generate schema for one of groups, provide optional `name` argument:
+You can specify which schema groups you want to dump. In order to do so, provide groups list as rake task argument and separate group names by comma:
 
 ```bash
-rake graphql_rails:schema:dump['your_group_name']
+rake graphql_rails:schema:dump['your_group_name, your_group_name2']
 ```
 
-or using env variable `SCHEMA_GROUP_NAME`:
+You can do this also by using ENV variable `SCHEMA_GROUP_NAME`:
 
 ```bash
-SCHEMA_GROUP_NAME=your_group_name rake graphql_rails:schema:dump
+SCHEMA_GROUP_NAME="your_group_name, your_group_name2" rake graphql_rails:schema:dump
 ```
 
-## Dumping schema in to non default path
+## Dumping schema in to non default folder
 
-By default schema will be dumped to `spec/fixtures/graphql_schema.graphql` path. If you want different schema path, add `GRAPHQL_SCHEMA_DUMP_PATH` env variable, like this:
+By default schema will be dumped to `spec/fixtures` directory. If you want different schema path, add `GRAPHQL_SCHEMA_DUMP_DIR` env variable, like this:
 
 ```bash
-GRAPHQL_SCHEMA_DUMP_PATH='path/to/my/schema.graphql' rake graphql_rails:schema:dump
+GRAPHQL_SCHEMA_DUMP_DIR='path/to/graphql/dumps' rake graphql_rails:schema:dump
 ```

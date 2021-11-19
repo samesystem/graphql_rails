@@ -7,51 +7,37 @@ module GraphqlRails
 
     class MissingGraphqlRouterError < GraphqlRails::Error; end
 
-    attr_reader :name
-
     def self.call(**args)
       new(**args).call
     end
 
-    def initialize(name:)
-      @name = name
+    def initialize(group:, router:, dump_dir: nil)
+      @group = group
+      @router = router
+      @dump_dir = dump_dir
     end
 
     def call
-      validate
       File.write(schema_path, schema.to_definition)
     end
 
     private
 
-    def validate
-      return if router
-
-      error_message = \
-        'GraphqlRouter is missing. ' \
-        'Run `rails g graphql_rails:install` to build it'
-      raise MissingGraphqlRouterError, error_message
-    end
-
-    def router
-      @router ||= '::GraphqlRouter'.safe_constantize
-    end
+    attr_reader :router, :group
 
     def schema
-      @schema ||= ::GraphqlRouter.graphql_schema(name.presence)
+      @schema ||= router.graphql_schema(group.presence)
     end
 
     def schema_path
-      ENV['GRAPHQL_SCHEMA_DUMP_PATH'] || default_schema_path
+      FileUtils.mkdir_p(dump_dir)
+      file_name = group.present? ? "graphql_#{group}_schema.graphql" : 'graphql_schema.graphql'
+
+      "#{dump_dir}/#{file_name}"
     end
 
-    def default_schema_path
-      schema_folder_path = Rails.root.join('spec', 'fixtures')
-
-      FileUtils.mkdir_p(schema_folder_path)
-      file_name = name.present? ? "graphql_#{name}_schema.graphql" : 'graphql_schema.graphql'
-
-      schema_folder_path.join(file_name)
+    def dump_dir
+      @dump_dir ||= Rails.root.join('spec/fixtures').to_s
     end
   end
 end

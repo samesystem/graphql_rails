@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
-require 'graphql_rails/model/build_graphql_input_type'
-require 'graphql_rails/model/configurable'
-
 module GraphqlRails
   module Model
     # stores information about model input specific config, like attributes and types
     class Input
+      require 'graphql_rails/concerns/chainable_options'
+      require 'graphql_rails/model/configurable'
+      require 'graphql_rails/model/build_graphql_input_type'
+
       include Configurable
+
+      chainable_option :enum
 
       def initialize(model_class, input_name_suffix)
         @model_class = model_class

@@ -44,7 +44,7 @@ module GraphqlRails
 
       describe '#enum' do
         it 'changes input type' do
-          expect { attribute.enum('this', 'is', 'enum') }
+          expect { attribute.enum(%w[this is enum]) }
             .to change(attribute, :enum).to(%w[this is enum])
         end
       end

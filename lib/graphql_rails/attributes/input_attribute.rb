@@ -9,6 +9,9 @@ module GraphqlRails
       include Attributable
       include AttributeConfigurable
 
+      chainable_option :subtype
+      chainable_option :enum
+
       def initialize(name)
         @initial_name = name
       end
@@ -21,20 +24,6 @@ module GraphqlRails
 
       def input_argument_options
         { required: required?, description: description, camelize: false }
-      end
-
-      def subtype(new_value = NOT_SET)
-        return @subtype if new_value == NOT_SET
-
-        @subtype = new_value
-        self
-      end
-
-      def enum(*enum_values)
-        return @enum if enum_values.empty?
-
-        @enum = enum_values.flatten
-        self
       end
 
       def paginated?

@@ -2,7 +2,6 @@
 
 require 'graphql_rails/attributes'
 require 'graphql_rails/model/find_or_build_graphql_type'
-require 'graphql_rails/model/build_enum_type'
 require 'graphql_rails/model/input'
 require 'graphql_rails/model/configurable'
 require 'graphql_rails/model/build_connection_type'
@@ -11,6 +10,7 @@ module GraphqlRails
   module Model
     # stores information about model specific config, like attributes and types
     class Configuration
+      include ChainableOptions
       include Configurable
 
       def initialize(model_class)

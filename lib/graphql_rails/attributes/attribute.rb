@@ -21,10 +21,10 @@ module GraphqlRails
         @attributes ||= {}
       end
 
-      def property(new_property = NOT_SET)
-        return @property if new_property == NOT_SET
+      def property(new_value = NOT_SET)
+        return @property if new_value == NOT_SET
 
-        @property = new_property.to_s
+        @property = new_value.to_s
         self
       end
 

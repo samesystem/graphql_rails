@@ -5,11 +5,20 @@ module GraphqlRails
     # contains methods which are shared between various configurations
     # expects `default_name` to be defined
     module Configurable
+      require 'active_support/concern'
+      require 'graphql_rails/concerns/chainable_options'
+
+      extend ActiveSupport::Concern
+
+      included do
+        include GraphqlRails::ChainableOptions
+
+        chainable_option :description
+      end
+
       def initialize_copy(other)
         super
-        @name = nil
         @type_name = nil
-        @description = nil
         @attributes = other.attributes.transform_values(&:dup)
       end
 
@@ -17,18 +26,12 @@ module GraphqlRails
         @attributes ||= {}
       end
 
-      def name(graphql_name = nil)
-        @name = graphql_name if graphql_name
-        @name || default_name
+      def name(*args)
+        get_or_set_chainable_option(:name, *args) || default_name
       end
 
       def type_name
         @type_name ||= "#{name.camelize}Type#{SecureRandom.hex}"
-      end
-
-      def description(new_description = nil)
-        @description = new_description if new_description
-        @description
       end
 
       def attribute(attribute_name, **attribute_options)

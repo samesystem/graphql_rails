@@ -27,8 +27,8 @@ Most commonly you will use `attribute` to make your model methods and attributes
 
 Some types can be determined by attribute name, so you can skip this attribute:
 
-* attributes which ends with name `*_id` has `ID` type
-* attributes which ends with `?` has `Boolean` type
+* attributes which ends with name `*_id` has `ID!` type
+* attributes which ends with `?` has `Boolean!` type
 * all other attributes without type are considered to be `String`
 
 available types are:
@@ -45,9 +45,9 @@ class User
   include GraphqlRails::Model
 
   graphql do |c|
-    c.attribute :shop_id # ID type
+    c.attribute :shop_id # ID! type
     c.attribute :full_name # String type
-    c.attribute :admin? # Boolean type
+    c.attribute :admin? # Boolean! type
     c.attribute :level, type: 'integer'
     c.attribute :money, type: 'float'
   end

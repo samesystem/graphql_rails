@@ -75,19 +75,29 @@ module GraphqlRails
         subject(:permitted_attribute_args) { config.attributes['name'].input_argument_args }
 
         let(:permitted_attribute_options) { config.attributes['name'].input_argument_options }
+        let(:permit_args) { [] }
         let(:permit_params) { { attribute_name => attribute_type } }
         let(:attribute_name) { :name }
         let(:attribute_type) { 'string' }
 
         before do
-          config.permit(**permit_params)
+          config.permit(*permit_args, **permit_params)
         end
 
         context 'when attribute name has bang at the end' do
-          let(:attribute_name) { :name! }
+          let(:permit_args) { :name! }
+          let(:permit_params) { {} }
 
           it 'sets attribute as required' do
             expect(permitted_attribute_options[:required]).to be true
+          end
+        end
+
+        context 'when attribute name has bang at the end but type does not have bang' do
+          let(:attribute_name) { :name! }
+
+          it 'sets attribute as optional' do
+            expect(permitted_attribute_options[:required]).to be false
           end
         end
 

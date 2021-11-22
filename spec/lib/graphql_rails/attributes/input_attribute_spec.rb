@@ -5,8 +5,12 @@ require 'spec_helper'
 module GraphqlRails
   module Attributes
     RSpec.describe InputAttribute do
-      subject(:attribute) { described_class.new(name).with(type: type, options: options) }
+      subject(:attribute) do
+        described_class.new(name, config: config)
+                       .with(type: type, options: options)
+      end
 
+      let(:config) { instance_double('GraphqlRails::Model::Input', name: 'DummyInput') }
       let(:type) { 'String!' }
       let(:name) { 'full_name' }
       let(:options) { {} }

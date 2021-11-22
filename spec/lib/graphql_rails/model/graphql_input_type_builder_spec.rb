@@ -11,8 +11,8 @@ module GraphqlRails
       let(:description) { 'This is dummy input' }
       let(:attributes) do
         {
-          id: GraphqlRails::Attributes::InputAttribute.new(:id),
-          full_name: GraphqlRails::Attributes::InputAttribute.new(:full_name!)
+          id: GraphqlRails::Attributes::InputAttribute.new(:id, config: nil),
+          full_name: GraphqlRails::Attributes::InputAttribute.new(:full_name!, config: nil)
         }
       end
 

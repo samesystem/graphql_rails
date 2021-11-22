@@ -49,6 +49,12 @@ module GraphqlRails
         end
       end
 
+      describe '#type_name' do
+        it 'returns stringified type name' do
+          expect(attribute.type_name).to eq 'String!'
+        end
+      end
+
       describe '#field_args' do
         subject(:field_args) { attribute.field_args }
 

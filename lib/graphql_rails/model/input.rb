@@ -23,30 +23,12 @@ module GraphqlRails
         )
       end
 
-      def attribute(attribute_name, type: nil, enum: nil, **attribute_options)
-        input_type = attribute_type(attribute_name, type: type, enum: enum, **attribute_options)
-
-        attributes[attribute_name.to_s] = \
-          Attributes::InputAttribute.new(attribute_name).with(type: input_type, **attribute_options)
-      end
-
-      def enum(*enum_values)
-        values = enum_values.flatten
-
-        enum_type = BuildEnumType.call(
-          "#{name}_#{attribute_name}_enum",
-          allowed_values: values,
-          description: description
-        )
-        type(enum_type)
-      end
-
       private
 
       attr_reader :input_name_suffix, :model_class
 
       def build_attribute(attribute_name)
-        Attributes::InputAttribute.new(attribute_name)
+        Attributes::InputAttribute.new(attribute_name, config: self)
       end
 
       def default_name
@@ -54,16 +36,6 @@ module GraphqlRails
           suffix = input_name_suffix ? input_name_suffix.to_s.camelize : ''
           "#{model_class.name.split('::').last}#{suffix}Input"
         end
-      end
-
-      def attribute_type(attribute_name, type:, enum:, description: nil, **_other)
-        return type unless enum
-
-        BuildEnumType.call(
-          "#{name}_#{attribute_name}_enum",
-          allowed_values: enum,
-          description: description
-        )
       end
     end
   end

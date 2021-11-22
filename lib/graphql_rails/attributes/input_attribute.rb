@@ -4,6 +4,7 @@ module GraphqlRails
   module Attributes
     # contains info about single graphql input attribute
     class InputAttribute
+      require 'graphql_rails/model/build_enum_type'
       require_relative './input_type_parser'
       require_relative './attribute_name_parser'
       include Attributable
@@ -12,7 +13,8 @@ module GraphqlRails
       chainable_option :subtype
       chainable_option :enum
 
-      def initialize(name)
+      def initialize(name, config:)
+        @config = config
         @initial_name = name
       end
 
@@ -32,7 +34,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :initial_name
+      attr_reader :initial_name, :config
 
       def attribute_name_parser
         @attribute_name_parser ||= AttributeNameParser.new(
@@ -54,8 +56,8 @@ module GraphqlRails
       def enum_type
         return if enum.blank?
 
-        BuildEnumType.call(
-          "#{name}_#{attribute_name}_enum",
+        ::GraphqlRails::Model::BuildEnumType.call(
+          "#{config.name}_#{initial_name}_enum",
           allowed_values: enum
         )
       end

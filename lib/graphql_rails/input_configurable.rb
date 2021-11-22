@@ -42,11 +42,8 @@ module GraphqlRails
     end
 
     def build_input_attribute(name, options: {}, **other_options)
-      Attributes::InputAttribute.new(
-        name.to_s,
-        options: input_attribute_options.merge(options),
-        **other_options
-      )
+      input_options = input_attribute_options.merge(options)
+      Attributes::InputAttribute.new(name.to_s, config: self).with(options: input_options, **other_options)
     end
   end
 end

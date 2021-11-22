@@ -243,6 +243,24 @@ class User
 end
 ```
 
+### attribute.with
+
+When you want to define some options dynamically, it's quite handy to use "Attribute#with" method:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute(:shop_id).with(type: 'ID', description: 'references to shop')
+    # same as:
+    # c.attribute(:shop_id, type: 'ID', description: 'references to shop')
+    # also same as:
+    # c.attribute(:shop_id).type('ID').description('references to shop')
+  end
+end
+```
+
 ### "attribute" configuration with chainable methods
 
 If your attribute definition is complex, you can define attribute in more eye-friendly chainable way with:
@@ -357,6 +375,22 @@ class User
 
   graphql.input do |c|
     c.attribute :friends_count, type: :integer!
+  end
+end
+```
+
+### "input.attribute" configuration with chainable methods
+
+If your input attribute definition is complex, you can define attribute in more eye-friendly chainable way with:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute(:friends_count)
+      .type(:integer!)
+      .description('Can not be zero or less')
   end
 end
 ```

@@ -2,6 +2,7 @@
 
 require 'graphql'
 require 'graphql_rails/attributes/attributable'
+require 'graphql_rails/attributes/attribute_configurable'
 require 'graphql_rails/input_configurable'
 
 module GraphqlRails
@@ -9,47 +10,21 @@ module GraphqlRails
     # contains info about single graphql attribute
     class Attribute
       include Attributable
+      include AttributeConfigurable
       include InputConfigurable
 
       attr_reader :attributes
 
-      # rubocop:disable Metrics/ParameterLists
-      def initialize(name, type = nil, description: nil, property: name, required: nil, options: {})
-        @initial_type = type
+      def initialize(name)
         @initial_name = name
-        @options = options
-        @description = description
-        @property = property.to_s
-        @required = required
+        @property = name.to_s
         @attributes ||= {}
       end
-      # rubocop:enable Metrics/ParameterLists
 
-      def type(new_type = nil)
-        return @initial_type if new_type.nil?
+      def property(new_value = NOT_SET)
+        return @property if new_value == NOT_SET
 
-        @initial_type = new_type
-        self
-      end
-
-      def description(new_description = nil)
-        return @description if new_description.nil?
-
-        @description = new_description
-        self
-      end
-
-      def property(new_property = nil)
-        return @property if new_property.nil?
-
-        @property = new_property.to_s
-        self
-      end
-
-      def options(new_options = {})
-        return @options if new_options.blank?
-
-        @options = new_options
+        @property = new_value.to_s
         self
       end
 
@@ -82,7 +57,7 @@ module GraphqlRails
 
       protected
 
-      attr_reader :initial_type, :initial_name
+      attr_reader :initial_name
 
       private
 

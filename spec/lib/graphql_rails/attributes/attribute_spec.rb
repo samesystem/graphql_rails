@@ -5,7 +5,7 @@ require 'spec_helper'
 module GraphqlRails
   module Attributes
     RSpec.describe Attribute do
-      subject(:attribute) { described_class.new(name, type, options: options) }
+      subject(:attribute) { described_class.new(name).with(type: type, options: options) }
 
       let(:type) { 'String!' }
       let(:name) { 'full_name' }
@@ -46,6 +46,12 @@ module GraphqlRails
       describe '#type' do
         it 'sets type correctly' do
           expect { attribute.type(:int!) }.to change(attribute, :type).to(:int!)
+        end
+      end
+
+      describe '#type_name' do
+        it 'returns stringified type name' do
+          expect(attribute.type_name).to eq 'String!'
         end
       end
 

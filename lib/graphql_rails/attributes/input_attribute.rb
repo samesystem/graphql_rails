@@ -4,22 +4,19 @@ module GraphqlRails
   module Attributes
     # contains info about single graphql input attribute
     class InputAttribute
+      require 'graphql_rails/model/build_enum_type'
       require_relative './input_type_parser'
       require_relative './attribute_name_parser'
       include Attributable
+      include AttributeConfigurable
 
-      attr_reader :description
+      chainable_option :subtype
+      chainable_option :enum
 
-      # rubocop:disable Metrics/ParameterLists
-      def initialize(name, type: nil, description: nil, subtype: nil, required: nil, options: {})
+      def initialize(name, config:)
+        @config = config
         @initial_name = name
-        @initial_type = type
-        @description = description
-        @options = options
-        @subtype = subtype
-        @required = required
       end
-      # rubocop:enable Metrics/ParameterLists
 
       def input_argument_args
         type = raw_input_type || input_type_parser.input_type_arg
@@ -37,7 +34,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :initial_name, :initial_type, :options, :subtype
+      attr_reader :initial_name, :config
 
       def attribute_name_parser
         @attribute_name_parser ||= AttributeNameParser.new(
@@ -51,14 +48,23 @@ module GraphqlRails
 
       def input_type_parser
         @input_type_parser ||= begin
-          initial_parseable_type = initial_type || attribute_name_parser.graphql_type
+          initial_parseable_type = type || enum_type || attribute_name_parser.graphql_type
           InputTypeParser.new(initial_parseable_type, subtype: subtype)
         end
       end
 
+      def enum_type
+        return if enum.blank?
+
+        ::GraphqlRails::Model::BuildEnumType.call(
+          "#{config.name}_#{initial_name}_enum",
+          allowed_values: enum
+        )
+      end
+
       def raw_input_type
-        return initial_type if initial_type.is_a?(GraphQL::InputObjectType)
-        return initial_type.graphql_input_type if initial_type.is_a?(Model::Input)
+        return type if type.is_a?(GraphQL::InputObjectType)
+        return type.graphql_input_type if type.is_a?(Model::Input)
       end
     end
   end

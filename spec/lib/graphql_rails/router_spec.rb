@@ -113,6 +113,7 @@ module GraphqlRails
           described_class.draw do
             scope module: :graphql_rails do
               mutation 'custom_query', to: 'custom_dummy#action'
+              subscription 'record_created', to: 'custom_dummy#action'
             end
           end
         end
@@ -122,6 +123,10 @@ module GraphqlRails
             <<~GRAPHQL.strip
               type Mutation {
                 customQuery: String!
+              }
+
+              type Subscription {
+                recordCreated: String!
               }
             GRAPHQL
           )
@@ -182,6 +187,7 @@ module GraphqlRails
           router.scope module: 'foo' do
             resources :users, only: :index do
               query :find
+              subscription :created
             end
           end
         end
@@ -189,7 +195,7 @@ module GraphqlRails
         it 'generates correct controller action paths' do
           action_paths = router.routes.map(&:path)
 
-          expect(action_paths).to match_array(%w[foo/users#index foo/users#find])
+          expect(action_paths).to match_array(%w[foo/users#index foo/users#find foo/users#created])
         end
       end
 

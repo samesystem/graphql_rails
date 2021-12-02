@@ -51,7 +51,9 @@ module GraphqlRails
       def paginated_type_arg
         return graphql_model.graphql.connection_type if graphql_model
 
-        raise NotSupportedFeature, 'pagination is only supported for models which include GraphqlRails::Model'
+        error_message = "Unable to paginate #{unparsed_type.inspect}. " \
+                        'Pagination is only supported for models which include GraphqlRails::Model'
+        raise NotSupportedFeature, error_message
       end
 
       def list_type_arg

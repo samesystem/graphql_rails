@@ -12,7 +12,7 @@ module GraphqlRails
       describe '#graphql_model' do
         subject(:graphql_model) { parser.graphql_model }
 
-        context 'when costom type is provided' do
+        context 'when custom type is provided' do
           let(:type) { 'SomeImage' }
 
           it 'returns custom model' do
@@ -55,7 +55,7 @@ module GraphqlRails
             context 'when array is required' do
               let(:type) { '[String]!' }
 
-              it 'returns correct structore' do
+              it 'returns correct structure' do
                 expect(type_arg).to eq([GraphQL::Types::String, { null: true }])
               end
             end
@@ -63,9 +63,35 @@ module GraphqlRails
             context 'when array is optional' do
               let(:type) { '[String]' }
 
-              it 'returns correct structore' do
+              it 'returns correct structure' do
                 expect(type_arg).to eq([GraphQL::Types::String, { null: true }])
               end
+            end
+          end
+        end
+
+        context 'when pagination is enabled' do
+          let(:parser) { described_class.new(type, paginated: true) }
+
+          context 'when type is not GraphqlRails::Model' do
+            let(:type) { '[String!]!' }
+
+            it 'raises error' do
+              expect { type_arg }.to raise_error(/Unable to paginate "\[String!\]!"/)
+            end
+          end
+
+          context 'when graphql_rails model is provided' do
+            let(:type) do
+              Class.new do
+                include GraphqlRails::Model
+                graphql.name 'Dummy'
+                graphql.attribute(:name)
+              end
+            end
+
+            it 'returns connection' do
+              expect(type_arg < GraphQL::Types::Relay::BaseConnection).to be true
             end
           end
         end

@@ -45,6 +45,61 @@ module GraphqlRails
         end
       end
 
+      describe '#graphql_type_object' do
+        subject(:graphql_type_object) { parser.graphql_type_object }
+
+        context 'when custom type is GraphQL::Schema::Scalar expressed as string' do
+          let(:type) { '::GraphQL::Types::ISO8601Date!' }
+
+          it 'returns raw GraphQL::Schema::Scalar', :aggregate_failures do
+            expect(graphql_type_object).to eq ::GraphQL::Types::ISO8601Date
+          end
+        end
+
+        context 'when custom type is GraphQL::Schema::Object expressed as string' do
+          let(:type) { 'SomeImage' }
+          let(:type_class) do
+            Class.new(GraphQL::Schema::Object) do
+              graphql_name "SomeImage#{SecureRandom.hex}"
+            end
+          end
+
+          before do
+            Object.const_set('SomeImage', type_class)
+          end
+
+          it 'returns original GraphQL::Schema::Object' do
+            expect(graphql_type_object).to eq(type_class)
+          end
+        end
+
+        context 'when raw graphql scalar type is provided' do
+          let(:type) { GraphQL::Types::Int }
+
+          it 'returns given scalar type' do
+            expect(graphql_type_object).to eq(type)
+          end
+        end
+
+        context 'when graphql_rails model is provided' do
+          let(:type) do
+            Class.new do
+              include GraphqlRails::Model
+              graphql.attribute(:name)
+              graphql.name('Dummy')
+            end
+          end
+
+          it 'returns model graphql type' do
+            expect(graphql_type_object).to be(type.graphql.graphql_type)
+          end
+        end
+
+        context 'when standard type is provided' do
+          it { is_expected.to be_nil }
+        end
+      end
+
       describe '#type_arg' do
         subject(:type_arg) { parser.type_arg }
 

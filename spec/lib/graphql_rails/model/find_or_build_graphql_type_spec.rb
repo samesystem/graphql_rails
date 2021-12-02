@@ -82,6 +82,35 @@ module GraphqlRails
           end
         end
 
+        context 'when attribute is dynamically defined' do
+          let(:dummy_model_class) do
+            graphql_name = name
+            graphql_description = description
+
+            Class.new do
+              include Model
+
+              graphql do |c|
+                c.name graphql_name
+                c.description graphql_description
+                c.attribute(:date).type('::GraphQL::Types::ISO8601Date!')
+              end
+            end
+          end
+
+          it 'builds correct type' do
+            expect(call.to_type_signature).to eq name
+          end
+
+          it 'builds type with correct fields' do
+            expect(call.fields.keys).to match_array(%w[date])
+          end
+
+          it 'builds type without arguments' do
+            expect(call.fields['date'].arguments).to be_empty
+          end
+        end
+
         context 'when force redefine is required' do
           let(:force_define_attributes) { true }
           let(:dummy_model_class) do

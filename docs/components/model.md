@@ -72,7 +72,7 @@ end
 class User
   include GraphqlRails::Model
 
-  graphql.attribute :address, type: AddressType, required: true
+  graphql.attribute :address, type: 'AddressType!', required: true
 end
 ```
 

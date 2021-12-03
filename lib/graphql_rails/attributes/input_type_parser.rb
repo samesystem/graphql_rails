@@ -15,12 +15,6 @@ module GraphqlRails
         @subtype = subtype
       end
 
-      def graphql_type
-        return nil if unparsed_type.nil?
-
-        partly_parsed_type || parsed_type
-      end
-
       def input_type_arg
         if list?
           list_type_arg
@@ -34,7 +28,11 @@ module GraphqlRails
       attr_reader :unparsed_type, :subtype
 
       def unwrapped_type
-        raw_unwrapped_type || unwrapped_scalar_type || unwrapped_model_input_type || raise_not_supported_type_error
+        raw_unwrapped_type ||
+          unwrapped_scalar_type ||
+          unwrapped_model_input_type ||
+          graphql_type_object ||
+          raise_not_supported_type_error
       end
 
       def raw_unwrapped_type

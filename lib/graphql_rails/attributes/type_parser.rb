@@ -109,14 +109,7 @@ module GraphqlRails
       end
 
       def type_by_name
-        unwrapped_scalar_type || unwrapped_model_type || raise_not_supported_type_error
-      end
-
-      def unwrapped_model_type
-        type_class = graphql_model
-        return unless type_class
-
-        type_class.graphql.graphql_type
+        unwrapped_scalar_type || graphql_type_object || raise_not_supported_type_error
       end
     end
   end

@@ -32,7 +32,7 @@ module GraphqlRails
       end
 
       def required?
-        original_name['!'].present? || original_name.ends_with?('?')
+        original_name['!'].present? || original_name.end_with?('?')
       end
 
       def name

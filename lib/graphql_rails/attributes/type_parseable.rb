@@ -58,24 +58,45 @@ module GraphqlRails
       end
 
       def core_scalar_type?
-        unwrapped_scalar_type.in?(TYPE_MAPPING.values)
+        unwrapped_scalar_type.present?
       end
 
       def graphql_model
-        type_class = \
-          if unparsed_type.is_a?(Class) && unparsed_type < GraphqlRails::Model
-            unparsed_type
-          else
-            nullable_inner_name.safe_constantize
-          end
+        extract_type_class_if { |type| graphql_model?(type) }
+      end
 
-        return if type_class.nil?
-        return unless type_class < GraphqlRails::Model
-
-        type_class
+      def graphql_type_object
+        type_object = extract_type_class_if { |type| graphql_type_object?(type) }
+        type_object || graphql_model&.graphql&.graphql_type
       end
 
       protected
+
+      def extract_type_class_if
+        return unparsed_type if yield(unparsed_type)
+
+        type_class = nullable_inner_name.safe_constantize
+        return type_class if yield(type_class)
+
+        nil
+      end
+
+      def graphql_model?(type_class)
+        type_class.is_a?(Class) && type_class < GraphqlRails::Model
+      end
+
+      def graphql_type_object?(type_class)
+        return false unless type_class.is_a?(Class)
+
+        type_class < GraphQL::Schema::Object || type_class < GraphQL::Schema::Scalar
+      end
+
+      def applicable_graphql_type?(type)
+        return false unless type.is_a?(Class)
+        return true if type < GraphqlRails::Model
+
+        false
+      end
 
       def unwrap_type(type)
         unwrappable = type

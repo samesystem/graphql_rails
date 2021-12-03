@@ -4,9 +4,10 @@ require 'spec_helper'
 
 module GraphqlRails
   module Attributes
-    RSpec.describe TypeParser do
-      subject(:parser) { described_class.new(type) }
+    RSpec.describe InputTypeParser do
+      subject(:parser) { described_class.new(type, subtype: subtype) }
 
+      let(:subtype) { nil }
       let(:type) { 'String!' }
 
       describe '#graphql_model' do
@@ -29,9 +30,16 @@ module GraphqlRails
 
         context 'when graphql_rails model is provided' do
           let(:type) do
+            input_subtype = subtype
+
             Class.new do
               include GraphqlRails::Model
-              graphql.attribute(:name)
+
+              graphql.name 'Dummy'
+
+              graphql.input(input_subtype) do |c|
+                c.attribute(:name)
+              end
             end
           end
 
@@ -83,10 +91,17 @@ module GraphqlRails
 
         context 'when graphql_rails model is provided' do
           let(:type) do
+            input_subtype = subtype
+
             Class.new do
               include GraphqlRails::Model
-              graphql.attribute(:name)
-              graphql.name('Dummy')
+
+              graphql.name 'Dummy'
+
+              graphql.input(input_subtype) do |c|
+                c.name('DummyInput')
+                c.attribute(:name)
+              end
             end
           end
 
@@ -100,92 +115,60 @@ module GraphqlRails
         end
       end
 
-      describe '#type_arg' do
-        subject(:type_arg) { parser.type_arg }
-
-        context 'when type is an array' do
-          let(:type) { '[String!]!' }
-
-          context 'when inner type is optional' do
-            context 'when array is required' do
-              let(:type) { '[String]!' }
-
-              it 'returns correct structure' do
-                expect(type_arg).to eq([GraphQL::Types::String, { null: true }])
-              end
-            end
-
-            context 'when array is optional' do
-              let(:type) { '[String]' }
-
-              it 'returns correct structure' do
-                expect(type_arg).to eq([GraphQL::Types::String, { null: true }])
-              end
-            end
-          end
-        end
-
-        context 'when pagination is enabled' do
-          let(:parser) { described_class.new(type, paginated: true) }
-
-          context 'when type is not GraphqlRails::Model' do
-            let(:type) { '[String!]!' }
-
-            it 'raises error' do
-              expect { type_arg }.to raise_error(/Unable to paginate "\[String!\]!"/)
-            end
-          end
-
-          context 'when graphql_rails model is provided' do
-            let(:type) do
-              Class.new do
-                include GraphqlRails::Model
-                graphql.name 'Dummy'
-                graphql.attribute(:name)
-              end
-            end
-
-            it 'returns connection' do
-              expect(type_arg < GraphQL::Types::Relay::BaseConnection).to be true
-            end
-          end
-        end
-      end
-
-      describe '#graphql_type' do
-        subject(:graphql_type) { parser.graphql_type }
+      describe '#input_type_arg' do
+        subject(:input_type_arg) { parser.input_type_arg }
 
         context 'when graphql type is provided' do
           let(:type) { GraphQL::INT_TYPE }
 
           it 'returns original graphql type' do
-            expect(graphql_type).to eq type
+            expect(input_type_arg).to eq type
           end
         end
 
         context 'when model type is provided' do
           let(:type) { 'SomeImage' }
 
+          let(:type_class) do
+            Class.new do
+              include GraphqlRails::Model
+
+              graphql.name("SomeImage#{SecureRandom.hex}")
+              graphql.input do |c|
+                c.attribute(:url)
+              end
+            end
+          end
+
+          before do
+            stub_const('SomeImage', type_class)
+          end
+
           it 'returns graphql type defined on that model' do
-            image = Object.const_set('SomeImage', Class.new { include GraphqlRails::Model })
-            expect(graphql_type).to eq image.graphql.graphql_type
+            expect(input_type_arg.inspect).to eq 'GraphQL::Schema::InputObject(SomeImageInput)'
           end
         end
 
         context 'when attribute is required' do
-          it { is_expected.to be_non_null }
+          it 'returns raw type' do
+            expect(input_type_arg).to eq GraphQL::Types::String
+          end
         end
 
         context 'when attribute is optional' do
           let(:type) { 'String' }
 
-          it { is_expected.not_to be_non_null }
+          it 'includes graphql string type' do
+            expect(input_type_arg).to eq GraphQL::Types::String
+          end
         end
 
         context 'when attribute is integer' do
           let(:type) { 'Int' }
 
-          it { is_expected.to be GraphQL::Types::Int }
+          it 'returns graphql integer type' do
+            expect(input_type_arg).to eq GraphQL::Types::Int
+          end
         end
 
         context 'when attribute is ID' do
@@ -210,7 +193,7 @@ module GraphqlRails
           let(:type) { 'unknown' }
 
           it 'raises error' do
-            expect { graphql_type }.to raise_error(TypeParseable::UnknownTypeError)
+            expect { input_type_arg }.to raise_error(TypeParseable::UnknownTypeError)
           end
         end
 
@@ -220,27 +203,31 @@ module GraphqlRails
           context 'when array is required' do
             let(:type) { '[Int]!' }
 
-            it { is_expected.to be_non_null }
-            it { is_expected.to be_list }
+            it 'returns array with "null: true" flag' do
+              expect(input_type_arg).to eq [GraphQL::Types::Int, { null: true }]
+            end
           end
 
           context 'when inner type of array is required' do
             let(:type) { '[Int!]' }
 
-            it { is_expected.not_to be_non_null }
-            it { is_expected.to be_list }
+            it 'returns array without "null" flag' do
+              expect(input_type_arg).to eq [GraphQL::Types::Int]
+            end
           end
 
           context 'when array and its inner type is required' do
-            it { is_expected.to be_non_null }
-            it { is_expected.to be_list }
+            it 'returns array without "null" flag' do
+              expect(input_type_arg).to eq [GraphQL::Types::Int]
+            end
           end
 
           context 'when array and its inner type are optional' do
             let(:type) { '[Int]' }
 
-            it { is_expected.not_to be_non_null }
-            it { is_expected.to be_list }
+            it 'returns array with "null: true" flag' do
+              expect(input_type_arg).to eq [GraphQL::Types::Int, { null: true }]
+            end
           end
         end
       end

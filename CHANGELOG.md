@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: support for using chainable syntax for input attributes.
 * Changed: changed default `predicate method type from `Boolean` to `Boolean!`
 * Changed: changed error message when trying to paginate not supported types
+* Added: support defining graphql-ruby types as strings.
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [1.2.4](2021-05-05)

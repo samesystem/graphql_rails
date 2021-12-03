@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [2.0.0](2021-12-03)
 
 * Added: support for generating multiple schema dumps with `rake graphql_rails:schema:dump`.
 * Added: support for using chainable syntax for input attributes.

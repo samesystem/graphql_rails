@@ -68,7 +68,7 @@ module GraphqlRails
       end
 
       describe '#find_by' do
-        subject(:find_by) { relation_decorator.find_by(1) }
+        subject(:find_by) { relation_decorator.find_by(id: 1) }
 
         it_behaves_like 'single decorated relation result', :find_by
       end

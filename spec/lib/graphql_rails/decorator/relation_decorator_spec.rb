@@ -14,6 +14,20 @@ module GraphqlRails
         )
       end
 
+      shared_examples 'single decorated relation result' do |method_name|
+        it 'returns instance of decorator' do
+          expect(subject).to be_a(decorator)
+        end
+
+        context 'when relation returns no record' do
+          before do
+            allow(relation).to receive(method_name).and_return(nil)
+          end
+
+          it { is_expected.to be nil }
+        end
+      end
+
       let(:decorator) do
         Class.new(SimpleDelegator) do
           attr_reader :args
@@ -32,6 +46,10 @@ module GraphqlRails
       let(:relation) do
         instance_double(
           ActiveRecord::Relation,
+          find: record,
+          second: record,
+          last: record,
+          find_by: record,
           first: record,
           to_a: [record, record2],
           where: inner_relation
@@ -43,22 +61,36 @@ module GraphqlRails
       let(:record) { OpenStruct.new(name: 'John') }
       let(:record2) { OpenStruct.new(name: 'Jack') }
 
+      describe '#find' do
+        subject(:find) { relation_decorator.find(1) }
+
+        it_behaves_like 'single decorated relation result', :find
+      end
+
+      describe '#find_by' do
+        subject(:find_by) { relation_decorator.find_by(id: 1) }
+
+        it_behaves_like 'single decorated relation result', :find_by
+      end
+
+      describe '#second' do
+        subject(:second) { relation_decorator.second }
+
+        it_behaves_like 'single decorated relation result', :second
+      end
+
+      describe '#last' do
+        subject(:last) { relation_decorator.last }
+
+        it_behaves_like 'single decorated relation result', :last
+      end
+
       describe '#first' do
         subject(:first) { relation_decorator.first }
 
-        it 'returns instance of docorator' do
-          expect(first).to be_a(decorator)
-        end
+        it_behaves_like 'single decorated relation result', :first
 
-        context 'when relation returns no record' do
-          before do
-            allow(relation).to receive(:first).and_return(nil)
-          end
-
-          it { is_expected.to be nil }
-        end
-
-        context 'when first is called with items count' do
+        context 'when `first` is called with items count' do
           subject(:first) { relation_decorator.first(2) }
 
           before do

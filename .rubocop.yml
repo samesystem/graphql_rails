@@ -3,6 +3,9 @@ require: rubocop-rspec
 RSpec/NestedGroups:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 Layout/LineLength:
   Enabled: true
   Max: 120

@@ -56,7 +56,25 @@ module GraphqlRails
           end
         end
 
-        context 'when custom type is GraphQL::Schema::Object expressed as string' do
+        context 'when enum class is expressed as string' do
+          let(:type) { 'SomeDummyEnum' }
+          let(:type_class) do
+            Class.new(GraphQL::Schema::Enum) do
+              graphql_name "SomeDummyEnum#{SecureRandom.hex}"
+              value 'OK', value: :ok
+            end
+          end
+
+          before do
+            Object.const_set('SomeDummyEnum', type_class)
+          end
+
+          it 'returns enum class', :aggregate_failures do
+            expect(graphql_type_object).to eq type_class
+          end
+        end
+
+        context 'when child class of GraphQL::Schema::Object expressed as string' do
           let(:type) { 'SomeImage' }
           let(:type_class) do
             Class.new(GraphQL::Schema::Object) do

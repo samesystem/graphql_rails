@@ -16,18 +16,27 @@ module GraphqlRails
         'int' => GraphQL::Types::Int,
         'integer' => GraphQL::Types::Int,
 
-        'string' => GraphQL::Types::String,
-        'str' => GraphQL::Types::String,
-        'text' => GraphQL::Types::String,
-        'time' => GraphQL::Types::String,
-        'date' => GraphQL::Types::String,
+        'big_int' => GraphQL::Types::BigInt,
+        'bigint' => GraphQL::Types::BigInt,
+
+        'float' => GraphQL::Types::Float,
+        'double' => GraphQL::Types::Float,
+        'decimal' => GraphQL::Types::Float,
 
         'bool' => GraphQL::Types::Boolean,
         'boolean' => GraphQL::Types::Boolean,
 
-        'float' => GraphQL::Types::Float,
-        'double' => GraphQL::Types::Float,
-        'decimal' => GraphQL::Types::Float
+        'string' => GraphQL::Types::String,
+        'str' => GraphQL::Types::String,
+        'text' => GraphQL::Types::String,
+
+        'date' => GraphQL::Types::ISO8601Date,
+
+        'time' => GraphQL::Types::ISO8601DateTime,
+        'datetime' => GraphQL::Types::ISO8601DateTime,
+        'date_time' => GraphQL::Types::ISO8601DateTime,
+
+        'json' => GraphQL::Types::JSON
       }.freeze
 
       WRAPPER_TYPES = [
@@ -52,7 +61,7 @@ module GraphqlRails
       RAW_GRAPHQL_TYPES = (WRAPPER_TYPES + GRAPHQL_BASE_TYPES).freeze
 
       def unwrapped_scalar_type
-        TYPE_MAPPING[nullable_inner_name.downcase.downcase]
+        TYPE_MAPPING[nullable_inner_name.downcase]
       end
 
       def raw_graphql_type?

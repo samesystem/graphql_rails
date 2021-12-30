@@ -40,7 +40,8 @@ module GraphqlRails
         {
           method: property.to_sym,
           null: optional?,
-          camelize: camelize?
+          camelize: camelize?,
+          groups: groups
         }
       end
 

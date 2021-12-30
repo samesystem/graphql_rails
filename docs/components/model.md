@@ -110,6 +110,45 @@ class User
 end
 ```
 
+### attribute.groups
+
+Groups are handy feature when you want to have multiple schemas. For example, you want to have public graphql endpoint and internal graphql endpoint where each group has some unique nodes. If attribute has `groups` set, then this attribute will be visible only in appropriate group schemas.
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    # visible in all schemas (default):
+    c.attribute(:email)
+
+    # visible in "internal" and "beta" schemas only:
+    c.attribute(:admin_id).groups(%i[internal beta])
+
+    # visible in "external" schema only:
+    c.attribute(:nickname).groups(%i[external])
+  end
+end
+```
+
+### attribute.group
+
+Alias for Attribute#groups.
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    # visible in all schemas (default):
+    c.attribute(:email)
+
+    # visible in "external" schema only:
+    c.attribute(:nickname).group(:external)
+  end
+end
+```
+
 ### attribute.options
 
 Allows passing options to attribute definition. Available options:

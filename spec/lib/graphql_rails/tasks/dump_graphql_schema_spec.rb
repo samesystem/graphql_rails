@@ -33,6 +33,19 @@ module GraphqlRails
 
       context 'when group name is given' do
         let(:group) { 'custom' }
+        let(:schema_double) { double('Schema') } # rubocop:disable RSpec/VerifiedDoubles
+        let(:graphql_router) { instance_double('GraphqlRails::Router', graphql_schema: schema_double) }
+
+        before do
+          allow(graphql_router).to receive(:graphql_schema).and_return(schema_double)
+          allow(schema_double).to receive(:to_definition).and_return('')
+        end
+
+        it 'dumps schema with group context', :aggregate_failures do
+          call
+          expect(graphql_router).to have_received(:graphql_schema).with('custom')
+          expect(schema_double).to have_received(:to_definition).with(context: { graphql_group: 'custom' })
+        end
 
         it 'writes router definition to group schema file' do
           call

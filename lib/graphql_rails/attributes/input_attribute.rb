@@ -25,7 +25,7 @@ module GraphqlRails
       end
 
       def input_argument_options
-        { required: required?, description: description, camelize: false }
+        { required: required?, description: description, camelize: false, groups: groups }
       end
 
       def paginated?

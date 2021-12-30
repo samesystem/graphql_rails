@@ -20,6 +20,18 @@ module GraphqlRails
         chainable_option :type
       end
 
+      def groups(new_groups = ChainableOptions::NOT_SET)
+        @groups ||= []
+        return @groups if new_groups == ChainableOptions::NOT_SET
+
+        @groups = Array(new_groups).map(&:to_s)
+        self
+      end
+
+      def group(*args)
+        groups(*args)
+      end
+
       def required(new_value = true) # rubocop:disable Style/OptionalBooleanParameter
         @required = new_value
         self

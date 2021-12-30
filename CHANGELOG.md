@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added: decorated relations now can be called using "find", "empty?" and "find_by" methods
 * Fixed: allow to define graphql-ruby enum classes as strings.
+* Added: add "groups" to attributes.
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.0.0](2021-12-03)

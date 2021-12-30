@@ -211,6 +211,22 @@ module GraphqlRails
             end
           end
         end
+
+        context 'when attribute does not belong to any groups' do
+          it 'builds field with empty groups' do
+            expect(field_options).to include(groups: [])
+          end
+        end
+
+        context 'when attribute belongs to a group' do
+          before do
+            attribute.group(:some_group)
+          end
+
+          it 'builds field with a given group' do
+            expect(field_options).to include(groups: %w[some_group])
+          end
+        end
       end
     end
   end

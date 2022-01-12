@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+require 'graphql_rails/types/argument_type'
+require 'graphql_rails/concerns/service'
+
 module GraphqlRails
   module Model
     # stores information about model specific config, like attributes and types
     class BuildGraphqlInputType
-      require 'graphql_rails/concerns/service'
-
       include ::GraphqlRails::Service
 
       def initialize(name:, description: nil, attributes:)
@@ -20,6 +21,7 @@ module GraphqlRails
         type_attributes = attributes
 
         Class.new(GraphQL::Schema::InputObject) do
+          argument_class(GraphqlRails::Types::ArgumentType)
           graphql_name(type_name)
           description(type_description)
 

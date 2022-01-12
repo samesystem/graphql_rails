@@ -5,6 +5,7 @@ module GraphqlRails
     # Initializes class to define graphql type and fields.
     class FindOrBuildGraphqlTypeClass
       require 'graphql_rails/concerns/service'
+      require 'graphql_rails/types/object_type'
 
       include ::GraphqlRails::Service
 
@@ -32,7 +33,7 @@ module GraphqlRails
         graphql_type_name = name
         graphql_type_description = description
 
-        graphql_type_klass = Class.new(GraphQL::Schema::Object) do
+        graphql_type_klass = Class.new(GraphqlRails::Types::ObjectType) do
           graphql_name(graphql_type_name)
           description(graphql_type_description)
         end

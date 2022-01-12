@@ -87,7 +87,7 @@ module GraphqlRails
           end
         end
 
-        context 'when type is a raw grapqhl input class' do
+        context 'when type is a raw graphql input class' do
           let(:type) do
             GraphQL::InputObjectType.define do
               name 'DummyInput'
@@ -185,6 +185,22 @@ module GraphqlRails
             it 'takes in to account input format options' do
               expect(input_argument_name).to eq 'full_name'
             end
+          end
+        end
+
+        context 'when input does not belong to any groups' do
+          it 'builds field with empty groups' do
+            expect(input_argument_options).to include(groups: [])
+          end
+        end
+
+        context 'when input belongs to a group' do
+          before do
+            attribute.group(:some_group)
+          end
+
+          it 'builds field with a given group' do
+            expect(input_argument_options).to include(groups: %w[some_group])
           end
         end
       end

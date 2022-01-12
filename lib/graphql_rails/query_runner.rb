@@ -8,12 +8,13 @@ module GraphqlRails
 
     include ::GraphqlRails::Service
 
-    def initialize(group: nil, params:, schema: nil, router: nil, **schema_options)
+    def initialize(params:, context: {}, schema: nil, router: nil, group: nil, **schema_options) # rubocop:disable Metrics/ParameterLists
       @group = group
       @graphql_schema = schema
       @params = params
-      @schema_options = schema_options
       @router = router
+      @initial_context = context
+      @schema_options = schema_options
     end
 
     def call
@@ -21,13 +22,18 @@ module GraphqlRails
         params[:query],
         variables: variables,
         operation_name: params[:operationName],
+        context: context,
         **schema_options
       )
     end
 
     private
 
-    attr_reader :schema_options, :params, :group
+    attr_reader :schema_options, :params, :group, :initial_context
+
+    def context
+      initial_context.merge(graphql_group: group)
+    end
 
     def variables
       ensure_hash(params[:variables])

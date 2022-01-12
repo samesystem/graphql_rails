@@ -18,12 +18,17 @@ module GraphqlRails
     end
 
     def call
-      File.write(schema_path, schema.to_definition)
+      File.write(schema_path, schema_dump)
     end
 
     private
 
     attr_reader :router, :group
+
+    def schema_dump
+      context = { graphql_group: group }
+      schema.to_definition(context: context)
+    end
 
     def schema
       @schema ||= router.graphql_schema(group.presence)

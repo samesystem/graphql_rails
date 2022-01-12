@@ -31,14 +31,7 @@ Some types can be determined by attribute name, so you can skip this attribute:
 * attributes which ends with `?` has `Boolean!` type
 * all other attributes without type are considered to be `String`
 
-available types are:
-
-* ID: `'id'`
-* String: `'string'`, `'str'`, `'text'`
-* Boolean: `'bool'`, `'boolean'`
-* Float: `'float'`, `'double'`, `'decimal'`
-
-usage example:
+Usage example:
 
 ```ruby
 class User
@@ -50,6 +43,34 @@ class User
     c.attribute :admin? # Boolean! type
     c.attribute :level, type: 'integer'
     c.attribute :money, type: 'float'
+  end
+end
+```
+
+You can also use some build in aliases for types, such as:
+
+* `'id'` is alias for `GraphQL::Types::ID`
+* `'integer'`, `'int'` are aliases for `GraphQL::Types::Int`
+* `'bigint'`, `'big_int'` are aliases for `GraphQL::Types::BigInt`
+* 'float', 'double', 'decimal' are aliases for `GraphQL::Types::Float`
+* `'bool'`, `'boolean'` are aliases for GraphQL::Types::Boolean
+* String: `'string'`, `'str'`, `'text'`
+* 'date' is alias for `GraphQL::Types::ISO8601Date`
+* 'time', 'datetime', 'date_time' are aliases for `GraphQL::Types::ISO8601DateTime`
+* 'json' is alias for `GraphQL::Types::JSON`
+
+Usage example:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute(:about_me).type(:text)
+    c.attribute(:active).type('bool!')
+    c.attribute(:created_at).type(:datetime!)
+    c.attribute(:data).type(:json!)
+    c.attribute(:login_dates).type('[date!]!')
   end
 end
 ```

@@ -42,7 +42,13 @@ module GraphqlRails
 
       def build_group_type(type_name, routes)
         group_name = group
-        group_routes = routes.select { |route| route.show_in_group?(group_name) }
+        group_routes =
+          routes
+          .select { |route| route.show_in_group?(group_name) }
+          .reverse
+          .uniq(&:name)
+          .reverse
+
         return if group_routes.empty?
 
         build_type(type_name, group_routes)

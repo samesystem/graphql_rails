@@ -26,7 +26,7 @@ module GraphqlRails
       pagination_options = nil if pagination_options == false
 
       @pagination_options = pagination_options
-      permit(:before, :after, first: :int, last: :int)
+      self
     end
 
     def paginated?

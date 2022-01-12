@@ -51,10 +51,6 @@ module GraphqlRails
         it 'sets pagination flag' do
           expect { config.paginated(max_per_page: 1) }.to change(config, :paginated?).to(true)
         end
-
-        it 'permits "before", "after", "first" and "last" attribtues' do
-          expect { config.paginated }.to change { config.attributes.keys }.to(%w[before after first last])
-        end
       end
 
       describe '#paginated?' do

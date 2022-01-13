@@ -75,7 +75,7 @@ This will generate `userDetails` field on GraphQL side.
 
 ## _query_ and _mutation_ & _subscription_
 
-in case you want to have non-CRUD controller with custom actions you can define your own `query`/`mutation` actions like this:
+in case you want to have non-CRUD controller with custom actions you can define your own `query`/`mutation`/`subscription` actions like this:
 
 ```ruby
 MyGraphqlSchema = GraphqlRails::Router.draw do

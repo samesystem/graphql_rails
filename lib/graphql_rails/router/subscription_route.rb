@@ -4,10 +4,10 @@ require_relative 'route'
 
 module GraphqlRails
   class Router
-    # stores query type graphql action info
-    class QueryRoute < Route
+    # stores subscription type graphql action info
+    class SubscriptionRoute < Route
       def query?
-        true
+        false
       end
 
       def mutation?
@@ -15,7 +15,7 @@ module GraphqlRails
       end
 
       def subscription?
-        false
+        true
       end
     end
   end

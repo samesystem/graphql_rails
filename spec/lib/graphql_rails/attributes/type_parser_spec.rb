@@ -86,7 +86,25 @@ module GraphqlRails
             Object.const_set('SomeImage', type_class)
           end
 
-          it 'returns original GraphQL::Schema::Object' do
+          it 'returns original child class of  GraphQL::Schema::Object' do
+            expect(graphql_type_object).to eq(type_class)
+          end
+        end
+
+        context 'when child class of GraphQL::Schema::InputObject expressed as string' do
+          let(:type) { '[SomeImageInput!]!' }
+          let(:type_class) do
+            Class.new(GraphQL::Schema::InputObject) do
+              graphql_name "SomeImageInput#{SecureRandom.hex}"
+              argument :date, type: GraphQL::Types::ISO8601Date, required: true
+            end
+          end
+
+          before do
+            Object.const_set('SomeImageInput', type_class)
+          end
+
+          it 'returns original child class of GraphQL::Schema::InputObject' do
             expect(graphql_type_object).to eq(type_class)
           end
         end

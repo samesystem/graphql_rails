@@ -52,12 +52,6 @@ module GraphqlRails
         GraphQL::InputObjectType
       ].freeze
 
-      PARSEABLE_RAW_GRAPHQL_TYPES = [
-        GraphQL::Schema::Object,
-        GraphQL::Schema::Scalar,
-        GraphQL::Schema::Enum
-      ].freeze
-
       RAW_GRAPHQL_TYPES = (WRAPPER_TYPES + GRAPHQL_BASE_TYPES).freeze
 
       def unwrapped_scalar_type
@@ -103,7 +97,7 @@ module GraphqlRails
       def graphql_type_object?(type_class)
         return false unless type_class.is_a?(Class)
 
-        PARSEABLE_RAW_GRAPHQL_TYPES.any? { |parent_type| type_class < parent_type }
+        type_class < GraphQL::Schema::Member
       end
 
       def applicable_graphql_type?(type)

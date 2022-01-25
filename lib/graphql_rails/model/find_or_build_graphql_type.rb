@@ -46,11 +46,7 @@ module GraphqlRails
 
       def find_or_build_dynamic_type(attribute)
         graphql_model = attribute.graphql_model
-        if graphql_model
-          find_or_build_graphql_model_type(graphql_model)
-        else
-          AddFieldsToGraphqlType.call(klass: klass, attributes: [attribute])
-        end
+        find_or_build_graphql_model_type(graphql_model) if graphql_model
       end
 
       def find_or_build_graphql_model_type(graphql_model)

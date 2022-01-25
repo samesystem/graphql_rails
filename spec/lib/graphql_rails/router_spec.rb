@@ -99,7 +99,7 @@ module GraphqlRails
 
         it 'returns schema without mutation type' do # rubocop:disable RSpec/ExampleLength
           expect(graphql_schema.to_definition).to eq(
-            <<~GRAPHQL.strip
+            <<~GRAPHQL
               type Query {
                 customQuery: String!
               }
@@ -120,7 +120,7 @@ module GraphqlRails
 
         it 'returns schema without mutation type' do # rubocop:disable RSpec/ExampleLength
           expect(graphql_schema.to_definition).to eq(
-            <<~GRAPHQL.strip
+            <<~GRAPHQL
               type Mutation {
                 customQuery: String!
               }

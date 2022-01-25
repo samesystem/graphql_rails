@@ -62,9 +62,14 @@ module GraphqlRails
       end
 
       def parameter_filter_class
-        return ActiveSupport::ParameterFilter if Object.const_defined?('ActiveSupport::ParameterFilter')
+        if ActiveSupport.gem_version.segments.first < 6
+          return ActiveSupport::ParameterFilter if Object.const_defined?('ActiveSupport::ParameterFilter')
 
-        ActionDispatch::Http::ParameterFilter
+          ActionDispatch::Http::ParameterFilter
+        else
+          require 'active_support/parameter_filter'
+          ActiveSupport::ParameterFilter
+        end
       end
     end
   end

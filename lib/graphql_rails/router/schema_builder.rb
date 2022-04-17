@@ -49,7 +49,7 @@ module GraphqlRails
           .uniq(&:name)
           .reverse
 
-        return if group_routes.empty?
+        return if group_routes.empty? && type_name != 'Query'
 
         build_type(type_name, group_routes)
       end

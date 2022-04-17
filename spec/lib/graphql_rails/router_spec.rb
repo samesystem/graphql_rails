@@ -118,11 +118,14 @@ module GraphqlRails
           end
         end
 
-        it 'returns schema without mutation type' do # rubocop:disable RSpec/ExampleLength
+        it 'returns schema with empty query type' do # rubocop:disable RSpec/ExampleLength
           expect(graphql_schema.to_definition).to eq(
             <<~GRAPHQL
               type Mutation {
                 customQuery: String!
+              }
+
+              type Query {
               }
 
               type Subscription {

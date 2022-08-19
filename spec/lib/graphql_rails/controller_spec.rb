@@ -374,7 +374,7 @@ module GraphqlRails
 
           it 'adds error' do
             call
-            expect(context).to have_received(:add_error).with(SystemError.new('ups!'))
+            expect(context).to have_received(:add_error).with(kind_of(SystemError))
           end
 
           it 'returns nil' do

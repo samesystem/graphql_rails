@@ -1,19 +1,15 @@
 # frozen_string_literal: true
 
 module GraphqlRails
-  # base class which is returned in case something bad happens. Contains all error rendering tructure
+  # Base class which is returned in case something bad happens. Contains all error rendering structure
   class SystemError < ExecutionError
-    attr_reader :error
-
     def initialize(error)
       super(error.message)
 
       @error = error
     end
 
-    def backtrace
-      error.backtrace
-    end
+    delegate :backtrace, to: :error
 
     def to_h
       super.except('locations')
@@ -22,5 +18,9 @@ module GraphqlRails
     def type
       'system_error'
     end
+
+    private
+
+    attr_reader :error
   end
 end

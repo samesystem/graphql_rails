@@ -90,7 +90,7 @@ module GraphqlRails
       if error.is_a?(GraphQL::ExecutionError)
         render error: error
       else
-        render error: SystemError.new(error.message)
+        render error: SystemError.new(error)
       end
     end
 

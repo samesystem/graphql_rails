@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
+* Added: error backtrace to SystemError
+
 ## [2.2.0](2022-01-25)
 
 * Added: support for subscription type

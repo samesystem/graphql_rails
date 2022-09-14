@@ -15,5 +15,13 @@ module GraphqlRails
         expect(backtrace).to eq(error.backtrace)
       end
     end
+
+    describe '#original_error' do
+      subject(:original_error) { system_error.original_error }
+
+      it 'points to original error' do
+        expect(original_error).to eq(error)
+      end
+    end
   end
 end

@@ -3,12 +3,14 @@
 module GraphqlRails
   # Base class which is returned in case something bad happens. Contains all error rendering structure
   class SystemError < ExecutionError
-    delegate :backtrace, to: :error
+    delegate :backtrace, to: :original_error
 
-    def initialize(error)
-      super(error.message)
+    attr_reader :original_error
 
-      @error = error
+    def initialize(original_error)
+      super(original_error.message)
+
+      @original_error = original_error
     end
 
     def to_h
@@ -18,9 +20,5 @@ module GraphqlRails
     def type
       'system_error'
     end
-
-    private
-
-    attr_reader :error
   end
 end

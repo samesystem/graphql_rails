@@ -3,6 +3,8 @@
 module GraphqlRails
   # GraphQL error that is raised when invalid data is given
   class ValidationError < ExecutionError
+    BASE_FIELD_NAME = 'base'
+
     attr_reader :short_message, :field
 
     def initialize(short_message, field)
@@ -25,7 +27,7 @@ module GraphqlRails
       return if field.blank?
 
       stringified_field = field.to_s
-      return if stringified_field == 'base'
+      return if stringified_field == BASE_FIELD_NAME
 
       stringified_field.humanize
     end

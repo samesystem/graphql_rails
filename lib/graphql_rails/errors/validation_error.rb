@@ -6,7 +6,7 @@ module GraphqlRails
     attr_reader :short_message, :field
 
     def initialize(short_message, field)
-      super([field.presence&.to_s&.humanize, short_message].compact.join(' '))
+      super([humanized_field(field), short_message].compact.join(' '))
       @short_message = short_message
       @field = field
     end
@@ -17,6 +17,17 @@ module GraphqlRails
 
     def to_h
       super.merge('field' => field, 'short_message' => short_message)
+    end
+
+    private
+
+    def humanized_field(field)
+      return if field.blank?
+
+      stringified_field = field.to_s
+      return if stringified_field == 'base'
+
+      stringified_field.humanize
     end
   end
 end

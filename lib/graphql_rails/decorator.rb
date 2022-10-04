@@ -27,7 +27,9 @@ module GraphqlRails
     class_methods do
       def decorate(object, *args, **kwargs)
         if Decorator::RelationDecorator.decorates?(object)
-          Decorator::RelationDecorator.new(relation: object, decorator: self, decorator_args: args, decorator_kwargs: kwargs)
+          Decorator::RelationDecorator.new(
+            relation: object, decorator: self, decorator_args: args, decorator_kwargs: kwargs
+          )
         elsif object.nil?
           nil
         elsif object.is_a?(Array)

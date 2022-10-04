@@ -25,16 +25,24 @@ module GraphqlRails
     extend ActiveSupport::Concern
 
     class_methods do
-      def decorate(object, *args)
+      def decorate(object, *args, **kwargs)
         if Decorator::RelationDecorator.decorates?(object)
-          Decorator::RelationDecorator.new(relation: object, decorator: self, decorator_args: args)
+          decorate_with_relation_decorator(object, args, kwargs)
         elsif object.nil?
           nil
         elsif object.is_a?(Array)
-          object.map { |item| new(item, *args) }
+          object.map { |item| new(item, *args, **kwargs) }
         else
-          new(object, *args)
+          new(object, *args, **kwargs)
         end
+      end
+
+      private
+
+      def decorate_with_relation_decorator(object, args, kwargs)
+        Decorator::RelationDecorator.new(
+          relation: object, decorator: self, decorator_args: args, decorator_kwargs: kwargs
+        )
       end
     end
   end

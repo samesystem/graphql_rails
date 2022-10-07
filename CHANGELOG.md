@@ -6,12 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 * Added support for Ruby 3.1.2, keyword arguments for decorators support included
-
-* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
-
 * Added: error backtrace to SystemError
 * Fixed: skip "base" field name in validation error messages
+* Added: router namespaces and named scopes
+* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.2.0](2022-01-25)
 

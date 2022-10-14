@@ -203,6 +203,16 @@ module GraphqlRails
             expect(input_argument_options).to include(groups: %w[some_group])
           end
         end
+
+        context 'when input has default value' do
+          before do
+            attribute.default_value('some value')
+          end
+
+          it 'builds field with a given default value' do
+            expect(input_argument_options).to include(default_value: 'some value')
+          end
+        end
       end
     end
   end

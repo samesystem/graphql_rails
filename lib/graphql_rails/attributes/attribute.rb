@@ -32,8 +32,8 @@ module GraphqlRails
         [
           field_name,
           type_parser.type_arg,
-          *description
-        ]
+          description
+        ].compact
       end
 
       def field_options
@@ -41,19 +41,9 @@ module GraphqlRails
           method: property.to_sym,
           null: optional?,
           camelize: camelize?,
-          groups: groups
+          groups: groups,
+          **deprecation_reason_params
         }
-      end
-
-      def argument_args
-        [
-          field_name,
-          type_parser.type_arg,
-          {
-            description: description,
-            required: required?
-          }
-        ]
       end
 
       protected
@@ -64,6 +54,10 @@ module GraphqlRails
 
       def camelize?
         options[:input_format] != :original && options[:attribute_name_format] != :original
+      end
+
+      def deprecation_reason_params
+        { deprecation_reason: deprecation_reason }.compact
       end
     end
   end

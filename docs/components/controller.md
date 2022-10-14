@@ -144,7 +144,7 @@ end
 If you do not specify `subtype` then default (without name) input will be used. You need to specify subtype if you want to use non-default input:
 
 ```ruby
-class OrderController < GraphqlRails::Controller
+class UsersController < GraphqlRails::Controller
   # this is the input with email and full_name:
   action(:create)
     .permit_input(:input, type: 'User!')
@@ -152,6 +152,20 @@ class OrderController < GraphqlRails::Controller
   # this is the input with password and password_confirmation:
   action(:update_password)
     .permit_input(:input, type: 'User!', subtype: :change_password)
+end
+```
+
+#### *deprecated*
+
+You can mark input input as deprecated with `deprecated` option:
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:create)
+    .permit_input(:input, type: 'User', deprecated: true)
+
+  action(:update)
+    .permit_input(:input, type: 'User', deprecated: 'use updateBasicUser instead')
 end
 ```
 

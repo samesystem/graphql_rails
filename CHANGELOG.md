@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 * Added support for Ruby 3.1.2, keyword arguments for decorators support included
 
-* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
-
 * Added: error backtrace to SystemError
 * Fixed: skip "base" field name in validation error messages
+* Added: `deprecate` method/option for attributes and input attributes
+* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
+
 
 ## [2.2.0](2022-01-25)
 

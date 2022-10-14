@@ -203,6 +203,16 @@ module GraphqlRails
             expect(input_argument_options).to include(groups: %w[some_group])
           end
         end
+
+        context 'when input is deprecated' do
+          before do
+            attribute.deprecated('Use something else')
+          end
+
+          it 'builds field with a given deprecation reason' do
+            expect(input_argument_options).to include(deprecation_reason: 'Use something else')
+          end
+        end
       end
     end
   end

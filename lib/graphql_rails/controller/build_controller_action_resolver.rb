@@ -19,6 +19,8 @@ module GraphqlRails
         action = build_action
 
         Class.new(ControllerActionResolver) do
+          graphql_name("ControllerActionResolver#{SecureRandom.hex}")
+
           type(*action.type_args, **action.type_options)
           description(action.description)
           controller(action.controller)

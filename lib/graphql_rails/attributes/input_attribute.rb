@@ -25,7 +25,13 @@ module GraphqlRails
       end
 
       def input_argument_options
-        { required: required?, description: description, camelize: false, groups: groups }
+        {
+          required: required?,
+          description: description,
+          camelize: false,
+          groups: groups,
+          **deprecation_reason_params
+        }
       end
 
       def paginated?
@@ -40,6 +46,10 @@ module GraphqlRails
         @attribute_name_parser ||= AttributeNameParser.new(
           initial_name, options: attribute_naming_options
         )
+      end
+
+      def deprecation_reason_params
+        { deprecation_reason: deprecation_reason }.compact
       end
 
       def attribute_naming_options

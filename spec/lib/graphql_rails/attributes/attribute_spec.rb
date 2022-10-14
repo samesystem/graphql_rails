@@ -55,6 +55,13 @@ module GraphqlRails
         end
       end
 
+      describe '#deprecated' do
+        it 'sets deprecation_reason' do
+          expect { attribute.deprecated('I do not like it') }
+            .to change(attribute, :deprecation_reason).to('I do not like it')
+        end
+      end
+
       describe '#field_args' do
         subject(:field_args) { attribute.field_args }
 
@@ -225,6 +232,16 @@ module GraphqlRails
 
           it 'builds field with a given group' do
             expect(field_options).to include(groups: %w[some_group])
+          end
+        end
+
+        context 'when deprecation reason is set' do
+          before do
+            attribute.deprecated('I do not like it')
+          end
+
+          it 'returns deprecation reason' do
+            expect(field_options).to include(deprecation_reason: 'I do not like it')
           end
         end
       end

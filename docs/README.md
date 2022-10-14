@@ -42,8 +42,7 @@ GraphqlRails::Router.draw do
   resources :users
 
   # if you want custom queries or mutation
-  query 'searchLogs', to: 'logs#search' # redirects request to LogsController
-  mutation 'changeUserPassword', to: 'users#change_password'
+  query 'searchLogs', to: 'logs#search' # action is handled by LogsController#search
 end
 ```
 
@@ -56,10 +55,10 @@ class User # works with any class including ActiveRecord
 
   graphql do |c|
     # most common attributes, like :id, :name, :title has default type, so you don't have to specify it (but you can!)
-    c.attribute :id
+    c.attribute(:id)
 
-    c.attribute :email, type: :string
-    c.attribute :surname, type: :string
+    c.attribute(:email).type('String')
+    c.attribute(:surname).type('String')
   end
 end
 ```
@@ -69,24 +68,23 @@ end
 ```ruby
 # app/controllers/graphql/users_controller.rb
 class Graphql::UsersController < GraphqlApplicationController
-  # graphql requires to describe which attributes controller action accepts and which returns
-  action(:change_user_password)
-    .permit(:password!, :id!) # Bang (!) indicates that attribute is required
-    .returns('User!')
+  model('User') # specify that all actions returns User by default
 
-  def change_user_password
-    user = User.find(params[:id])
-    user.update!(password: params[:password])
+  # DRUD actions description
+  action(:index).permit(id: 'ID!').returns_many
+  action(:show).permit(id: 'ID!').returns_single
+  action(:create).permit(email: 'String!').returns_single
+  action(:update).permit(id: 'ID!', email: 'String!').returns_single
+  action(:destroy).permit(id: 'ID!').returns_single
 
-    # returned value needs to have all methods defined in model `graphql do` part
-    user # or SomeDecorator.new(user)
+  def index
+    User.all
   end
 
-  action(:search)
-    .permit(search_fields!: SearchFieldsInput) # you can specify your own input fields
-    .returns('[User!]!')
-  def search
+  def show
+    User.find(params[:id])
   end
+  # ... code for create / update / destroy is skipped ...
 end
 ```
 

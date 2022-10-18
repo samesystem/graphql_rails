@@ -46,6 +46,8 @@ GraphqlRails::Router.draw do
 end
 ```
 
+See [Routes docs](components/routes.md) for more info.
+
 ### Define your Graphql model
 
 ```ruby
@@ -62,6 +64,8 @@ class User # works with any class including ActiveRecord
   end
 end
 ```
+
+See [Model docs](components/model.md) for more info.
 
 ### Define controller
 
@@ -88,33 +92,7 @@ class Graphql::UsersController < GraphqlApplicationController
 end
 ```
 
-## Routes
-
-```ruby
-GraphqlRails::Router.draw do
-  # generates `friend`, `createFriend`, `updateFriend`, `destroyFriend`, `friends` routes
-  resources :friends
-  resources :shops, only: [:show, :index] # generates `shop` and `shops` routes only
-  resources :orders, except: :update # generates all routes except `updateOrder`
-
-  resources :users do
-    # generates `findUser` query
-    query :find, on: :member
-
-    # generates `searchUsers` query
-    query :search, on: :collection
-  end
-
-  # you can use namespaced controllers too:
-  scope module: 'admin' do
-    # `updateTranslations` route will be handled by `Admin::TranslationsController`
-    mutation :updateTranslations, to: 'translations#update'
-
-    # all :groups routes will be handled by `Admin::GroupsController`
-    resources :groups
-  end
-end
-```
+See [Controller docs](components/controlle.md) for more info.
 
 ## Testing your GraphqlRails::Controller in RSpec
 
@@ -131,6 +109,8 @@ RSpec.configure do |config|
   # ... your other configuration ...
 end
 ```
+
+See [Testing docs](testing/testing.md) for more info.
 
 ### Helper methods
 

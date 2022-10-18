@@ -46,7 +46,7 @@ class UserDecorator < SimpleDelegator
   include GraphqlRails::Model
   include GraphqlRails::Decorator
 
-  graphql_rails do
+  graphql do |c|
     # some setup, attributes, etc...
   end
 

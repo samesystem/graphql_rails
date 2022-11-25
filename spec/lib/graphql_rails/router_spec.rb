@@ -168,6 +168,62 @@ module GraphqlRails
     end
 
     describe '#scope' do
+      context 'with named scopes without module' do
+        before do
+          router.scope :admin do
+            query :admin_user, to: 'users#find'
+          end
+        end
+
+        it 'does not prefix paths with module name' do
+          action_paths = router.routes.map(&:path)
+          expect(action_paths).to match_array(%w[users#find])
+        end
+
+        it 'sets correct scope names to routes' do
+          scope_names = router.routes.first.scope_names
+          expect(scope_names).to eq(%i[admin])
+        end
+      end
+
+      context 'with nested named scopes without module' do
+        before do
+          router.scope :admin do
+            scope :users do
+              query :admin_user, to: 'users#find'
+            end
+          end
+        end
+
+        it 'does not prefix paths with module name' do
+          action_paths = router.routes.map(&:path)
+          expect(action_paths).to match_array(%w[users#find])
+        end
+
+        it 'sets correct scope names to routes' do
+          scope_names = router.routes.first.scope_names
+          expect(scope_names).to eq(%i[admin users])
+        end
+      end
+
+      context 'with named scopes and scope module' do
+        before do
+          router.scope :admin, module: :admin_area do
+            query :admin_user, to: 'users#find'
+          end
+        end
+
+        it 'prefixes paths with module name' do
+          action_paths = router.routes.map(&:path)
+          expect(action_paths).to match_array(%w[admin_area/users#find])
+        end
+
+        it 'sets correct scope names to routes' do
+          scope_names = router.routes.first.scope_names
+          expect(scope_names).to eq(%i[admin])
+        end
+      end
+
       context 'with nested scopes' do
         before do
           router.scope module: 'foo' do
@@ -185,7 +241,7 @@ module GraphqlRails
         end
       end
 
-      context 'with resoures in scope' do
+      context 'with resources in scope' do
         before do
           router.scope module: 'foo' do
             resources :users, only: :index do
@@ -219,6 +275,46 @@ module GraphqlRails
         it 'makes scope routes hidden in not specified groups' do
           route = router.routes.first
           expect(route).not_to be_show_in_group(:other_group)
+        end
+      end
+    end
+
+    describe '#namespace' do
+      context 'with non-nested namespace' do
+        before do
+          router.namespace :admin do
+            query :admin_user, to: 'users#find'
+          end
+        end
+
+        it 'prefixes paths with namespace name' do
+          action_paths = router.routes.map(&:path)
+          expect(action_paths).to match_array(%w[admin/users#find])
+        end
+
+        it 'sets scope names same as namespace' do
+          scope_names = router.routes.first.scope_names
+          expect(scope_names).to eq(%i[admin])
+        end
+      end
+
+      context 'with nested namespace' do
+        before do
+          router.namespace :admin do
+            namespace :people do
+              query :admin_user, to: 'users#find'
+            end
+          end
+        end
+
+        it 'prefixes paths with namespace name' do
+          action_paths = router.routes.map(&:path)
+          expect(action_paths).to match_array(%w[admin/people/users#find])
+        end
+
+        it 'sets scope names same as nested namespaces' do
+          scope_names = router.routes.first.scope_names
+          expect(scope_names).to eq(%i[admin people])
         end
       end
     end

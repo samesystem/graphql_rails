@@ -12,6 +12,7 @@ module GraphqlRails
 
       chainable_option :subtype
       chainable_option :enum
+      chainable_option :default_value
 
       def initialize(name, config:)
         @config = config
@@ -25,7 +26,13 @@ module GraphqlRails
       end
 
       def input_argument_options
-        { required: required?, description: description, camelize: false, groups: groups }
+        {
+          required: required?,
+          description: description,
+          camelize: false,
+          groups: groups,
+          **default_value_option
+        }
       end
 
       def paginated?
@@ -35,6 +42,10 @@ module GraphqlRails
       private
 
       attr_reader :initial_name, :config
+
+      def default_value_option
+        { default_value: default_value }.compact
+      end
 
       def attribute_name_parser
         @attribute_name_parser ||= AttributeNameParser.new(

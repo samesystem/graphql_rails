@@ -523,6 +523,20 @@ class User
 end
 ```
 
+#### input attribute default value
+
+You can set default value for input attribute:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute(:is_admin).type('Boolean').default_value(false)
+  end
+end
+```
+
 ## graphql_context
 
 It's possible to access graphql_context in your model using method `graphql_context`:

@@ -12,6 +12,7 @@ module GraphqlRails
 
       chainable_option :subtype
       chainable_option :enum
+      chainable_option :default_value
 
       def initialize(name, config:)
         @config = config
@@ -30,6 +31,7 @@ module GraphqlRails
           description: description,
           camelize: false,
           groups: groups,
+          **default_value_option,
           **deprecation_reason_params
         }
       end
@@ -41,6 +43,10 @@ module GraphqlRails
       private
 
       attr_reader :initial_name, :config
+
+      def default_value_option
+        { default_value: default_value }.compact
+      end
 
       def attribute_name_parser
         @attribute_name_parser ||= AttributeNameParser.new(

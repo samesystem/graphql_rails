@@ -204,6 +204,7 @@ module GraphqlRails
           end
         end
 
+
         context 'when input is deprecated' do
           before do
             attribute.deprecated('Use something else')
@@ -211,6 +212,16 @@ module GraphqlRails
 
           it 'builds field with a given deprecation reason' do
             expect(input_argument_options).to include(deprecation_reason: 'Use something else')
+          end
+        end
+
+        context 'when input has default value' do
+          before do
+            attribute.default_value('some value')
+          end
+
+          it 'builds field with a given default value' do
+            expect(input_argument_options).to include(default_value: 'some value')
           end
         end
       end

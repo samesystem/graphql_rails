@@ -204,7 +204,6 @@ module GraphqlRails
           end
         end
 
-
         context 'when input is deprecated' do
           before do
             attribute.deprecated('Use something else')

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: error backtrace to SystemError
 * Fixed: skip "base" field name in validation error messages
 * Added: router namespaces and named scopes
+* Added: `deprecate` method/option for attributes and input attributes
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.2.0](2022-01-25)

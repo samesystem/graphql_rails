@@ -31,7 +31,8 @@ module GraphqlRails
           description: description,
           camelize: false,
           groups: groups,
-          **default_value_option
+          **default_value_option,
+          **deprecation_reason_params
         }
       end
 
@@ -51,6 +52,10 @@ module GraphqlRails
         @attribute_name_parser ||= AttributeNameParser.new(
           initial_name, options: attribute_naming_options
         )
+      end
+
+      def deprecation_reason_params
+        { deprecation_reason: deprecation_reason }.compact
       end
 
       def attribute_naming_options

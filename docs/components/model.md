@@ -131,6 +131,21 @@ class User
 end
 ```
 
+### attribute.deprecated
+
+Attribute can be marked as deprecated with `deprecated` method:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute(:legacy_name).deprecated
+    c.attribute(:legacy_id).deprecated('This is my custom deprecation reason')
+  end
+end
+```
+
 ### attribute.groups
 
 Groups are handy feature when you want to have multiple schemas. For example, you want to have public graphql endpoint and internal graphql endpoint where each group has some unique nodes. If attribute has `groups` set, then this attribute will be visible only in appropriate group schemas.
@@ -260,6 +275,23 @@ end
 
 class User
   graphql.attribute(:avatar_url).permit_input(:size, type: Image, subtype: :size_options)
+end
+```
+
+#### *deprecated*
+
+You can mark input input as deprecated with `deprecated` option:
+
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.attribute(:avatar_url)
+         .permit_input(:size, type: :int!, deprecated: true)
+
+  graphql.attribute(:logo_url)
+         .permit_input(:size, type: :int!, deprecated: 'custom image size is deprecated')
 end
 ```
 
@@ -519,6 +551,22 @@ class User
 
   graphql.input do |c|
     c.attribute :name, description: "User's first name"
+  end
+end
+```
+
+
+#### input attribute deprecation
+
+You can mark input attribute as deprecated with `deprecated` method:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute(:full_name).deprecated('Use firstName and lastName instead')
+    c.attribute(:surname).deprecated
   end
 end
 ```

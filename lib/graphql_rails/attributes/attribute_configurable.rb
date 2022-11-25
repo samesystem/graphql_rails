@@ -40,6 +40,21 @@ module GraphqlRails
       def optional(new_value = true) # rubocop:disable Style/OptionalBooleanParameter
         required(!new_value)
       end
+
+      def deprecated(reason = 'Deprecated')
+        @deprecation_reason = \
+          if [false, nil].include?(reason)
+            nil
+          else
+            reason.is_a?(String) ? reason : 'Deprecated'
+          end
+
+        self
+      end
+
+      def deprecation_reason
+        @deprecation_reason
+      end
     end
   end
 end

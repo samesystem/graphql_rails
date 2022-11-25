@@ -42,10 +42,11 @@ GraphqlRails::Router.draw do
   resources :users
 
   # if you want custom queries or mutation
-  query 'searchLogs', to: 'logs#search' # redirects request to LogsController
-  mutation 'changeUserPassword', to: 'users#change_password'
+  query 'searchLogs', to: 'logs#search' # action is handled by LogsController#search
 end
 ```
+
+See [Routes docs](components/routes.md) for more info.
 
 ### Define your Graphql model
 
@@ -56,67 +57,42 @@ class User # works with any class including ActiveRecord
 
   graphql do |c|
     # most common attributes, like :id, :name, :title has default type, so you don't have to specify it (but you can!)
-    c.attribute :id
+    c.attribute(:id)
 
-    c.attribute :email, type: :string
-    c.attribute :surname, type: :string
+    c.attribute(:email).type('String')
+    c.attribute(:surname).type('String')
   end
 end
 ```
+
+See [Model docs](components/model.md) for more info.
 
 ### Define controller
 
 ```ruby
 # app/controllers/graphql/users_controller.rb
 class Graphql::UsersController < GraphqlApplicationController
-  # graphql requires to describe which attributes controller action accepts and which returns
-  action(:change_user_password)
-    .permit(:password!, :id!) # Bang (!) indicates that attribute is required
-    .returns('User!')
+  model('User') # specify that all actions returns User by default
 
-  def change_user_password
-    user = User.find(params[:id])
-    user.update!(password: params[:password])
+  # DRUD actions description
+  action(:index).permit(id: 'ID!').returns_many
+  action(:show).permit(id: 'ID!').returns_single
+  action(:create).permit(email: 'String!').returns_single
+  action(:update).permit(id: 'ID!', email: 'String!').returns_single
+  action(:destroy).permit(id: 'ID!').returns_single
 
-    # returned value needs to have all methods defined in model `graphql do` part
-    user # or SomeDecorator.new(user)
+  def index
+    User.all
   end
 
-  action(:search)
-    .permit(search_fields!: SearchFieldsInput) # you can specify your own input fields
-    .returns('[User!]!')
-  def search
+  def show
+    User.find(params[:id])
   end
+  # ... code for create / update / destroy is skipped ...
 end
 ```
 
-## Routes
-
-```ruby
-GraphqlRails::Router.draw do
-  # generates `friend`, `createFriend`, `updateFriend`, `destroyFriend`, `friends` routes
-  resources :friends
-  resources :shops, only: [:show, :index] # generates `shop` and `shops` routes only
-  resources :orders, except: :update # generates all routes except `updateOrder`
-
-  resources :users do
-    # generates `findUser` query
-    query :find, on: :member
-
-    # generates `searchUsers` query
-    query :search, on: :collection
-  end
-
-  # you can use namespaced controllers too:
-  scope module: 'admin' do
-    # `updateTranslations` route will be handled by `Admin::TranslationsController`
-    mutation :updateTranslations, to: 'translations#update'
-
-    # all :groups routes will be handled by `Admin::GroupsController`
-    resources :groups
-  end
-end
-```
+See [Controller docs](components/controlle.md) for more info.
 
 ## Testing your GraphqlRails::Controller in RSpec
 
@@ -133,6 +109,8 @@ RSpec.configure do |config|
   # ... your other configuration ...
 end
 ```
+
+See [Testing docs](testing/testing.md) for more info.
 
 ### Helper methods
 

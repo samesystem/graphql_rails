@@ -5,6 +5,7 @@ module GraphqlRails
     # builds GraphQL::Schema based on previously defined grahiti data
     class SchemaBuilder
       require_relative './plain_cursor_encoder'
+      require_relative './build_schema_action_type'
 
       attr_reader :queries, :mutations, :subscriptions, :raw_actions
 
@@ -51,21 +52,7 @@ module GraphqlRails
 
         return if group_routes.empty? && type_name != 'Query'
 
-        build_type(type_name, group_routes)
-      end
-
-      def build_type(type_name, group_routes)
-        Class.new(GraphQL::Schema::Object) do
-          graphql_name(type_name)
-
-          group_routes.each do |route|
-            field(*route.name, **route.field_options)
-          end
-
-          def self.inspect
-            "#{GraphQL::Schema::Object}(#{graphql_name})"
-          end
-        end
+        BuildSchemaActionType.call(type_name: type_name, routes: group_routes)
       end
     end
   end

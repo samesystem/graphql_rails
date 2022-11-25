@@ -89,16 +89,52 @@ end
 
 ### _module_ options
 
-currently `scope` method accepts single option: `module`. `module` allows to specify controller namespace. So you can use scoped controllers, like so:
+If you want to want to route everything to controllers, located at `controllers/admin/top_secret`, you can use scope with `module` param:
 
 ```ruby
-MyGraphqlSchema = GraphqlRails::Router.draw do
-  scope module: 'admin/top_secret' do
-    mutation :logIn, to: 'sessions#login' # this will trigger Admin::TopSecret::SessionsController
-  end
+scope module: 'admin/top_secret' do
+  mutation :logIn, to: 'sessions#login' # this will trigger Admin::TopSecret::SessionsController
+end
+```
 
+### Named scope
+
+If you want to nest some routes under some other node, you can use named scope:
+
+```ruby
+scope :admin do
   mutation :logIn, to: 'sessions#login' # this will trigger ::SessionsController
 end
+```
+
+This action will be accessible via:
+
+```graphql
+mutation {
+  admin {
+    logIn(email: 'john@example.com') { ... }
+  }
+}
+```
+
+## _namespace_
+
+You may wish to organize groups of controllers under a namespace. Most commonly, you might group a number of administrative controllers under an `Admin::` namespace, and place these controllers under the app/controllers/admin directory. You can route to such a group by using a namespace block:
+
+```ruby
+  namespace :admin do
+    resources :articles, only: :show
+  end
+```
+
+On GraphQL side, you can reach such route with the following query:
+
+```graphql
+query {
+  admin {
+    article(id: '123') { ... }
+  }
+}
 ```
 
 ## _group_

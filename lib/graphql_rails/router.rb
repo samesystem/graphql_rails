@@ -21,9 +21,10 @@ module GraphqlRails
       end
     end
 
-    attr_reader :routes, :namespace_name, :raw_graphql_actions
+    attr_reader :routes, :namespace_name, :raw_graphql_actions, :scope_names
 
-    def initialize(module_name: '', group_names: [])
+    def initialize(module_name: '', group_names: [], scope_names: [])
+      @scope_names = scope_names
       @module_name = module_name
       @group_names = group_names
       @routes ||= Set.new
@@ -37,11 +38,14 @@ module GraphqlRails
       routes.merge(scoped_router.routes)
     end
 
-    def scope(**options, &block)
-      full_module_name = [module_name, options[:module]].reject(&:empty?).join('/')
-      scoped_router = router_with(module_name: full_module_name)
+    def scope(new_scope_name = nil, **options, &block)
+      scoped_router = router_with_scope_params(new_scope_name, **options)
       scoped_router.instance_eval(&block)
       routes.merge(scoped_router.routes)
+    end
+
+    def namespace(namespace_name, &block)
+      scope(path: namespace_name, module: namespace_name, &block)
     end
 
     def resources(name, **options, &block)
@@ -87,11 +91,23 @@ module GraphqlRails
 
     attr_reader :module_name, :group_names
 
+    def router_with_scope_params(new_scope_name, **options)
+      new_scope_name ||= options[:path]
+
+      full_module_name = [module_name, options[:module]].select(&:present?).join('/')
+      full_scope_names = [*scope_names, new_scope_name].select(&:present?)
+
+      router_with(module_name: full_module_name, scope_names: full_scope_names)
+    end
+
     def router_with(new_router_options = {})
-      default_options = { module_name: module_name, group_names: group_names }
-      full_options = default_options.merge(new_router_options)
+      full_options = default_router_options.merge(new_router_options)
 
       self.class.new(**full_options)
+    end
+
+    def default_router_options
+      { module_name: module_name, group_names: group_names, scope_names: scope_names }
     end
 
     def add_raw_action(name, *args, &block)
@@ -111,7 +127,7 @@ module GraphqlRails
     end
 
     def default_route_options
-      { module: module_name, on: :member }
+      { module: module_name, on: :member, scope_names: scope_names }
     end
   end
 end

@@ -185,6 +185,24 @@ class User
 end
 ```
 
+### attribute.hidden_in_groups
+
+Opposite for Attribute#groups. It hides attribute in given groups
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    # visible in all schemas (default):
+    c.attribute(:email)
+
+    # visible in all schemas except "external":
+    c.attribute(:nickname).hidden_in_groups(:external)
+  end
+end
+```
+
 ### attribute.options
 
 Allows passing options to attribute definition. Available options:

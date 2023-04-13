@@ -235,6 +235,16 @@ module GraphqlRails
           end
         end
 
+        context 'when attribute is hidden in a group' do
+          before do
+            attribute.hidden_in_groups(:some_group)
+          end
+
+          it 'builds field with a given group' do
+            expect(field_options).to include(hidden_in_groups: %w[some_group])
+          end
+        end
+
         context 'when deprecation reason is set' do
           before do
             attribute.deprecated('I do not like it')

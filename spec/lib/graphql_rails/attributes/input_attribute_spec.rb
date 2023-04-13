@@ -144,8 +144,8 @@ module GraphqlRails
             end
 
             it 'returns required input type', :aggregate_failures do
-              expect(input_argument_type.first.to_type_signature).to eq 'DummyModelInput'
-              expect(input_argument_type.second).to be_nil
+              expect(input_argument_type[0].to_type_signature).to eq 'DummyModelInput'
+              expect(input_argument_type[1]).to be_nil
             end
 
             it 'marks input as required' do
@@ -157,8 +157,8 @@ module GraphqlRails
             let(:type) { '[Int!]!' }
 
             it 'returns required input type', :aggregate_failures do
-              expect(input_argument_type.first.to_type_signature).to eq 'Int'
-              expect(input_argument_type.second).to be_nil
+              expect(input_argument_type[0].to_type_signature).to eq 'Int'
+              expect(input_argument_type[1]).to be_nil
             end
 
             it 'marks input as required' do
@@ -170,8 +170,8 @@ module GraphqlRails
             let(:type) { "[#{dummy_model.name}!]" }
 
             it 'contains required inner type', :aggregate_failures do
-              expect(input_argument_type.first.to_type_signature).to eq 'DummyModelInput'
-              expect(input_argument_type.second).to be_nil
+              expect(input_argument_type[0].to_type_signature).to eq 'DummyModelInput'
+              expect(input_argument_type[1]).to be_nil
             end
 
             it 'marks list part as not required' do
@@ -201,6 +201,16 @@ module GraphqlRails
 
           it 'builds field with a given group' do
             expect(input_argument_options).to include(groups: %w[some_group])
+          end
+        end
+
+        context 'when input is hidden in a groups' do
+          before do
+            attribute.hidden_in_groups(:some_group)
+          end
+
+          it 'builds field with a given group' do
+            expect(input_argument_options).to include(hidden_in_groups: %w[some_group])
           end
         end
 

@@ -114,7 +114,7 @@ GEM
       byebug (~> 11.0)
       pry (~> 0.13.0)
     racc (1.6.1)
-    rack (2.2.3.1)
+    rack (2.2.6.4)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (6.1.4.4)

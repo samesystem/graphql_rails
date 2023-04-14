@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
+* Added: `hidden_in_groups` for attributes to be able to skip attribute from certain groups
 
 ## [2.3.0](2022-11-25)
 

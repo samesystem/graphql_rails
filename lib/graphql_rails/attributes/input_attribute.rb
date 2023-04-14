@@ -31,6 +31,7 @@ module GraphqlRails
           description: description,
           camelize: false,
           groups: groups,
+          hidden_in_groups: hidden_in_groups,
           **default_value_option,
           **deprecation_reason_params
         }

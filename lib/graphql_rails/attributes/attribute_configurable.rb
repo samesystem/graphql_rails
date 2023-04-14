@@ -32,6 +32,14 @@ module GraphqlRails
         groups(*args)
       end
 
+      def hidden_in_groups(new_groups = ChainableOptions::NOT_SET)
+        @hidden_in_groups ||= []
+        return @hidden_in_groups if new_groups == ChainableOptions::NOT_SET
+
+        @hidden_in_groups = Array(new_groups).map(&:to_s)
+        self
+      end
+
       def required(new_value = true) # rubocop:disable Style/OptionalBooleanParameter
         @required = new_value
         self

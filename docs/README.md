@@ -92,7 +92,7 @@ class Graphql::UsersController < GraphqlApplicationController
 end
 ```
 
-See [Controller docs](components/controlle.md) for more info.
+See [Controller docs](components/controller.md) for more info.
 
 ## Testing your GraphqlRails::Controller in RSpec
 

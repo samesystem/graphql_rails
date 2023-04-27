@@ -254,6 +254,16 @@ module GraphqlRails
             expect(field_options).to include(deprecation_reason: 'I do not like it')
           end
         end
+
+        context 'when extras are set' do
+          before do
+            attribute.extras([:lookahead])
+          end
+
+          it 'returns extras' do
+            expect(field_options).to include(extras: [:lookahead])
+          end
+        end
       end
     end
   end

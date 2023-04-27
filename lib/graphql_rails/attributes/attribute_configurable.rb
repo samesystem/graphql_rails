@@ -17,6 +17,7 @@ module GraphqlRails
 
         chainable_option :description
         chainable_option :options, default: {}
+        chainable_option :extras, default: []
         chainable_option :type
       end
 

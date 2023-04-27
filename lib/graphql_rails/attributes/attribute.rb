@@ -43,7 +43,8 @@ module GraphqlRails
           camelize: camelize?,
           groups: groups,
           hidden_in_groups: hidden_in_groups,
-          **deprecation_reason_params
+          **deprecation_reason_params,
+          **extras_options
         }
       end
 
@@ -52,6 +53,12 @@ module GraphqlRails
       attr_reader :initial_name
 
       private
+
+      def extras_options
+        return {} if extras.empty?
+
+        { extras: extras }
+      end
 
       def camelize?
         options[:input_format] != :original && options[:attribute_name_format] != :original

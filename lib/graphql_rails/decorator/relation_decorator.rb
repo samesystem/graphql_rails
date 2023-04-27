@@ -5,7 +5,7 @@ module GraphqlRails
     # wrapps active record relation and returns decorated object instead
     class RelationDecorator
       delegate :map, :each, to: :to_a
-      delegate :limit_value, :offset_value, :count, :size, :empty?, to: :relation
+      delegate :limit_value, :offset_value, :count, :size, :empty?, :loaded?, to: :relation
 
       def self.decorates?(object)
         (defined?(ActiveRecord) && object.is_a?(ActiveRecord::Relation)) ||

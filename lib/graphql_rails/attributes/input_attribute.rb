@@ -80,7 +80,7 @@ module GraphqlRails
       end
 
       def raw_input_type
-        return type if type.is_a?(GraphQL::InputObjectType)
+        return type if type.is_a?(GraphQL::Schema::InputObject)
         return type.graphql_input_type if type.is_a?(Model::Input)
       end
     end

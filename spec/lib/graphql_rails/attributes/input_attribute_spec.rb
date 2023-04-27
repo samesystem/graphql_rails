@@ -89,8 +89,8 @@ module GraphqlRails
 
         context 'when type is a raw graphql input class' do
           let(:type) do
-            GraphQL::InputObjectType.define do
-              name 'DummyInput'
+            Class.new(GraphQL::Schema::InputObject) do
+              graphql_name "DummyInput"
             end
           end
 
@@ -104,8 +104,8 @@ module GraphqlRails
             let(:type) { non_list_type.to_list_type }
 
             let(:non_list_type) do
-              GraphQL::InputObjectType.define do
-                name 'DummyAsListInput'
+              Class.new(GraphQL::Schema::InputObject) do
+                graphql_name "DummyAsListInput"
               end
             end
 

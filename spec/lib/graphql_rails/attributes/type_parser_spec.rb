@@ -192,7 +192,7 @@ module GraphqlRails
         subject(:graphql_type) { parser.graphql_type }
 
         context 'when graphql type is provided' do
-          let(:type) { GraphQL::INT_TYPE }
+          let(:type) { GraphQL::Types::Int }
 
           it 'returns original graphql type' do
             expect(graphql_type).to eq type

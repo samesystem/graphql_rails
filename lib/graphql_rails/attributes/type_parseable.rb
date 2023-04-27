@@ -42,14 +42,13 @@ module GraphqlRails
       WRAPPER_TYPES = [
         GraphQL::Schema::List,
         GraphQL::Schema::NonNull,
-        GraphQL::NonNullType,
-        GraphQL::ListType
+        GraphQL::Language::Nodes::NonNullType,
+        GraphQL::Language::Nodes::ListType
       ].freeze
 
       GRAPHQL_BASE_TYPES = [
-        GraphQL::BaseType,
-        GraphQL::ObjectType,
-        GraphQL::InputObjectType
+        GraphQL::Schema::Object,
+        GraphQL::Schema::InputObject
       ].freeze
 
       RAW_GRAPHQL_TYPES = (WRAPPER_TYPES + GRAPHQL_BASE_TYPES).freeze

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 * Added: `hidden_in_groups` for attributes to be able to skip attribute from certain groups
 * Added: `extras` for attributes to be able to include graphql-ruby extensions
+* Added: `lookahead` as a controller request object field
 
 ## [2.3.0](2022-11-25)
 

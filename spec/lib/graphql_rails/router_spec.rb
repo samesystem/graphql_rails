@@ -125,8 +125,7 @@ module GraphqlRails
                 customQuery: String!
               }
 
-              type Query {
-              }
+              type Query
 
               type Subscription {
                 recordCreated: String!
@@ -160,9 +159,9 @@ module GraphqlRails
     describe '#rescue_from' do
       it 'allows rescuing from errors' do
         expect { router.rescue_from(StandardError) { 'ups!' } }.to(
-          change { router.tap(&:reload_schema).graphql_schema.error_handler.find_handler_for(StandardError) }
-            .from(nil)
-            .to(hash_including(class: StandardError))
+          change { router.tap(&:reload_schema).graphql_schema.error_handlers[:subclass_handlers].keys }
+            .from([])
+            .to([StandardError])
         )
       end
     end

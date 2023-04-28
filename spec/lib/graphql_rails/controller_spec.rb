@@ -5,7 +5,7 @@ require 'active_record'
 
 module GraphqlRails
   RSpec.describe Controller do
-    DummyUserInput = GraphQL::InputObjectType.define {}
+    DummyUserInput = Class.new(GraphQL::Schema::InputObject)
 
     class DummyInputsController < GraphqlRails::Controller
       action(:create).permit(:id, user!: DummyUserInput)
@@ -163,7 +163,7 @@ module GraphqlRails
     let(:request) { Controller::Request.new(graphql_object, inputs, context) }
     let(:graphql_object) { nil }
     let(:inputs) { {} }
-    let(:context) { instance_double(GraphQL::Query::Context::FieldResolutionContext) }
+    let(:context) { instance_double(GraphQL::Query::Context) }
 
     describe '.action' do
       subject(:action) { DummyInputsController.controller_configuration.action(:create) }

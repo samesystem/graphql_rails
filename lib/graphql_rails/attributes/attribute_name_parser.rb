@@ -3,7 +3,7 @@
 module GraphqlRails
   module Attributes
     # Parses attribute name and can generates graphql scalar type,
-    # grapqhl name and etc. based on that
+    # graphql name and etc. based on that
     class AttributeNameParser
       def initialize(original_name, options: {})
         @original_name = original_name.to_s

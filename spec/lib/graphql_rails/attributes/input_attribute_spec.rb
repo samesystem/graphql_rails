@@ -77,7 +77,7 @@ module GraphqlRails
           end
         end
 
-        context 'when type is instance of GrapqhlRails::Input' do
+        context 'when type is instance of graphqlRails::Input' do
           let(:type) do
             dummy_model.graphql.input(:dummy_input) {}
           end

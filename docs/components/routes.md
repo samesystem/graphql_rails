@@ -21,10 +21,10 @@ MyGraphqlSchema = GraphqlRails::Router.draw do
 
   # you can use namespaced controllers too:
   scope module: 'admin' do
-    # `updateTranslations` route will be handeled by `Admin::TranslationsController`
+    # `updateTranslations` route will be handled by `Admin::TranslationsController`
     mutation :updateTranslations, to: 'translations#update'
 
-    # all :groups routes will be handeled by `Admin::GroupsController`
+    # all :groups routes will be handled by `Admin::GroupsController`
     resources :groups
   end
 end
@@ -40,9 +40,9 @@ If you want to exclude some actions you can use `only` or `except` options.
 
 ```ruby
 MyGraphqlSchema = GraphqlRails::Router.draw do
-  resouces :users
-  resouces :friends, only: :index
-  resouces :posts, except: [:destroy, :index]
+  resources :users
+  resources :friends, only: :index
+  resources :posts, except: [:destroy, :index]
 end
 ```
 
@@ -52,7 +52,7 @@ Sometimes it's handy so have non-CRUD actions in your controller. To define such
 
 ```ruby
 MyGraphqlSchema = GraphqlRails::Router.draw do
-  resouces :users do
+  resources :users do
     mutation :changePassword, on: :member
     query :active, on: :collection
   end
@@ -65,7 +65,7 @@ Sometimes, especially when working with member queries, it sounds better when ac
 
 ```ruby
 MyGraphqlSchema = GraphqlRails::Router.draw do
-  resouces :users do
+  resources :users do
     query :details, on: :member, suffix: true
   end
 end
@@ -81,7 +81,7 @@ in case you want to have non-CRUD controller with custom actions you can define 
 MyGraphqlSchema = GraphqlRails::Router.draw do
   mutation :logIn, to: 'sessions#login'
   query :me, to: 'users#current_user'
-  subscribtion :new_message, to: 'messages#created'
+  subscription :new_message, to: 'messages#created'
 end
 ```
 

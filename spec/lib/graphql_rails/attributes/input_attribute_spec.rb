@@ -95,7 +95,7 @@ module GraphqlRails
           end
 
           context 'when input is not list' do
-            it 'returns orginal type' do
+            it 'returns original type' do
               expect(input_argument_type).to eq type
             end
           end
@@ -109,7 +109,7 @@ module GraphqlRails
               end
             end
 
-            it 'returns orginal type' do
+            it 'returns original type' do
               expect(input_argument_type).to eq [non_list_type, { null: true }]
             end
           end

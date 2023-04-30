@@ -7,7 +7,7 @@ require 'graphql_rails/errors/error'
 
 module GraphqlRails
   class Controller
-    # stores all graphql_rails contoller specific config
+    # stores all graphql_rails controller specific config
     class Configuration
       class InvalidActionConfiguration < GraphqlRails::Error; end
 

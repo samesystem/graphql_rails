@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module GraphqlRails
-  # base class which is returned in case something bad happens. Contains all error rendering tructure
+  # base class which is returned in case something bad happens. Contains all error rendering structure
   class CustomExecutionError < ExecutionError
     attr_reader :extra_graphql_data
 

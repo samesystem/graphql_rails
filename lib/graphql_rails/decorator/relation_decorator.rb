@@ -2,7 +2,7 @@
 
 module GraphqlRails
   module Decorator
-    # wrapps active record relation and returns decorated object instead
+    # wraps active record relation and returns decorated object instead
     class RelationDecorator
       delegate :map, :each, to: :to_a
       delegate :limit_value, :offset_value, :count, :size, :empty?, :loaded?, to: :relation

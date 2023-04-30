@@ -336,7 +336,7 @@ You can mark collection method as `paginated`. In this case method will return r
 class User
   include GraphqlRails::Model
 
-  graphql.attribute :items, type: '[Item]', paginatted: true
+  graphql.attribute :items, type: '[Item]', paginated: true
 
   def items
     Item.all

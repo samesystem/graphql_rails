@@ -8,7 +8,7 @@ require 'graphql_rails/errors/custom_execution_error'
 module GraphqlRails
   class Controller
     class Request
-      # Converts user provided free-form errors in to meaningfull graphql error classes
+      # Converts user provided free-form errors in to meaningful graphql error classes
       class FormatErrors
         include Service
 

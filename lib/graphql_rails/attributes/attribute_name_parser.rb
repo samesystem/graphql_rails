@@ -3,7 +3,7 @@
 module GraphqlRails
   module Attributes
     # Parses attribute name and can generates graphql scalar type,
-    # grapqhl name and etc. based on that
+    # graphql name and etc. based on that
     class AttributeNameParser
       def initialize(original_name, options: {})
         @original_name = original_name.to_s
@@ -13,9 +13,9 @@ module GraphqlRails
       def field_name
         @field_name ||= \
           if original_format?
-            preprocesed_name
+            preprocessed_name
           else
-            preprocesed_name.camelize(:lower)
+            preprocessed_name.camelize(:lower)
           end
       end
 
@@ -47,7 +47,7 @@ module GraphqlRails
         options[:input_format] == :original || options[:attribute_name_format] == :original
       end
 
-      def preprocesed_name
+      def preprocessed_name
         if name.end_with?('?')
           "is_#{name.remove(/\?\Z/)}"
         else

@@ -101,7 +101,7 @@ Check [graphql-ruby documentation](https://graphql-ruby.org) for more details ab
 
 ### attribute.property
 
-By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on grapqhl side, you can use `property` option:
+By default graphql attribute names are expected to be same as model methods/attributes, but if you want to use different name on graphql side, you can use `property` option:
 
 ```ruby
 class User
@@ -336,7 +336,7 @@ You can mark collection method as `paginated`. In this case method will return r
 class User
   include GraphqlRails::Model
 
-  graphql.attribute :items, type: '[Item]', paginatted: true
+  graphql.attribute :items, type: '[Item]', paginated: true
 
   def items
     Item.all
@@ -421,7 +421,7 @@ end
 
 ## name
 
-By default grapqhl type name will be same as model name, but you can change it via `name` method
+By default graphql type name will be same as model name, but you can change it via `name` method
 
 ```ruby
 class User
@@ -435,7 +435,7 @@ end
 
 ## description
 
-To improve grapqhl documentation, you can description for your graphql type:
+To improve graphql documentation, you can description for your graphql type:
 
 ```ruby
 class User
@@ -452,7 +452,7 @@ end
 Sometimes it's handy to get raw graphql type. To do so you can call:
 
 ```ruby
-YourModel.graphql.grapqhl_type
+YourModel.graphql.graphql_type
 ```
 
 ## input

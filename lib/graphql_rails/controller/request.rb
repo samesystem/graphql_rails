@@ -7,11 +7,12 @@ module GraphqlRails
       require 'graphql_rails/controller/request/format_errors'
 
       attr_accessor :object_to_return
-      attr_reader :errors, :context
+      attr_reader :errors, :context, :lookahead
 
       def initialize(graphql_object, inputs, context)
         @graphql_object = graphql_object
-        @inputs = inputs
+        @inputs = inputs.except(:lookahead)
+        @lookahead = inputs[:lookahead]
         @context = context
       end
 

@@ -38,7 +38,7 @@ module GraphqlRails
         if function
           { function: function }
         else
-          { resolver: resolver }
+          { resolver: resolver, extras: [:lookahead] }
         end
       end
 

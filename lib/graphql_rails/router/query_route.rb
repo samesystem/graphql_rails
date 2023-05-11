@@ -13,10 +13,6 @@ module GraphqlRails
       def mutation?
         false
       end
-
-      def subscription?
-        false
-      end
     end
   end
 end

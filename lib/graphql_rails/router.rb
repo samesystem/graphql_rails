@@ -5,7 +5,6 @@ require 'active_support/core_ext/string/inflections'
 require 'graphql_rails/router/schema_builder'
 require 'graphql_rails/router/mutation_route'
 require 'graphql_rails/router/query_route'
-require 'graphql_rails/router/subscription_route'
 require 'graphql_rails/router/resource_routes_builder'
 
 module GraphqlRails
@@ -21,7 +20,7 @@ module GraphqlRails
       end
     end
 
-    attr_reader :routes, :namespace_name, :raw_graphql_actions, :scope_names
+    attr_reader :routes, :namespace_name, :raw_graphql_actions, :scope_names, :assigned_subscription_type
 
     def initialize(module_name: '', group_names: [], scope_names: [])
       @scope_names = scope_names
@@ -36,12 +35,14 @@ module GraphqlRails
       scoped_router = router_with(group_names: group_names)
       scoped_router.instance_eval(&block)
       routes.merge(scoped_router.routes)
+      @assigned_subscription_type ||= scoped_router.assigned_subscription_type
     end
 
     def scope(new_scope_name = nil, **options, &block)
       scoped_router = router_with_scope_params(new_scope_name, **options)
       scoped_router.instance_eval(&block)
       routes.merge(scoped_router.routes)
+      @assigned_subscription_type ||= scoped_router.assigned_subscription_type
     end
 
     def namespace(namespace_name, &block)
@@ -63,8 +64,8 @@ module GraphqlRails
       routes << build_route(MutationRoute, name, **options)
     end
 
-    def subscription(name, **options)
-      routes << build_route(SubscriptionRoute, name, **options)
+    def subscriptions_type(klass)
+      @assigned_subscription_type = klass
     end
 
     RAW_ACTION_NAMES.each do |action_name|
@@ -77,7 +78,7 @@ module GraphqlRails
       @graphql_schema[group&.to_sym] ||= SchemaBuilder.new(
         queries: routes.select(&:query?),
         mutations: routes.select(&:mutation?),
-        subscriptions: routes.select(&:subscription?),
+        subscription_type: assigned_subscription_type,
         raw_actions: raw_graphql_actions,
         group: group
       ).call

@@ -95,7 +95,9 @@ module GraphqlRails
     # controller request object more suitable for testing
     class Request < GraphqlRails::Controller::Request
       def initialize(params, context)
-        super(nil, params, context)
+        inputs = params || {}
+        inputs = inputs.merge(lookahead: ::GraphQL::Execution::Lookahead::NullLookahead.new)
+        super(nil, inputs, context)
       end
     end
 

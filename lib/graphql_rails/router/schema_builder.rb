@@ -7,12 +7,12 @@ module GraphqlRails
       require_relative './plain_cursor_encoder'
       require_relative './build_schema_action_type'
 
-      attr_reader :queries, :mutations, :subscriptions, :raw_actions
+      attr_reader :queries, :mutations, :events, :raw_actions
 
-      def initialize(queries:, mutations:, subscriptions:, raw_actions:, group: nil)
+      def initialize(queries:, mutations:, events:, raw_actions:, group: nil)
         @queries = queries
         @mutations = mutations
-        @subscriptions = subscriptions
+        @events = events
         @raw_actions = raw_actions
         @group = group
       end
@@ -20,7 +20,7 @@ module GraphqlRails
       def call
         query_type = build_group_type('Query', queries)
         mutation_type = build_group_type('Mutation', mutations)
-        subscription_type = build_group_type('Subscription', subscriptions)
+        subscription_type = build_group_type('Subscription', events)
         raw = raw_actions
 
         Class.new(GraphQL::Schema) do

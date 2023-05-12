@@ -21,14 +21,6 @@ module GraphqlRails
           @controller_action_name
         end
 
-        def self.topic_for(arguments:, field:, scope:)
-          GraphQL::Schema::Subscription.topic_for(
-            arguments: arguments,
-            field: field,
-            scope: scope
-          )
-        end
-
         def resolve(**inputs)
           request = Request.new(object, inputs, context)
           self.class.controller.new(request).call(self.class.controller_action_name)

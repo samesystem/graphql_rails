@@ -29,7 +29,7 @@ module GraphqlRails
       end
 
       def field_options
-        { subscription: }
+        { subscription: subscription }
       end
 
       def subscription

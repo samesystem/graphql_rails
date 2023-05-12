@@ -264,7 +264,7 @@ module GraphqlRails
         it 'generates correct controller action paths' do
           action_paths = router.routes.map(&:path)
 
-          expect(action_paths).to match_array(%w[foo/users#index foo/users#find
+          expect(action_paths).to match_array(%w[foo/users#index foo/users#find])
         end
       end
 

@@ -16,12 +16,6 @@ module GraphqlRails
         @scope_names = scope_names
       end
 
-      def path
-        return relative_path if module_name.empty?
-
-        [module_name, relative_path].join('/')
-      end
-
       def show_in_group?(group_name)
         return true if groups.nil? || groups.empty?
 

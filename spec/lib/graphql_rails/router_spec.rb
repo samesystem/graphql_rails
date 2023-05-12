@@ -113,6 +113,7 @@ module GraphqlRails
           test_subscription = Class.new(GraphQL::Schema::Subscription)
 
           stub_const('DummySubscriptionClass', test_subscription)
+          stub_const('Subscriptions::RecordDestroyedSubscription', test_subscription)
         end
 
         let(:router) do
@@ -121,6 +122,8 @@ module GraphqlRails
               mutation 'custom_query', to: 'custom_dummy#action'
 
               event 'record_created', subscription_class: 'DummySubscriptionClass'
+              event 'record_updated', subscription_class: DummySubscriptionClass
+              event :record_destroyed
             end
           end
         end
@@ -141,6 +144,8 @@ module GraphqlRails
 
               type Subscription {
                 recordCreated: DummySubscriptionClassPayload!
+                recordDestroyed: DummySubscriptionClassPayload!
+                recordUpdated: DummySubscriptionClassPayload!
               }
             GRAPHQL
           )

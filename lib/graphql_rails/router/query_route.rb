@@ -14,7 +14,7 @@ module GraphqlRails
         false
       end
 
-      def subscription?
+      def event?
         false
       end
     end

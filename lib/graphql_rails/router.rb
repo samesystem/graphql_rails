@@ -5,7 +5,7 @@ require 'active_support/core_ext/string/inflections'
 require 'graphql_rails/router/schema_builder'
 require 'graphql_rails/router/mutation_route'
 require 'graphql_rails/router/query_route'
-require 'graphql_rails/router/subscription_route'
+require 'graphql_rails/router/event_route'
 require 'graphql_rails/router/resource_routes_builder'
 
 module GraphqlRails
@@ -63,8 +63,8 @@ module GraphqlRails
       routes << build_route(MutationRoute, name, **options)
     end
 
-    def subscription(name, **options)
-      routes << build_route(SubscriptionRoute, name, **options)
+    def event(name, **options)
+      routes << build_route(EventRoute, name, **options)
     end
 
     RAW_ACTION_NAMES.each do |action_name|
@@ -77,7 +77,7 @@ module GraphqlRails
       @graphql_schema[group&.to_sym] ||= SchemaBuilder.new(
         queries: routes.select(&:query?),
         mutations: routes.select(&:mutation?),
-        subscriptions: routes.select(&:subscription?),
+        events: routes.select(&:event?),
         raw_actions: raw_graphql_actions,
         group: group
       ).call

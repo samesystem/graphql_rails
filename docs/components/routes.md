@@ -73,15 +73,25 @@ end
 
 This will generate `userDetails` field on GraphQL side.
 
-## _query_ and _mutation_ & _subscription_
+## _query_ and _mutation_ & _event_
 
-in case you want to have non-CRUD controller with custom actions you can define your own `query`/`mutation`/`subscription` actions like this:
+In case you want to have non-CRUD controller with custom actions you can define your own `query`/`mutation` actions like this:
 
 ```ruby
 MyGraphqlSchema = GraphqlRails::Router.draw do
   mutation :logIn, to: 'sessions#login'
   query :me, to: 'users#current_user'
-  subscription :new_message, to: 'messages#created'
+end
+
+Subscriptions are not really controller actions with a single response type, thus, they're defined differently. In GraphQL you subscribe to event, for example `userCreated`. To do this in graphql_rails you would define `event :user_created` in router definition.
+
+```ruby
+MyGraphqlSchema = GraphqlRails::Router.draw do
+  mutation :logIn, to: 'sessions#login'
+  query :me, to: 'users#current_user'
+
+  event :user_created # expects Subscriptions::UserCreatedSubscription class to be present
+  event :user_deleted, subscription_class: 'Subscriptions::UserDeletedSubscription'
 end
 ```
 

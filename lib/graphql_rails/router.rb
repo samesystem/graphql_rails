@@ -68,8 +68,8 @@ module GraphqlRails
     end
 
     RAW_ACTION_NAMES.each do |action_name|
-      define_method(action_name) do |*args, &block|
-        add_raw_action(action_name, *args, &block)
+      define_method(action_name) do |*args, **kwargs, &block|
+        add_raw_action(action_name, *args, **kwargs, &block)
       end
     end
 
@@ -110,8 +110,8 @@ module GraphqlRails
       { module_name: module_name, group_names: group_names, scope_names: scope_names }
     end
 
-    def add_raw_action(name, *args, &block)
-      raw_graphql_actions << { name: name, args: args, block: block }
+    def add_raw_action(name, *args, **kwargs, &block)
+      raw_graphql_actions << { name: name, args: args, kwargs: kwargs, block: block }
     end
 
     def build_route(route_builder, name, **options)

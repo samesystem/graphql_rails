@@ -37,7 +37,7 @@ module GraphqlRails
             GraphQL::Pagination::ActiveRecordRelationConnection
           )
           cursor_encoder(Router::PlainCursorEncoder)
-          raw.each { |action| send(action[:name], *action[:args], &action[:block]) }
+          raw.each { |action| send(action[:name], *action[:args], **action[:kwargs], &action[:block]) }
 
           query(query_type) if query_type
           mutation(mutation_type) if mutation_type

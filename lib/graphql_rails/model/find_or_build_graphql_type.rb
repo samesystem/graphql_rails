@@ -19,7 +19,7 @@ module GraphqlRails
       end
 
       def call
-        klass.tap { add_fields_to_graphql_type if new_class? || force_define_attributes }
+        klass.tap { add_attributes if new_class? || force_define_attributes }
       end
 
       private
@@ -28,20 +28,29 @@ module GraphqlRails
 
       delegate :klass, :new_class?, to: :type_class_finder
 
+      def parent_class
+        GraphqlRails::Types::ObjectType
+      end
+
+      def add_attributes_batch(attributes)
+        AddFieldsToGraphqlType.call(klass: klass, attributes: attributes)
+      end
+
       def type_class_finder
         @type_class_finder ||= FindOrBuildGraphqlTypeClass.new(
           name: name,
           type_name: type_name,
-          description: description
+          description: description,
+          parent_class: parent_class
         )
       end
 
-      def add_fields_to_graphql_type
+      def add_attributes
         scalar_attributes, dynamic_attributes = attributes.values.partition(&:scalar_type?)
 
-        AddFieldsToGraphqlType.call(klass: klass, attributes: scalar_attributes)
+        add_attributes_batch(scalar_attributes)
         dynamic_attributes.each { |attribute| find_or_build_dynamic_type(attribute) }
-        AddFieldsToGraphqlType.call(klass: klass, attributes: dynamic_attributes)
+        add_attributes_batch(dynamic_attributes)
       end
 
       def find_or_build_dynamic_type(attribute)

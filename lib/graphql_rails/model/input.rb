@@ -6,7 +6,7 @@ module GraphqlRails
     class Input
       require 'graphql_rails/concerns/chainable_options'
       require 'graphql_rails/model/configurable'
-      require 'graphql_rails/model/build_graphql_input_type'
+      require 'graphql_rails/model/find_or_build_graphql_input_type'
 
       include Configurable
 
@@ -18,8 +18,8 @@ module GraphqlRails
       end
 
       def graphql_input_type
-        @graphql_input_type ||= BuildGraphqlInputType.call(
-          name: name, description: description, attributes: attributes
+        @graphql_input_type ||= FindOrBuildGraphqlInputType.call(
+          name: name, description: description, attributes: attributes, type_name: type_name
         )
       end
 

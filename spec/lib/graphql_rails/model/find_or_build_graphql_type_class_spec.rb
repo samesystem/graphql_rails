@@ -9,7 +9,8 @@ module GraphqlRails
         described_class.new(
           name: name,
           type_name: type_name,
-          description: description
+          description: description,
+          parent_class: GraphQL::Schema::Object
         )
       end
 

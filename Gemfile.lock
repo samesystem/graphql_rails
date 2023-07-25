@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    graphql_rails (2.3.0)
+    graphql_rails (2.4.0)
       activesupport (>= 4)
       graphql (= 2.0.21)
 

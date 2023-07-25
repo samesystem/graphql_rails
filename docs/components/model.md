@@ -368,6 +368,21 @@ class User
 end
 ```
 
+### attribute.same_as
+
+When you want to have identical attributes, you can use `Attribute#same_as` to make sure that attribute params will stay in sync:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.attribute(:user_id).type('ID').description('User ID')
+    c.attribute(:person_id).same_as(c.attribute(:user_id))
+  end
+end
+```
+
 ### attribute.with
 
 When you want to define some options dynamically, it's quite handy to use "Attribute#with" method:
@@ -613,6 +628,28 @@ class User
 
   graphql.input do |c|
     c.attribute(:is_admin).type('Boolean').default_value(false)
+  end
+end
+```
+
+#### input attribute config copy
+
+You can copy existing config from other attribute using `Attribute#same_as` method:
+
+```ruby
+class User
+  include GraphqlRails::Model
+
+  graphql.input(:create) do |c|
+    c.attribute(:first_name).type('String!')
+    c.attribute(:last_name).type('String!')
+  end
+
+  graphql.input(:update) do |c|
+    c.attribute(:id).type('ID!')
+    graphql.input(:contract).attributes.each_value do |attr|
+      c.attribute(attr.name).same_as(attr)
+    end
   end
 end
 ```

@@ -67,6 +67,29 @@ module GraphqlRails
         end
       end
 
+      describe '#same_as' do
+        let(:other_attribute) do
+          described_class.new(:other, config: config).with(type: 'Integer', description: 'other')
+        end
+
+        it 'copies all attributes except name from existing attribute' do
+          expect(attribute.same_as(other_attribute)).to have_attributes(
+            name: 'full_name',
+            type: 'Integer',
+            description: 'other'
+          )
+        end
+
+        it 'keeps other attribute unchanged' do # rubocop:disable RSpec/ExampleLength
+          attribute.same_as(other_attribute)
+          expect(other_attribute).to have_attributes(
+            name: 'other',
+            type: 'Integer',
+            description: 'other'
+          )
+        end
+      end
+
       describe '#input_argument_args' do
         subject(:input_argument_args) { attribute.input_argument_args }
 

@@ -4,8 +4,15 @@ require 'spec_helper'
 
 module GraphqlRails
   module Model
-    RSpec.describe BuildGraphqlInputType do
-      subject(:builder) { described_class.new(name: name, description: description, attributes: attributes) }
+    RSpec.describe FindOrBuildGraphqlInputType do
+      subject(:builder) do
+        described_class.new(
+          name: name,
+          type_name: name.constantize.graphql.input.type_name,
+          description: description,
+          attributes: attributes
+        )
+      end
 
       let(:name) { 'DummyInput' }
       let(:description) { 'This is dummy input' }
@@ -14,6 +21,25 @@ module GraphqlRails
           id: GraphqlRails::Attributes::InputAttribute.new(:id, config: nil),
           full_name: GraphqlRails::Attributes::InputAttribute.new(:full_name!, config: nil)
         }
+      end
+
+      let(:dummy_model_class) do
+        graphql_name = name
+        graphql_description = description
+
+        Class.new do
+          include Model
+
+          graphql.input do |c|
+            c.name graphql_name
+            c.description graphql_description
+            c.attribute :name
+          end
+        end
+      end
+
+      before do
+        stub_const(name, dummy_model_class)
       end
 
       describe '#call' do

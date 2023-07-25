@@ -9,11 +9,12 @@ module GraphqlRails
 
       include ::GraphqlRails::Service
 
-      def initialize(name:, type_name:, description: nil)
+      def initialize(name:, type_name:, parent_class:, description: nil)
         @name = name
         @type_name = type_name
         @description = description
         @new_class = false
+        @parent_class = parent_class
       end
 
       def klass
@@ -27,13 +28,13 @@ module GraphqlRails
       private
 
       attr_accessor :new_class
-      attr_reader :name, :type_name, :description
+      attr_reader :name, :type_name, :description, :parent_class
 
       def build_graphql_type_klass
         graphql_type_name = name
         graphql_type_description = description
 
-        graphql_type_klass = Class.new(GraphqlRails::Types::ObjectType) do
+        graphql_type_klass = Class.new(parent_class) do
           graphql_name(graphql_type_name)
           description(graphql_type_description)
         end

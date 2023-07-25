@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: `extras` for attributes to be able to include graphql-ruby extensions
 * Added: `lookahead` as a controller request object field
 * Changed: `subscription` definition to `event` definition in router configuration page
+* Fixed: avoid "Found two visible definitions for X" issues for input types
 
 ## [2.3.0](2022-11-25)
 

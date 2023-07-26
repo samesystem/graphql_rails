@@ -588,7 +588,6 @@ class User
 end
 ```
 
-
 #### input attribute deprecation
 
 You can mark input attribute as deprecated with `deprecated` method:
@@ -615,6 +614,37 @@ class User
   graphql.input do |c|
     c.attribute(:is_admin).type('Boolean').default_value(false)
   end
+end
+```
+
+#### input attribute property
+
+Sometimes it's handy to have different input attribute on graphql level and different on controller. That's when `Attribute#property` comes to the rescue:
+
+```ruby
+class Post
+  include GraphqlRails::Model
+
+  graphql.input do |c|
+    c.attribute(:author_id).type('ID').property(:user_id)
+  end
+end
+```
+
+Then mutation such as:
+
+```gql
+mutation createPost(input: { authorId: 123 }) {
+  author
+}
+```
+
+Will pass `user_id` instead of `authorId` in controller:
+
+```ruby
+# posts_controller.rb
+def create
+  Post.create!(user_id: params[:input][:user_id])
 end
 ```
 

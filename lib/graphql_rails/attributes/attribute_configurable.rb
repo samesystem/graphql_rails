@@ -71,6 +71,16 @@ module GraphqlRails
         @property = new_value.to_s
         self
       end
+
+      def same_as(other_attribute)
+        other_attribute.dup.instance_variables.each do |instance_variable|
+          next if instance_variable == :@initial_name
+
+          instance_variable_set(instance_variable, other_attribute.instance_variable_get(instance_variable))
+        end
+
+        self
+      end
     end
   end
 end

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 * Added: `input.attribute.property` method which allows aliasing input parameter keys
+* Added: possibility to copy attribute config using the `Attribute#same_as` method
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 

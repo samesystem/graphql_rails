@@ -64,6 +64,13 @@ module GraphqlRails
       def deprecation_reason
         @deprecation_reason
       end
+
+      def property(new_value = ChainableOptions::NOT_SET)
+        return @property if new_value == ChainableOptions::NOT_SET
+
+        @property = new_value.to_s
+        self
+      end
     end
   end
 end

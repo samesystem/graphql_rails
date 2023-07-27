@@ -33,6 +33,7 @@ module GraphqlRails
           groups: groups,
           hidden_in_groups: hidden_in_groups,
           **default_value_option,
+          **property_params,
           **deprecation_reason_params
         }
       end
@@ -57,6 +58,10 @@ module GraphqlRails
 
       def deprecation_reason_params
         { deprecation_reason: deprecation_reason }.compact
+      end
+
+      def property_params
+        { as: property }.compact
       end
 
       def attribute_naming_options

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Added: `input.attribute.property` method which allows aliasing input parameter keys
+
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.4.0](2023-27-25)

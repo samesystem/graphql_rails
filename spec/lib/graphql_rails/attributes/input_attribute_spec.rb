@@ -60,6 +60,13 @@ module GraphqlRails
         end
       end
 
+      describe '#property' do
+        it 'changes property' do
+          expect { attribute.property('new_property') }
+            .to change(attribute, :property).to('new_property')
+        end
+      end
+
       describe '#input_argument_args' do
         subject(:input_argument_args) { attribute.input_argument_args }
 
@@ -231,6 +238,16 @@ module GraphqlRails
 
           it 'builds field with a given default value' do
             expect(input_argument_options).to include(default_value: 'some value')
+          end
+        end
+
+        context 'when input has property' do
+          before do
+            attribute.property('some_property')
+          end
+
+          it 'builds field with a given property' do
+            expect(input_argument_options).to include(as: 'some_property')
           end
         end
       end

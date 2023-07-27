@@ -65,6 +65,10 @@ module GraphqlRails
       describe '#same_as' do
         let(:other_attribute) { described_class.new(:other).with(type: 'Integer', description: 'other') }
 
+        before do
+          other_attribute.name # trigger instance variable initialization
+        end
+
         it 'copies all attributes except name from existing attribute' do
           expect(attribute.same_as(other_attribute)).to have_attributes(
             name: 'full_name',

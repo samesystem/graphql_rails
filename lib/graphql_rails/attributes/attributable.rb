@@ -8,6 +8,11 @@ module GraphqlRails
     # contains methods which are shared between various attribute-like classes
     # expects `initial_name` and `type` to be defined
     module Attributable
+      def initialize_copy(_original)
+        super
+        @attribute_name_parser = nil
+      end
+
       def field_name
         attribute_name_parser.field_name
       end

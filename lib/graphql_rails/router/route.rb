@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../controller/build_controller_action_resolver'
+require 'graphql_rails/controller/action'
 
 module GraphqlRails
   class Router
@@ -38,7 +39,7 @@ module GraphqlRails
         if function
           { function: function }
         else
-          { resolver: resolver, extras: [:lookahead] }
+          { resolver: resolver, extras: [:lookahead], **resolver_options }
         end
       end
 
@@ -47,7 +48,18 @@ module GraphqlRails
       attr_reader :function
 
       def resolver
-        @resolver ||= Controller::BuildControllerActionResolver.call(route: self)
+        @resolver ||= Controller::BuildControllerActionResolver.call(action: action)
+      end
+
+      def action
+        @action ||= Controller::Action.new(self).tap(&:return_type)
+      end
+
+      def resolver_options
+        action_config = action.action_config
+        return {} unless action_config.paginated?
+
+        action_config.pagination_options.slice(:max_page_size)
       end
     end
   end

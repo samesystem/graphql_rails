@@ -29,9 +29,11 @@ module GraphqlRails
 
       let(:route_path) { 'users#show' }
 
+      let(:action) { Controller::Action.new(route) }
+
       describe '.call' do
         subject(:call) do
-          described_class.call(route: route)
+          described_class.call(action: action)
         end
 
         it 'returns child class of ControllerActionResolver' do

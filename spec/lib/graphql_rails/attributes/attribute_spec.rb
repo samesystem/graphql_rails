@@ -150,6 +150,37 @@ module GraphqlRails
               expect(field_args[1]).to eq([GraphQL::Types::Int, null: true])
             end
           end
+
+          context 'when array is paginated with "max_page_size" option' do
+            let(:type) do
+              type_mode
+            end
+
+            let(:type_mode) do
+              Class.new do
+                include GraphqlRails::Model
+
+                graphql.name('SomeDummyModelType')
+                graphql.attribute(:id)
+
+                def self.name
+                  'SomeDummyModel'
+                end
+              end
+            end
+
+            before do
+              attribute.paginated(max_page_size: 123)
+            end
+
+            it 'sets connection type' do
+              expect(field_args[1] < GraphQL::Types::Relay::BaseConnection).to be true
+            end
+
+            it 'sets max_page_size' do
+              expect(field_args[2]).to include(max_page_size: 123)
+            end
+          end
         end
       end
 

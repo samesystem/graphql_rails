@@ -57,9 +57,7 @@ module GraphqlRails
 
       def resolver_options
         action_config = action.action_config
-        return {} unless action_config.paginated?
-
-        action_config.pagination_options.slice(:max_page_size)
+        action_config.pagination_options || {}
       end
     end
   end

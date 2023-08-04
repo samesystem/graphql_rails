@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: `input.attribute.property` method which allows aliasing input parameter keys
 * Added: possibility to copy attribute config using the `Attribute#same_as` method
 * Fixed: do not ignore custom `max_page_size` for paginated responses
+* Fixed: do not ignore custom `default_page_size` and other options for paginated responses
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.4.0](2023-27-25)

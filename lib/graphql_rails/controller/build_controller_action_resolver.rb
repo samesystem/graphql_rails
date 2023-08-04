@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'graphql_rails/controller/action'
 require 'graphql_rails/concerns/service'
 require 'graphql_rails/controller/action_configuration'
 require 'graphql_rails/controller/build_controller_action_resolver/controller_action_resolver'
@@ -11,12 +10,12 @@ module GraphqlRails
     class BuildControllerActionResolver
       include ::GraphqlRails::Service
 
-      def initialize(route:)
-        @route = route
+      def initialize(action:)
+        @action = action
       end
 
       def call # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-        action = build_action
+        action = self.action
 
         Class.new(ControllerActionResolver) do
           graphql_name("ControllerActionResolver#{SecureRandom.hex}")
@@ -38,17 +37,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :route
-
-      def build_action
-        Action.new(route).tap do |action|
-          assert_action(action)
-        end
-      end
-
-      def assert_action(action)
-        action.return_type
-      end
+      attr_reader :action
     end
   end
 end

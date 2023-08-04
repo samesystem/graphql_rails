@@ -43,15 +43,15 @@ module GraphqlRails
         { null: !type_parser.required? }
       end
 
+      def action_config
+        controller.controller_configuration.action_config(name)
+      end
+
       private
 
       attr_reader :route
 
       delegate :type_parser, to: :action_config
-
-      def action_config
-        controller.controller_configuration.action_config(name)
-      end
 
       def namespaced_controller_name
         [route.module_name, controller_name].reject(&:empty?).join('/')

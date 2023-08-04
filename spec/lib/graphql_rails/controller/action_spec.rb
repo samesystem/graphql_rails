@@ -16,7 +16,7 @@ module GraphqlRails
 
       subject(:action) { described_class.new(route) }
 
-      let(:action_name) { 'create' }
+      let(:action_name) { 'show' }
 
       let(:route) do
         Router::QueryRoute.new(
@@ -41,11 +41,21 @@ module GraphqlRails
         subject(:return_type) { action.return_type }
 
         context 'when action configuration specifies return type' do
-          let(:action_name) { 'show' }
-
           it 'uses specified type' do
             expect(return_type).to eq(GraphQL::Types::String.to_non_null_type)
           end
+        end
+      end
+
+      describe '#action_config' do
+        it 'returns action configuration' do
+          expect(action.action_config).to be_a(ActionConfiguration)
+        end
+
+        it 'returns action configuration with correct attributes' do
+          expect(action.action_config).to have_attributes(
+            name: action_name
+          )
         end
       end
     end

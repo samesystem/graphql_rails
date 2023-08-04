@@ -25,7 +25,8 @@ module GraphqlRails
         [
           field_name,
           type_parser.type_arg,
-          description
+          description,
+          *field_args_options
         ].compact
       end
 
@@ -59,6 +60,19 @@ module GraphqlRails
 
       def deprecation_reason_params
         { deprecation_reason: deprecation_reason }.compact
+      end
+
+      def field_args_options
+        options = { **field_args_pagination_options }
+        return nil if options.empty?
+
+        [options]
+      end
+
+      def field_args_pagination_options
+        return {} unless paginated?
+
+        pagination_options.slice(:max_page_size)
       end
     end
   end

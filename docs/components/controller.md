@@ -194,7 +194,21 @@ class UsersController < GraphqlRails::Controller
   action(:index).paginated(max_page_size: 10) # add max items limit
 
   def index
-    User.all # it will render 10 users even you have more
+    User.all # it will render max 10 users even you have requested more
+  end
+end
+```
+
+#### *default_page_size*
+
+Allows to specify max items count per request
+
+```ruby
+class UsersController < GraphqlRails::Controller
+  action(:index).paginated(default_page_size: 5) # add default items per page size
+
+  def index
+    User.all # it will render 5 users even you have more
   end
 end
 ```

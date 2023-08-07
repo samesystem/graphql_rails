@@ -93,12 +93,15 @@ module GraphqlRails
 
       context 'when pagination options was set' do
         let(:define_actions) do
-          configuration.action(:some_method).paginated(max_page_size: 200).permit(:id)
+          configuration.action(:some_method)
+                       .paginated(max_page_size: 200, default_page_size: 10)
+                       .permit(:id)
           configuration.action(:some_other_method).permit(:id, :name)
         end
 
         it 'sets options only for given action', :aggregate_failures do
-          expect(configuration.action(:some_method).pagination_options).to eq(max_page_size: 200)
+          expect(configuration.action(:some_method).pagination_options)
+            .to eq(max_page_size: 200, default_page_size: 10)
           expect(configuration.action(:some_other_method).pagination_options).to be_nil
         end
       end

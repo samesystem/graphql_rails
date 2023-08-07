@@ -19,7 +19,10 @@ module GraphqlRails
       end
 
       Class.new(GraphqlRails::Controller) do
-        action(:show).permit(:name!).returns(user_type).paginated(max_page_size: 100)
+        action(:show)
+          .permit(:name!)
+          .paginated(max_page_size: 100, default_page_size: 10)
+          .returns(user_type)
 
         def show
           'OK'
@@ -101,7 +104,8 @@ module GraphqlRails
       it 'returns correct options' do
         expect(field_options).to include(
           extras: [:lookahead],
-          max_page_size: 100
+          max_page_size: 100,
+          default_page_size: 10
         )
       end
     end

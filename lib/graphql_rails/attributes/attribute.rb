@@ -70,9 +70,7 @@ module GraphqlRails
       end
 
       def field_args_pagination_options
-        return {} unless paginated?
-
-        pagination_options.slice(:max_page_size)
+        pagination_options || {}
       end
     end
   end

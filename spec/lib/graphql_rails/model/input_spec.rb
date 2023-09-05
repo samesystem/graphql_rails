@@ -70,14 +70,47 @@ module GraphqlRails
       describe '#graphql_input_type' do
         subject(:graphql_input_type) { input.graphql_input_type }
 
-        before do
-          input.attribute(:first_name, type: :string!)
-          input.attribute(:last_name, type: :string!)
-        end
-
         context 'with attributes' do
+          before do
+            input.attribute(:first_name, type: :string!)
+            input.attribute(:last_name, type: :string!)
+          end
+
           it 'returns graphql input with arguments' do
             expect(graphql_input_type.arguments.keys).to match_array(%w[firstName lastName])
+          end
+        end
+
+        context 'when attribute points to another graphql input' do
+          module InputSpec # rubocop:disable Lint/LeakyConstantDeclaration, Lint/ConstantDefinitionInBlock
+            class ChildModel # rubocop:disable Lint/LeakyConstantDeclaration
+              include GraphqlRails::Model
+
+              graphql do |c|
+                c.attribute(:something)
+              end
+
+              graphql.input(:update) do |c|
+                c.attribute(:name).type('String!')
+              end
+            end
+
+            class ParentModel # rubocop:disable Lint/LeakyConstantDeclaration
+              include GraphqlRails::Model
+
+              graphql.input do |c|
+                c.attribute(:child)
+                 .type("[#{InputSpec::ChildModel}!]")
+                 .subtype(:update)
+              end
+            end
+          end
+
+          let(:input) { InputSpec::ParentModel.graphql.input }
+
+          it 'returns correct graphql input type' do
+            expect(graphql_input_type.arguments['child'].type.unwrap)
+              .to eq(InputSpec::ChildModel.graphql.input(:update).graphql_input_type)
           end
         end
       end

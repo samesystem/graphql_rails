@@ -55,15 +55,17 @@ module GraphqlRails
 
       def find_or_build_dynamic_type(attribute)
         graphql_model = attribute.graphql_model
-        find_or_build_graphql_model_type(graphql_model) if graphql_model
+        return unless graphql_model
+
+        find_or_build_graphql_model_type(graphql_model.graphql)
       end
 
-      def find_or_build_graphql_model_type(graphql_model)
+      def find_or_build_graphql_model_type(graphql_config)
         self.class.call(
-          name: graphql_model.graphql.name,
-          description: graphql_model.graphql.description,
-          attributes: graphql_model.graphql.attributes,
-          type_name: graphql_model.graphql.type_name
+          name: graphql_config.name,
+          description: graphql_config.description,
+          attributes: graphql_config.attributes,
+          type_name: graphql_config.type_name
         )
       end
     end

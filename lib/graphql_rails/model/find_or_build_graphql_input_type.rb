@@ -23,6 +23,14 @@ module GraphqlRails
           end
         end
       end
+
+      def find_or_build_dynamic_type(attribute)
+        graphql_model = attribute.graphql_model
+        return unless graphql_model
+
+        graphql = graphql_model.graphql.input(attribute.subtype)
+        find_or_build_graphql_model_type(graphql)
+      end
     end
   end
 end

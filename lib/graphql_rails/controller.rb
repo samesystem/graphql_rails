@@ -6,6 +6,7 @@ require 'graphql_rails/controller/configuration'
 require 'graphql_rails/controller/request'
 require 'graphql_rails/controller/action_hooks_runner'
 require 'graphql_rails/controller/log_controller_action'
+require 'graphql_rails/controller/handle_controller_error'
 require 'graphql_rails/errors/system_error'
 
 module GraphqlRails
@@ -44,6 +45,12 @@ module GraphqlRails
 
       def controller_configuration
         @controller_configuration ||= Controller::Configuration.new(self)
+      end
+
+      def rescue_from(*errors, with: nil, &block)
+        Array(errors).each do |error|
+          controller_configuration.add_error_handler(error, with: with, &block)
+        end
       end
     end
 
@@ -86,12 +93,8 @@ module GraphqlRails
       response = hooks_runner.call { public_send(action_name) }
 
       render response if graphql_request.no_object_to_return?
-    rescue StandardError => error
-      if error.is_a?(GraphQL::ExecutionError)
-        render error: error
-      else
-        render error: SystemError.new(error)
-      end
+    rescue StandardError => e
+      HandleControllerError.new(error: e, controller: self).call
     end
 
     def graphql_errors_from_render_params(rendering_params)

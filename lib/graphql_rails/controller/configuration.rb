@@ -13,7 +13,7 @@ module GraphqlRails
 
       LIB_REGEXP = %r{/graphql_rails/lib/}
 
-      attr_reader :action_by_name
+      attr_reader :action_by_name, :error_handlers
 
       def initialize(controller)
         @controller = controller
@@ -25,6 +25,7 @@ module GraphqlRails
 
         @action_by_name = {}
         @action_default = nil
+        @error_handlers = {}
       end
 
       def initialize_copy(other)
@@ -54,6 +55,10 @@ module GraphqlRails
 
         hooks[hook_type][hook_key] = \
           ActionHook.new(name: hook_name, **options, &block)
+      end
+
+      def add_error_handler(error, with:, &block)
+        @error_handlers[error] = with || block
       end
 
       def action_default

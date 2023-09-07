@@ -3,6 +3,7 @@
 require 'spec_helper'
 require 'active_record'
 
+# rubocop:disable RSpec/LeakyConstantDeclaration, Lint/ConstantDefinitionInBlock
 module GraphqlRails
   RSpec.describe Controller do
     DummyUserInput = Class.new(GraphQL::Schema::InputObject)
@@ -116,6 +117,9 @@ module GraphqlRails
 
     class DummyCallController < GraphqlRails::Controller
       DummyDecorator = Class.new(SimpleDelegator)
+      CustomError = Class.new(StandardError)
+
+      rescue_from CustomError, with: :render_custom_error
 
       attr_accessor :response_object
 
@@ -142,8 +146,18 @@ module GraphqlRails
         raise StandardError, 'ups!'
       end
 
+      def respond_with_custom_error
+        raise CustomError, 'ups!'
+      end
+
       def respond_without_render
         'Hello without render!'
+      end
+
+      private
+
+      def render_custom_error
+        render error: 'custom error'
       end
     end
 
@@ -382,6 +396,23 @@ module GraphqlRails
           end
         end
 
+        context 'when handled error was raised' do
+          let(:controller_action) { :respond_with_custom_error }
+
+          before do
+            allow(context).to receive(:add_error)
+          end
+
+          it 'adds error via handler method' do
+            call
+            expect(context).to have_received(:add_error).with(ExecutionError.new('custom error'))
+          end
+
+          it 'returns nil' do
+            expect(call).to be_nil
+          end
+        end
+
         context 'when rendering was not triggered' do
           let(:controller_action) { :respond_without_render }
 
@@ -393,9 +424,10 @@ module GraphqlRails
     end
 
     describe '#params' do
-      it 'retuns hash with indifferent access' do
+      it 'returns hash with indifferent access' do
         expect(controller.send(:params)).to be_a(HashWithIndifferentAccess)
       end
     end
   end
 end
+# rubocop:enable RSpec/LeakyConstantDeclaration, Lint/ConstantDefinitionInBlock

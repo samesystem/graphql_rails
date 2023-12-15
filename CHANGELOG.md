@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed: do not ignore custom `default_page_size` and other options for paginated responses
 * Fixed: do not crash when using deeply nested input definitions
 * Added: `rescue_from` support in controllers
+* Added: Bumped graphql version to 2.1.7
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.4.0](2023-27-25)

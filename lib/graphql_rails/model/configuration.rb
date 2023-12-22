@@ -24,6 +24,15 @@ module GraphqlRails
         @input = other.instance_variable_get(:@input)&.transform_values(&:dup)
       end
 
+      def implements(*interfaces)
+        previous_implements = get_or_set_chainable_option(:implements) || []
+        return previous_implements if interfaces.blank?
+
+        full_implements = (previous_implements + interfaces).uniq
+
+        get_or_set_chainable_option(:implements, full_implements) || []
+      end
+
       def attribute(attribute_name, **attribute_options)
         key = attribute_name.to_s
 
@@ -52,7 +61,8 @@ module GraphqlRails
           name: name,
           description: description,
           attributes: attributes,
-          type_name: type_name
+          type_name: type_name,
+          implements: implements
         )
       end
 
@@ -86,6 +96,7 @@ module GraphqlRails
           description: description,
           attributes: attributes,
           type_name: type_name,
+          implements: implements,
           force_define_attributes: true
         )
       end

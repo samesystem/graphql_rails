@@ -250,5 +250,33 @@ module GraphqlRails
         end
       end
     end
+
+    describe '#implements' do
+      it 'returns empty array by default' do
+        expect(config.implements).to eq []
+      end
+
+      context 'when called with arguments' do
+        it 'changes implements to a given value' do
+          interfaces = [GraphQL::Types::Relay::Node]
+          expect { config.implements(*interfaces) }.to change(config, :implements).to(interfaces)
+        end
+      end
+
+      context 'when implements with arguments is called second time' do
+        let(:existing_interfaces) { [GraphQL::Types::Relay::Node] }
+
+        before do
+          config.implements(*existing_interfaces)
+        end
+
+        it 'extends existing implements' do
+          new_interfaces = [:SomeInterface]
+          expect { config.implements(*new_interfaces) }
+            .to change(config, :implements)
+            .to(existing_interfaces + new_interfaces)
+        end
+      end
+    end
   end
 end

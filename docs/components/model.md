@@ -462,6 +462,30 @@ class User
 end
 ```
 
+## implements
+
+`implements` indicates that graphql type implements one or more interfaces:
+
+```ruby
+module UserInterface
+  include GraphQL::Schema::Interface
+  # ....
+end
+
+module AdvancedUserInterface
+  include GraphQL::Schema::Interface
+  # ...
+end
+
+class AdminUser
+  include GraphqlRails::Model
+
+  graphql do |c|
+    c.implements(UserInterface, AdvancedUserInterface)
+  end
+end
+```
+
 ## graphql_type
 
 Sometimes it's handy to get raw graphql type. To do so you can call:

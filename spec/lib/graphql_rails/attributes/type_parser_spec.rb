@@ -242,6 +242,19 @@ module GraphqlRails
           it { is_expected.to be GraphQL::Types::Float }
         end
 
+        context 'when attribute is interface' do
+          let(:type) do
+            Module.new do
+              include GraphQL::Schema::Interface
+              graphql_name 'SomeInterface'
+            end
+          end
+
+          it 'returns interface' do
+            expect(graphql_type).to be(type)
+          end
+        end
+
         context 'when attribute is not supported' do
           let(:type) { 'unknown' }
 

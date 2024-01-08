@@ -14,9 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed: do not crash when using deeply nested input definitions
 * Added: `rescue_from` support in controllers
 * Added: Bumped graphql version to 2.1.7
+* Added: `implements` support in models
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
-## [2.4.0](2023-27-25)
+## [2.4.0](2023-11-25)
 
 * Added: `hidden_in_groups` for attributes to be able to skip attribute from certain groups
 * Added: `extras` for attributes to be able to include graphql-ruby extensions

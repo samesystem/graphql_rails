@@ -10,21 +10,35 @@ module GraphqlRails
 
       include ::GraphqlRails::Service
 
-      def initialize(name:, description:, attributes:, type_name:, force_define_attributes: false)
+      # rubocop:disable Metrics/ParameterLists
+      def initialize(
+        name:,
+        description:,
+        attributes:,
+        type_name:,
+        force_define_attributes: false,
+        implements: []
+      )
         @name = name
         @description = description
         @attributes = attributes
         @type_name = type_name
         @force_define_attributes = force_define_attributes
+        @implements = implements
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def call
-        klass.tap { add_attributes if new_class? || force_define_attributes }
+        klass.tap do
+          add_attributes if new_class? || force_define_attributes
+          add_interfaces
+        end
       end
 
       private
 
-      attr_reader :name, :description, :attributes, :type_name, :force_define_attributes
+      attr_reader :name, :description, :attributes, :type_name, :force_define_attributes,
+                  :implements
 
       delegate :klass, :new_class?, to: :type_class_finder
 
@@ -41,6 +55,7 @@ module GraphqlRails
           name: name,
           type_name: type_name,
           description: description,
+          implements: implements,
           parent_class: parent_class
         )
       end
@@ -51,6 +66,14 @@ module GraphqlRails
         add_attributes_batch(scalar_attributes)
         dynamic_attributes.each { |attribute| find_or_build_dynamic_type(attribute) }
         add_attributes_batch(dynamic_attributes)
+      end
+
+      def add_interfaces
+        implements.each do |interface|
+          next if klass.interfaces.include?(interface)
+
+          klass.implements(interface)
+        end
       end
 
       def find_or_build_dynamic_type(attribute)

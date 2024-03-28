@@ -11,6 +11,7 @@ module GraphqlRails
       def initialize_copy(_original)
         super
         @attribute_name_parser = nil
+        @type_parser = nil
       end
 
       def field_name

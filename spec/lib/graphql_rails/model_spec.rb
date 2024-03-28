@@ -85,7 +85,6 @@ module GraphqlRails
           end
 
           it 'does not inherit parent attribute type' do
-            require 'pry'; binding.pry
             amount_type = model.graphql.attributes['amount'].type
 
             expect(amount_type).to eq(:float!)

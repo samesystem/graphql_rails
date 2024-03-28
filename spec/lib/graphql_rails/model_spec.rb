@@ -14,6 +14,7 @@ module GraphqlRails
 
         graphql do |c|
           c.attribute :is_plain, type: :bool!
+          c.attribute :amount, type: :integer!
         end
 
         graphql.input do |c|
@@ -51,12 +52,12 @@ module GraphqlRails
 
         it 'does not modify parent class attributes' do
           parent_fields = plain_model.graphql.graphql_type.fields.keys
-          expect(parent_fields).to match_array(%w[isPlain])
+          expect(parent_fields).to match_array(%w[amount isPlain])
         end
 
         it 'inherits parent class graphql attributes' do
           child_fields = model.graphql.graphql_type.fields.keys
-          expect(child_fields).to match_array(%w[isPlain isChild])
+          expect(child_fields).to match_array(%w[amount isPlain isChild])
         end
 
         it 'does not inherit parent class graphql_type' do
@@ -71,6 +72,24 @@ module GraphqlRails
         it 'inherits parent class graphql input attributes' do
           child_fields = model.graphql.input.graphql_input_type.arguments.keys
           expect(child_fields).to match_array(%w[childInputAttribute parentInputAttribute])
+        end
+
+        context 'when redefining parent attribute' do
+          subject(:model) do
+            Class.new(plain_model) do
+              graphql do |c|
+                c.attribute :is_child, type: :bool!
+                c.attribute :amount, type: :float!
+              end
+            end
+          end
+
+          it 'does not inherit parent attribute type' do
+            require 'pry'; binding.pry
+            amount_type = model.graphql.attributes['amount'].type
+
+            expect(amount_type).to eq(:float!)
+          end
         end
       end
 

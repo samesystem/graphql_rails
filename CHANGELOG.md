@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: `rescue_from` support in controllers
 * Added: Bumped graphql version to 2.1.7
 * Added: `implements` support in models
+* Added: `response.controller` and `response.action_name` methods in RSpecControllerHelpers
+* Removed: stop supporting ruby < 3.0.0
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.4.0](2023-11-25)

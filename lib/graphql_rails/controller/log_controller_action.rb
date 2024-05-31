@@ -7,6 +7,7 @@ module GraphqlRails
     # logs controller start and end times
     class LogControllerAction
       require 'graphql_rails/concerns/service'
+      require 'active_support/notifications'
 
       include ::GraphqlRails::Service
 

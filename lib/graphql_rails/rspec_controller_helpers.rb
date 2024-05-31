@@ -46,6 +46,14 @@ module GraphqlRails
         !success?
       end
 
+      def controller
+        request.controller
+      end
+
+      def action_name
+        request.action_name
+      end
+
       private
 
       attr_reader :request
@@ -94,9 +102,13 @@ module GraphqlRails
 
     # controller request object more suitable for testing
     class Request < GraphqlRails::Controller::Request
-      def initialize(params, context)
+      attr_reader :controller, :action_name
+
+      def initialize(params, context, controller: nil, action_name: nil)
         inputs = params || {}
         inputs = inputs.merge(lookahead: ::GraphQL::Execution::Lookahead::NullLookahead.new)
+        @controller = controller
+        @action_name = action_name
         super(nil, inputs, context)
       end
     end
@@ -104,7 +116,7 @@ module GraphqlRails
     def query(query_name, params: {}, context: {})
       schema_builder = SingleControllerSchemaBuilder.new(described_class)
       context_object = FakeContext.new(values: context, schema: schema_builder.call)
-      request = Request.new(params, context_object)
+      request = Request.new(params, context_object, controller: described_class, action_name: query_name)
       described_class.new(request).call(query_name)
 
       @response = Response.new(request)

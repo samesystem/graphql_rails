@@ -86,6 +86,16 @@ module GraphqlRails
     end
 
     describe '#response' do
+      it 'includes controller name' do
+        runner.query(:index, params: action_params, context: action_context)
+        expect(runner.response.controller).to eq TestableController
+      end
+
+      it 'includes action name' do
+        runner.query(:index, params: action_params, context: action_context)
+        expect(runner.response.action_name).to eq :index
+      end
+
       context 'when request was successful' do
         it 'sets status to success' do
           runner.query(:index, params: action_params, context: action_context)

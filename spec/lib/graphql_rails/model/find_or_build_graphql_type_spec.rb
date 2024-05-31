@@ -12,34 +12,36 @@ module GraphqlRails
             description: description,
             attributes: name.constantize.graphql.attributes,
             type_name: name.constantize.graphql.type_name,
-            force_define_attributes: force_define_attributes
+            force_define_attributes: force_define_attributes,
+            implements: implements
           )
         end
 
         let(:name) { 'DummyType' }
         let(:description) { 'This is my type!' }
         let(:force_define_attributes) { false }
+        let(:implements) { [] }
+
+        let(:dummy_model_class) do
+          graphql_name = name
+          graphql_description = description
+
+          Class.new do
+            include Model
+
+            graphql do |c|
+              c.name graphql_name
+              c.description graphql_description
+              c.attribute :name
+            end
+          end
+        end
 
         before do
           stub_const(name, dummy_model_class)
         end
 
         context 'when attribute does not have any arguments' do
-          let(:dummy_model_class) do
-            graphql_name = name
-            graphql_description = description
-
-            Class.new do
-              include Model
-
-              graphql do |c|
-                c.name graphql_name
-                c.description graphql_description
-                c.attribute :name
-              end
-            end
-          end
-
           it 'builds correct type' do
             expect(call.to_type_signature).to eq name
           end
@@ -50,6 +52,14 @@ module GraphqlRails
 
           it 'builds type without arguments' do
             expect(call.fields['name'].arguments).to be_empty
+          end
+        end
+
+        context 'when interfaces are given' do
+          let(:implements) { [GraphQL::Types::Relay::Node] }
+
+          it 'adds interfaces', :aggregate_failures do
+            expect(call.interfaces).to eq(implements)
           end
         end
 
@@ -187,6 +197,28 @@ module GraphqlRails
 
           it 'builds type with pagination arguments' do
             expect(call.fields['posts'].arguments.keys).to match_array(%w[after before first last])
+          end
+        end
+
+        context 'when type already exists' do
+          let(:dummy_graphql_type_finder) do
+            instance_double(
+              FindOrBuildGraphqlTypeClass,
+              klass: dummy_model_class.graphql.graphql_type,
+              new_class?: false
+            )
+          end
+
+          before do
+            allow(FindOrBuildGraphqlTypeClass).to receive(:new).and_return(dummy_graphql_type_finder)
+          end
+
+          context 'when adding new interfaces to existing type' do
+            let(:implements) { [GraphQL::Types::Relay::Node] }
+
+            it 'adds interfaces', :aggregate_failures do
+              expect(call.interfaces).to eq(implements)
+            end
           end
         end
       end

@@ -10,13 +10,15 @@ module GraphqlRails
           name: name,
           type_name: type_name,
           description: description,
-          parent_class: GraphQL::Schema::Object
+          parent_class: GraphQL::Schema::Object,
+          implements: implements
         )
       end
 
       let(:name) { 'DummyModel' }
       let(:type_name) { 'DummyModelType' }
       let(:description) { 'DummyModelTypeDescription' }
+      let(:implements) { [] }
 
       describe '#klass' do
         subject(:klass) { graphql_type_finder.klass }

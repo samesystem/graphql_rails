@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
+
+## [3.0.0](2024-05-31)
+
 * Added: `input.attribute.property` method which allows aliasing input parameter keys
 * Added: possibility to copy attribute config using the `Attribute#same_as` method
 * Fixed: do not ignore custom `max_page_size` for paginated responses
@@ -17,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: `implements` support in models
 * Added: `response.controller` and `response.action_name` methods in RSpecControllerHelpers
 * Removed: stop supporting ruby < 3.0.0
-* Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 
 ## [2.4.0](2023-11-25)
 

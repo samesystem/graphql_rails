@@ -27,7 +27,9 @@ module GraphqlRails
       def attribute(attribute_name, **attribute_options)
         key = attribute_name.to_s
 
-        attributes[key] ||= build_attribute(attribute_name).tap do |new_attribute|
+        attributes[key] ||= build_attribute(attribute_name)
+
+        attributes[key].tap do |new_attribute|
           new_attribute.with(**attribute_options)
           yield(new_attribute) if block_given?
         end

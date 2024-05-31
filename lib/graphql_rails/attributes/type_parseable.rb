@@ -94,9 +94,9 @@ module GraphqlRails
       end
 
       def graphql_type_object?(type_class)
-        return false unless type_class.is_a?(Class)
+        return false if !type_class.is_a?(Class) && !type_class.is_a?(Module)
 
-        type_class < GraphQL::Schema::Member
+        type_class < GraphQL::Schema::Member::GraphQLTypeNames
       end
 
       def applicable_graphql_type?(type)

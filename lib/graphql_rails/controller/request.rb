@@ -14,6 +14,7 @@ module GraphqlRails
         @inputs = inputs.except(:lookahead)
         @lookahead = inputs[:lookahead]
         @context = context
+        @errors = []
       end
 
       def errors=(new_errors)

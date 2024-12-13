@@ -89,7 +89,7 @@ module GraphqlRails
     private
 
     def call_with_rendering
-      hooks_runner = ActionHooksRunner.new(action_name: action_name, controller: self)
+      hooks_runner = ActionHooksRunner.new(action_name: action_name, controller: self, graphql_request: graphql_request)
       response = hooks_runner.call { public_send(action_name) }
 
       render response if graphql_request.no_object_to_return?

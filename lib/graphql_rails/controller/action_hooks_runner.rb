@@ -4,9 +4,10 @@ module GraphqlRails
   class Controller
     # runs {before/around/after}_action controller hooks
     class ActionHooksRunner
-      def initialize(action_name:, controller:)
+      def initialize(action_name:, controller:, graphql_request:)
         @action_name = action_name
         @controller = controller
+        @graphql_request = graphql_request
       end
 
       def call(&block)
@@ -19,7 +20,7 @@ module GraphqlRails
 
       private
 
-      attr_reader :action_name, :controller
+      attr_reader :action_name, :controller, :graphql_request
 
       def all_around_hooks
         controller_configuration.action_hooks_for(:around, action_name)
@@ -30,6 +31,8 @@ module GraphqlRails
       end
 
       def run_around_action_hooks(around_hooks = all_around_hooks, &block)
+        return if graphql_request.errors.any?
+
         pending_around_hooks = around_hooks.clone
         action_hook = pending_around_hooks.shift
 
@@ -41,6 +44,8 @@ module GraphqlRails
       end
 
       def execute_hook(action_hook, &block)
+        return if graphql_request.errors.any?
+
         if action_hook.anonymous?
           controller.instance_exec(controller, *block, &action_hook.action_proc)
         else

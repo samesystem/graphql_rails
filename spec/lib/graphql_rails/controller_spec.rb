@@ -161,6 +161,28 @@ module GraphqlRails
       end
     end
 
+    class DummyCallControllerWithHooks < DummyCallController
+      before_action :before_action1
+      before_action :before_action2
+      around_action :around_action1
+      around_action :around_action2
+      after_action :after_action1
+      after_action :after_action2
+
+      def log
+        @log ||= []
+      end
+
+      # rubocop:disable Style/SingleLineMethods, Layout/EmptyLineBetweenDefs
+      def before_action1; log << 'before_action1'; end
+      def before_action2; log << 'before_action2'; end
+      def around_action1; log << 'before-around_action1'; yield; log << 'after-around_action1'; end
+      def around_action2; log << 'before-around_action2'; yield; log << 'after-around_action2'; end
+      def after_action1; log << 'after_action1'; end
+      def after_action2; log << 'after_action2'; end
+      # rubocop:enable Style/SingleLineMethods, Layout/EmptyLineBetweenDefs
+    end
+
     class DummyMultipleBeforeActionsParentController < DummyMultipleBeforeActionsController
       before_action :parent_filter
     end
@@ -330,6 +352,27 @@ module GraphqlRails
             call
             expect(controller).not_to have_received(:filter3)
           end
+        end
+      end
+
+      context 'when controller has hooks with errors' do
+        let(:controller) { DummyCallControllerWithHooks.new(request) }
+        let(:controller_action) { :respond_without_render }
+
+        before do
+          allow(controller).to receive(:before_action2) { controller.send(:render, error: 'ups!') }
+        end
+
+        it 'executes only hooks before the error' do
+          controller.call(:action)
+          expect(controller.log).to eq(
+            %w[before_action1]
+          )
+        end
+
+        it 'returns error from hook' do
+          call
+          expect(context).to have_received(:add_error).with(ExecutionError.new('ups!'))
         end
       end
 

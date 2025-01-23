@@ -25,7 +25,7 @@ class CommentDecorator < SimpleDelegator
 end
 ```
 
-In order to decorate object with exra arguments, simply pass them to `.decorate` method. Like this:
+In order to decorate object with extra arguments, simply pass them to `.decorate` method. Like this:
 
 ```ruby
 CommentDecorator.decorate(comment, current_user)
@@ -64,6 +64,36 @@ class UsersController < GraphqlRails::Controller
   def create
     user = User.create(params)
     UserDecorator.decorate(user)
+  end
+end
+```
+
+## Decorating with custom method
+
+Sometimes building decorator instance is not that straight-forward and you need to use custom build strategy. In such cases you can pass `build_with: :DESIRED_CLASS_METHOD` option:
+
+```ruby
+class UserDecorator < SimpleDelegator
+  include GraphqlRails::Model
+  include GraphqlRails::Decorator
+  # ...
+
+  def self.custom_build(user)
+    user.admin? ? new(user, admin: true) : new(user)
+  end
+
+  def initialize(user, admin: false)
+    @user = user
+    @admin = admin
+  end
+end
+
+class UsersController < GraphqlRails::Controller
+  action(:index).paginated.returns('[UserDecorator!]!')
+
+  def index
+    users = User.where(active: true)
+    UserDecorator.decorate(user, build_with: :custom_build)
   end
 end
 ```

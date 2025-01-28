@@ -15,6 +15,10 @@ module GraphqlRails
           'DummyDecorator'
         end
 
+        def self.custom_build(object, *args)
+          new(object, :custom, *args)
+        end
+
         def initialize(object, *args)
           @object = object
           @args = args
@@ -39,6 +43,16 @@ module GraphqlRails
 
         it 'creates decorator with given args' do
           expect(decorate.args).to eq(decorator_args)
+        end
+      end
+
+      context 'when custom build method is provided' do
+        subject(:decorate) { decorator_class.decorate(object, *decorator_args, build_with: :custom_build) }
+
+        let(:decorator_args) { %w[arg1 arg2] }
+
+        it 'uses custom build method' do
+          expect(decorate.args).to eq([:custom] + decorator_args)
         end
       end
 

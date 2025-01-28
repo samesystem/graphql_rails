@@ -12,11 +12,12 @@ module GraphqlRails
           defined?(Mongoid) && object.is_a?(Mongoid::Criteria)
       end
 
-      def initialize(decorator:, relation:, decorator_args: [], decorator_kwargs: {})
+      def initialize(decorator:, relation:, decorator_args: [], decorator_kwargs: {}, build_with: :new)
         @relation = relation
         @decorator = decorator
         @decorator_args = decorator_args
         @decorator_kwargs = decorator_kwargs
+        @build_with = build_with
       end
 
       %i[where limit order group offset from select having all unscope].each do |method_name|
@@ -38,12 +39,12 @@ module GraphqlRails
       end
 
       def to_a
-        @to_a ||= relation.to_a.map { |it| decorator.new(it, *decorator_args, **decorator_kwargs) }
+        @to_a ||= relation.to_a.map { |it| build_decorator(it, *decorator_args, **decorator_kwargs) }
       end
 
       private
 
-      attr_reader :relation, :decorator, :decorator_args, :decorator_kwargs
+      attr_reader :relation, :decorator, :decorator_args, :decorator_kwargs, :build_with
 
       def decoratable_object_method(method_name, *args, **kwargs, &block)
         object = relation.public_send(method_name, *args, **kwargs, &block)
@@ -54,10 +55,14 @@ module GraphqlRails
         return object_or_list if object_or_list.blank?
 
         if object_or_list.is_a?(Array)
-          object_or_list.map { |it| decorator.new(it, *decorator_args, **decorator_kwargs) }
+          object_or_list.map { |it| build_decorator(it, *decorator_args, **decorator_kwargs) }
         else
-          decorator.new(object_or_list, *decorator_args, **decorator_kwargs)
+          build_decorator(object_or_list, *decorator_args, **decorator_kwargs)
         end
+      end
+
+      def build_decorator(*args, **kwargs, &block)
+        decorator.public_send(build_with, *args, **kwargs, &block)
       end
 
       def decoratable_block_method(method_name, *args, **kwargs)
@@ -71,7 +76,8 @@ module GraphqlRails
         new_relation = relation.public_send(method_name, *args, **kwargs, &block)
         self.class.new(
           decorator: decorator, relation: new_relation,
-          decorator_args: decorator_args, decorator_kwargs: decorator_kwargs
+          decorator_args: decorator_args, decorator_kwargs: decorator_kwargs,
+          build_with: build_with
         )
       end
     end

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
+* Added: Option to create decorator instances with custom method passed by
 * Fixed: Stop processing hooks and controller action if graphql_request has errors
 
 ## [3.0.0](2024-05-31)

@@ -61,8 +61,8 @@ module GraphqlRails
         end
       end
 
-      def build_decorator(...)
-        decorator.public_send(build_with, ...)
+      def build_decorator(*args, **kwargs, &block)
+        decorator.public_send(build_with, *args, **kwargs, &block)
       end
 
       def decoratable_block_method(method_name, *args, **kwargs)

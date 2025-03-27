@@ -32,6 +32,8 @@ module GraphqlRails
       # rubocop:disable Metrics/MethodLength
       def define_schema_class(query_type, mutation_type, subscription_type, raw)
         Class.new(GraphQL::Schema) do
+          use GraphQL::Schema::Visibility
+
           connections.add(
             GraphqlRails::Decorator::RelationDecorator,
             GraphQL::Pagination::ActiveRecordRelationConnection

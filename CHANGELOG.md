@@ -8,8 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
-* Added: Option to create decorator instances with custom method passed by
-* Fixed: Stop processing hooks and controller action if graphql_request has errors
+
+## [3.1.0](2025-05-26)
+
+* Added: Allow passing custom decorator build strategy
+* Added: Tracer support to router
+* Fixed: Better handle render in controller hooks
+* Fixed: Reduce memory allocations when defining attributes
+* Updated: GraphQL and gems version dependencies
+* Updated: Bump rexml from 3.2.8 to 3.3.9
 
 ## [3.0.0](2024-05-31)
 

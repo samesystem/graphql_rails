@@ -10,14 +10,24 @@ module GraphqlRails
 
       PAGINATION_KEYS = %i[before after first last].freeze
 
-      def initialize(model:, method_keyword_arguments:, graphql_context:, attribute_config:)
+      @instance_cache = {}
+
+      class << self
+        attr_reader :instance_cache
+
+        def call(*_args, **kwargs)
+          cache_key = kwargs[:attribute_config].object_id
+          @instance_cache[cache_key] ||= new
+          @instance_cache[cache_key].call_with_args(**kwargs)
+        end
+      end
+
+      def call_with_args(model:, method_keyword_arguments:, graphql_context:, attribute_config:)
         @model = model
         @method_keyword_arguments = method_keyword_arguments
         @graphql_context = graphql_context
         @attribute_config = attribute_config
-      end
 
-      def call
         with_graphql_context do
           run_method
         end
@@ -59,7 +69,9 @@ module GraphqlRails
       def custom_keyword_arguments
         return method_keyword_arguments unless paginated?
 
-        method_keyword_arguments.except(*PAGINATION_KEYS)
+        method_keyword_arguments.each_with_object({}) do |(key, value), result|
+          result[key] = value unless PAGINATION_KEYS.include?(key)
+        end
       end
 
       def with_graphql_context

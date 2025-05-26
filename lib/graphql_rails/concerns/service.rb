@@ -8,11 +8,7 @@ module GraphqlRails
 
     class_methods do
       def call(*args, **kwargs, &block)
-        if kwargs.present?
-          new(*args, **kwargs).call(&block)
-        else
-          new(*args).call(&block)
-        end
+        new(*args, **kwargs).call(&block)
       end
     end
   end

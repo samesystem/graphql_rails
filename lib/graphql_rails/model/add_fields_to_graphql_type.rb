@@ -6,6 +6,7 @@ module GraphqlRails
     class AddFieldsToGraphqlType
       require 'graphql_rails/concerns/service'
       require 'graphql_rails/model/call_graphql_model_method'
+      require 'graphql_rails/model/direct_field_resolver'
 
       include ::GraphqlRails::Service
 
@@ -31,7 +32,7 @@ module GraphqlRails
           end
 
           define_method(attribute.field_name) do |**kwargs|
-            CallGraphqlModelMethod.call(
+            DirectFieldResolver.call(
               model: object,
               attribute_config: attribute,
               method_keyword_arguments: kwargs,

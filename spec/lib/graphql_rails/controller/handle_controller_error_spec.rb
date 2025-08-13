@@ -22,10 +22,8 @@ RSpec.describe GraphqlRails::Controller::HandleControllerError do
     context 'when error is a GraphQL::ExecutionError' do
       let(:error) { GraphQL::ExecutionError.new('error') }
 
-      it 'renders error' do
-        call
-
-        expect(controller).to have_received(:render).with(error: error)
+      it 'raises error' do
+        expect { call }.to raise_error(error)
       end
     end
 

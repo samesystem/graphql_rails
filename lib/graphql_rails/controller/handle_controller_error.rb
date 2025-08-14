@@ -24,7 +24,7 @@ module GraphqlRails
       attr_reader :error, :controller
 
       def render_unhandled_error(error)
-        handle_graphql_execution_error(error) if error.is_a?(GraphQL::ExecutionError)
+        return handle_graphql_execution_error(error) if error.is_a?(GraphQL::ExecutionError)
 
         render(error: SystemError.new(error))
       end

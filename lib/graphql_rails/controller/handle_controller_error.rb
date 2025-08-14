@@ -4,6 +4,10 @@ module GraphqlRails
   class Controller
     # runs {before/around/after}_action controller hooks
     class HandleControllerError
+      def self.call(error:, controller:)
+        new(error: error, controller: controller).call
+      end
+
       def initialize(error:, controller:)
         @error = error
         @controller = controller
@@ -20,9 +24,13 @@ module GraphqlRails
       attr_reader :error, :controller
 
       def render_unhandled_error(error)
-        raise error if error.is_a?(GraphQL::ExecutionError)
+        handle_graphql_execution_error(error) if error.is_a?(GraphQL::ExecutionError)
 
         render(error: SystemError.new(error))
+      end
+
+      def handle_graphql_execution_error(error)
+        raise error
       end
 
       def custom_handle_error

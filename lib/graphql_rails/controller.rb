@@ -13,6 +13,8 @@ module GraphqlRails
   # base class for all graphql_rails controllers
   class Controller
     class << self
+      attr_accessor :error_handler
+
       def inherited(subclass)
         super
         new_config = controller_configuration.dup_with(controller: subclass)
@@ -94,7 +96,8 @@ module GraphqlRails
 
       render response if graphql_request.no_object_to_return?
     rescue StandardError => e
-      HandleControllerError.new(error: e, controller: self).call
+      error_handler = self.class.error_handler || HandleControllerError
+      error_handler.call(error: e, controller: self)
     end
 
     def graphql_errors_from_render_params(rendering_params)

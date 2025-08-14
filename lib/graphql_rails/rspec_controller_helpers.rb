@@ -78,6 +78,15 @@ module GraphqlRails
       end
     end
 
+    # Custom error handler to avoid raising errors in controller tests
+    class TestControllerErrorHandler < GraphqlRails::Controller::HandleControllerError
+      private
+
+      def handle_graphql_execution_error(error)
+        render(error: error)
+      end
+    end
+
     class SingleControllerSchemaBuilder
       attr_reader :controller
 
@@ -117,7 +126,11 @@ module GraphqlRails
       schema_builder = SingleControllerSchemaBuilder.new(described_class)
       context_object = FakeContext.new(values: context, schema: schema_builder.call)
       request = Request.new(params, context_object, controller: described_class, action_name: query_name)
+      original_error_handler = described_class.error_handler
+
+      described_class.error_handler = TestControllerErrorHandler
       described_class.new(request).call(query_name)
+      described_class.error_handler = original_error_handler
 
       @response = Response.new(request)
       @response

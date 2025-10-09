@@ -17,7 +17,6 @@ module GraphqlRails
 
       cursor_encoder(Router::PlainCursorEncoder)
 
-      attr_accessor :before_type_error, :after_type_error
 
       def self.before_type_error(&block)
         @before_type_error = block if block_given?

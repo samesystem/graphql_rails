@@ -6,7 +6,9 @@ require 'graphql_rails/router/plain_cursor_encoder'
 
 module GraphqlRails
   class Router
-    # Builds GraphQL::Schema based on previously defined graphql data
+    # Builds GraphQL::Schema based on previously defined GraphQL data.
+    # Also handles type error hooks (before_type_error, after_type_error)
+    # and implements logic for skipping null errors.
     class Schema < ::GraphQL::Schema
       use GraphQL::Schema::Visibility
 

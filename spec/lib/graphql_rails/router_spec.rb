@@ -183,6 +183,20 @@ module GraphqlRails
       end
     end
 
+    describe '#before_type_error' do
+      it 'allows to set before_type_error hook' do
+        router.before_type_error { 'my before hook' }
+        expect(router.before_type_error.first[:block]).to be_a(Proc)
+      end
+    end
+
+    describe '#after_type_error' do
+      it 'allows to set after_type_error hook' do
+        router.after_type_error { 'my after hook' }
+        expect(router.after_type_error.first[:block]).to be_a(Proc)
+      end
+    end
+
     describe '#scope' do
       context 'with named scopes without module' do
         before do

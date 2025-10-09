@@ -201,6 +201,10 @@ module GraphqlRails
     let(:inputs) { {} }
     let(:context) { instance_double(GraphQL::Query::Context) }
 
+    before do
+      allow(context).to receive(:[]=).with(:rendered_errors, true)
+    end
+
     describe '.action' do
       subject(:action) { DummyInputsController.controller_configuration.action(:create) }
 
@@ -342,6 +346,11 @@ module GraphqlRails
             expect { call }.not_to raise_error
           end
 
+          it 'sets "rendered_errors" flag in context' do
+            call
+            expect(context).to have_received(:[]=).with(:rendered_errors, true)
+          end
+
           it 'adds first error in to context' do
             call
             expect(context).to have_received(:add_error).once
@@ -368,6 +377,11 @@ module GraphqlRails
           expect(controller.log).to eq(
             %w[before_action1]
           )
+        end
+
+        it 'sets "rendered_errors" flag in context' do
+          call
+          expect(context).to have_received(:[]=).with(:rendered_errors, true)
         end
 
         it 'returns error from hook' do
@@ -414,11 +428,21 @@ module GraphqlRails
             call
             expect(context).to have_received(:add_error).with(ExecutionError.new('bam!'))
           end
+
+          it 'sets "rendered_errors" flag in context' do
+            call
+            expect(context).to have_received(:[]=).with(:rendered_errors, true)
+          end
         end
 
         context 'when result was rendered' do
           it 'returns rendered result' do
             expect(call).to eq 'Hello'
+          end
+
+          it 'does not set "rendered_errors" flag in context' do
+            call
+            expect(context).not_to have_received(:[]=).with(:rendered_errors, anything)
           end
         end
 
@@ -437,6 +461,11 @@ module GraphqlRails
           it 'returns nil' do
             expect(call).to be_nil
           end
+
+          it 'sets "rendered_errors" flag in context' do
+            call
+            expect(context).to have_received(:[]=).with(:rendered_errors, true)
+          end
         end
 
         context 'when handled error was raised' do
@@ -454,6 +483,11 @@ module GraphqlRails
           it 'returns nil' do
             expect(call).to be_nil
           end
+
+          it 'sets "rendered_errors" flag in context' do
+            call
+            expect(context).to have_received(:[]=).with(:rendered_errors, true)
+          end
         end
 
         context 'when rendering was not triggered' do
@@ -461,6 +495,11 @@ module GraphqlRails
 
           it 'render last value' do
             expect(call).to eq 'Hello without render!'
+          end
+
+          it 'does not set "rendered_errors" flag in context' do
+            call
+            expect(context).not_to have_received(:[]=).with(:rendered_errors, anything)
           end
         end
       end

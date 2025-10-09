@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'graphql_rails/router/schema'
+
 module GraphqlRails
   class Router
     # builds GraphQL::Schema based on previously defined grahiti data
@@ -31,14 +33,7 @@ module GraphqlRails
 
       # rubocop:disable Metrics/MethodLength
       def define_schema_class(query_type, mutation_type, subscription_type, raw)
-        Class.new(GraphQL::Schema) do
-          use GraphQL::Schema::Visibility
-
-          connections.add(
-            GraphqlRails::Decorator::RelationDecorator,
-            GraphQL::Pagination::ActiveRecordRelationConnection
-          )
-          cursor_encoder(Router::PlainCursorEncoder)
+        Class.new(GraphqlRails::Router::Schema) do
           raw.each { |action| send(action[:name], *action[:args], **action[:kwargs], &action[:block]) }
 
           query(query_type) if query_type

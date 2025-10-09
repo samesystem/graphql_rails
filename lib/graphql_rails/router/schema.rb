@@ -19,7 +19,6 @@ module GraphqlRails
 
       cursor_encoder(Router::PlainCursorEncoder)
 
-
       def self.before_type_error(&block)
         @before_type_error = block if block_given?
         @before_type_error
@@ -31,12 +30,12 @@ module GraphqlRails
       end
 
       def self.type_error(type_error, context)
-        before_type_error.call(type_error, context) if before_type_error
+        before_type_error&.call(type_error, context)
 
         return nil if type_error.is_a?(GraphQL::InvalidNullError) && context[:rendered_errors]
 
         super.tap do
-          after_type_error.call(type_error, context) if after_type_error
+          after_type_error&.call(type_error, context)
         end
       end
     end

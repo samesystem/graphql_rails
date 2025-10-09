@@ -174,3 +174,29 @@ end
 ```
 
 If you want to access raw graphql schema, you can call `GraphqlRouter.graphql_schema(:mobile)`
+
+## _before_type_error_
+
+Sometimes it's handy to log or perform other actions when a GraphQL type error occurs. To do so, specify the Router.before_type_error hook:
+
+```ruby
+GraphqlRails::Router.draw do
+  before_type_error do |type_error, context|
+    MyCustomExceptionLogger.call(type_error)
+  end
+end
+```
+
+Note: This might log `GraphQL::InvalidNullError` errors that are not visible to the end user. If you do not want that, use Router.after_type_error.
+
+## _after_type_error_
+
+Sometimes it's handy to perform logging or other actions after a GraphQL type error occurs. To do so, specify the Router.after_type_error hook:
+
+```ruby
+GraphqlRails::Router.draw do
+  after_type_error do |type_error, context|
+    MyCustomExceptionLogger.call(type_error)
+  end
+end
+```

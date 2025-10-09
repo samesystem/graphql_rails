@@ -16,22 +16,28 @@ RSpec.describe GraphqlRails::Controller::HandleControllerError do
     let(:error) { StandardError.new('error') }
 
     before do
+      allow(context).to receive(:[]=).with(:rendered_errors, true)
       allow(controller).to receive(:render).and_call_original
     end
 
     context 'when error is a GraphQL::ExecutionError' do
       let(:error) { GraphQL::ExecutionError.new('error') }
 
-      it 'raises error' do
+      it 'raises error and does not set "rendered_errors" flag in context', :aggregate_failures do
         expect { call }.to raise_error(error)
+        expect(context).not_to have_received(:[]=).with(:rendered_errors, true)
       end
     end
 
     context 'when error is not a GraphQL::ExecutionError' do
       it 'renders SystemError' do
         call
-
         expect(controller).to have_received(:render).with(error: GraphqlRails::SystemError.new(error))
+      end
+
+      it 'sets "rendered_errors" flag in context' do
+        call
+        expect(context).to have_received(:[]=).with(:rendered_errors, true)
       end
     end
 
@@ -51,8 +57,12 @@ RSpec.describe GraphqlRails::Controller::HandleControllerError do
 
         it 'renders error' do
           call
-
           expect(controller).to have_received(:render).with(error: error.message)
+        end
+
+        it 'sets "rendered_errors" flag in context' do
+          call
+          expect(context).to have_received(:[]=).with(:rendered_errors, true)
         end
       end
 
@@ -71,8 +81,12 @@ RSpec.describe GraphqlRails::Controller::HandleControllerError do
 
         it 'renders error' do
           call
-
           expect(controller).to have_received(:render).with(error: 'custom error')
+        end
+
+        it 'sets "rendered_errors" flag in context' do
+          call
+          expect(context).to have_received(:[]=).with(:rendered_errors, true)
         end
       end
 
@@ -87,8 +101,12 @@ RSpec.describe GraphqlRails::Controller::HandleControllerError do
 
         it 'renders SystemError' do
           call
-
           expect(controller).to have_received(:render).with(error: GraphqlRails::SystemError)
+        end
+
+        it 'sets "rendered_errors" flag in context' do
+          call
+          expect(context).to have_received(:[]=).with(:rendered_errors, true)
         end
       end
     end

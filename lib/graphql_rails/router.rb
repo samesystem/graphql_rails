@@ -13,6 +13,7 @@ module GraphqlRails
   class Router
     RAW_ACTION_NAMES = %i[
       use rescue_from query_analyzer instrument cursor_encoder default_max_page_size tracer trace_with
+      before_type_error after_type_error
     ].freeze
 
     def self.draw(&block)

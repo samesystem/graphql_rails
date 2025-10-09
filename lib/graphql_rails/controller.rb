@@ -81,6 +81,7 @@ module GraphqlRails
       object = errors.empty? ? object_or_errors : nil
 
       graphql_request.errors = errors
+      graphql_request.context[:rendered_errors] = true unless errors.empty?
       graphql_request.object_to_return = object
     end
 

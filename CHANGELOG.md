@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added/Changed/Deprecated/Removed/Fixed/Security: YOUR CHANGE HERE
 * Changed: do not throw "Cannot return null for non-nullable" error when errors are manually rendered
 * Added: allow to specify type error hooks in router
+* Added: `response.context` in RSpec controller helpers
 
 ## [3.1.0](2025-05-26)
 

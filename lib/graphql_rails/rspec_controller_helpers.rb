@@ -69,7 +69,7 @@ module GraphqlRails
 
       attr_reader :schema
 
-      def_delegators :@provided_values, :[], :[]=, :to_h, :key?, :fetch
+      def_delegators :@provided_values, :[], :[]=, :to_h, :key?, :fetch, :dig
 
       def initialize(values:, schema:)
         @errors = []

@@ -96,6 +96,11 @@ module GraphqlRails
         expect(runner.response.action_name).to eq :index
       end
 
+      it 'lets the context be read with dig' do
+        runner.query(:index, params: action_params, context: { api: { version: 2 } })
+        expect(runner.response.context.dig(:api, :version)).to eq 2
+      end
+
       it 'includes the context the action ran with' do
         runner.query(:index, params: action_params, context: action_context)
         expect(runner.response.context.to_h).to eq action_context

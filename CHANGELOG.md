@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Changed: do not throw "Cannot return null for non-nullable" error when errors are manually rendered
 * Added: allow to specify type error hooks in router
 * Added: `response.context` in RSpec controller helpers
+* Added: `dig` on the RSpec controller helpers test context, as on `GraphQL::Query::Context`
 
 ## [3.1.0](2025-05-26)
 

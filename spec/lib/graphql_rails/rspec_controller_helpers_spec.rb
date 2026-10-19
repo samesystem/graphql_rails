@@ -96,6 +96,11 @@ module GraphqlRails
         expect(runner.response.action_name).to eq :index
       end
 
+      it 'includes the context the action ran with' do
+        runner.query(:index, params: action_params, context: action_context)
+        expect(runner.response.context.to_h).to eq action_context
+      end
+
       context 'when request was successful' do
         it 'sets status to success' do
           runner.query(:index, params: action_params, context: action_context)

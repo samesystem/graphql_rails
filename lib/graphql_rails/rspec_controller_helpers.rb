@@ -54,6 +54,10 @@ module GraphqlRails
         request.action_name
       end
 
+      def context
+        request.context
+      end
+
       private
 
       attr_reader :request

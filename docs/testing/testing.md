@@ -22,7 +22,7 @@ There are 3 helper methods:
 
 * `mutation(:your_controller_action_name, params: {}, context: {})`. `params` and `context` are optional
 * `query(:your_controller_action_name, params: {}, context: {})`. `params` and `context` are optional
-* `response`. Response is set only after you call `mutation` or `query`
+* `response`. Response is set only after you call `mutation` or `query`. It exposes, among others, `result`, `errors`, `success?`, `controller`, `action_name` and `context`: the hash-like test context the action ran with, not a `GraphQL::Query::Context`
 
 ### Test examples
 
